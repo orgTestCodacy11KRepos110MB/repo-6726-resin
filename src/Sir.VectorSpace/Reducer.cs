@@ -56,6 +56,10 @@ namespace Sir.VectorSpace
                         {
                             result[doc.Key] += doc.Value;
                         }
+                        else
+                        {
+                            result[doc.Key] = doc.Value;
+                        }
                     }
                 }
             }
@@ -139,6 +143,10 @@ namespace Sir.VectorSpace
                         if (result.ContainsKey(doc))
                         {
                             result[doc] += term.Score;
+                        }
+                        else
+                        {
+                            result[doc] = term.Score;
                         }
                     }
                 }
