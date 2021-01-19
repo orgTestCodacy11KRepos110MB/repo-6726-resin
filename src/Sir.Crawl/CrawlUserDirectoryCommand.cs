@@ -25,7 +25,7 @@ namespace Sir.Crawl
             var dataDirectory = args["dataDirectory"];
             var rootUserDirectory = args["userDirectory"];
             var maxNoRequestsPerSession = args.ContainsKey("maxNoRequestsPerSession") ? int.Parse(args["maxNoRequestsPerSession"]) : 10;
-            var minIdleTime = args.ContainsKey("minIdleTime") ? int.Parse(args["minIdleTime"]) : 1000;
+            var minIdleTime = args.ContainsKey("minIdleTime") ? int.Parse(args["minIdleTime"]) : 500;
             var urlCollectionId = "url".ToHash();
             var htmlClient = new HtmlWeb();
 
@@ -78,10 +78,17 @@ namespace Sir.Crawl
                             if (result != null)
                             {
                                 database.StoreIndexAndWrite(dataDirectory, collectionId, result.Document, _model);
-                                database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
+
+                                if (scope == "page")
+                                    database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
 
                                 foreach (var link in result.Links.Take(maxNoRequestsPerSession))
                                 {
+                                    if (database.DocumentExists(dataDirectory, link.Host, "url", link.ToString(), _model))
+                                    {
+                                        continue;
+                                    }
+
                                     while (idleTime.ElapsedMilliseconds < minIdleTime)
                                     {
                                         logger.LogInformation($"crawl sleeps");
