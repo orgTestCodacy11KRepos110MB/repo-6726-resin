@@ -142,13 +142,9 @@ namespace Sir.Search
             int skipDocuments = 0,
             int takeDocuments = 0,
             int reportFrequency = 1000,
-            int pageSize = 100000,
-            bool truncateIndex = true)
+            int pageSize = 100000)
         {
             var collectionId = collection.ToHash();
-
-            if (truncateIndex)
-                TruncateIndex(directory, collectionId);
 
             using (var debugger = new IndexDebugger(_logger, reportFrequency))
             using (var documents = new DocumentStreamSession(directory, this))

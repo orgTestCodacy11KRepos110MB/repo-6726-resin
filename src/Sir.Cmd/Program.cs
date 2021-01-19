@@ -110,7 +110,6 @@ namespace Sir.Cmd
             var reportFrequency = int.Parse(args["reportFrequency"]);
             var pageSize = int.Parse(args["pageSize"]);
             var fields = new HashSet<string>(args["fields"].Split(','));
-            var truncate = args.ContainsKey("no-truncate") ? false : true;
 
             using (var sessionFactory = new Database(logger))
             {
@@ -122,8 +121,7 @@ namespace Sir.Cmd
                     skip,
                     take,
                     reportFrequency,
-                    pageSize,
-                    truncate);
+                    pageSize);
             }
         }
 
