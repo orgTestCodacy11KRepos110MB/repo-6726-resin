@@ -29,12 +29,10 @@ namespace Sir.Wikipedia
             if (take == 0)
                 take = int.MaxValue;
 
-            var payload = WikipediaHelper.ReadWP(fileName, skip, take, fieldsOfInterest);
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest, "https://en.wikipedia.org/wiki/{0}");
 
             using (var sessionFactory = new Database(logger))
             {
-                sessionFactory.Truncate(dataDirectory, collectionId);
-
                 var debugger = new BatchDebugger(logger, sampleSize);
 
                 using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))

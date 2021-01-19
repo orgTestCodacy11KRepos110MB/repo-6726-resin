@@ -27,14 +27,14 @@ namespace Sir.Wikipedia
             var pageSize = args.ContainsKey("pageSize") ? int.Parse(args["pageSize"]) : 100000;
 
             var collectionId = collection.ToHash();
-            var fieldsOfInterest = new HashSet<string> { "language", "wikibase_item", "title", "text", "url" };
-            var fieldsToIndex = new HashSet<string> { "title", "text" };
+            var fieldsOfInterest = new HashSet<string> { "title", "text", "url" };
+            var fieldsToIndex = new HashSet<string> { "title", "text", "url" };
 
             if (take == 0)
                 take = int.MaxValue;
 
             var model = new BagOfCharsModel();
-            var payload = WikipediaHelper.ReadWP(fileName, skip, take, fieldsOfInterest);
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest, "https://en.wikipedia.org/wiki/{0}");
 
             using (var sessionFactory = new Database(logger))
             {

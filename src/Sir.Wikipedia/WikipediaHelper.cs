@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Sir.Search;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -8,12 +9,12 @@ namespace Sir.Wikipedia
 {
     public static class WikipediaHelper
     {
-        public static IEnumerable<Document> ReadWP(string fileName, int skip, int take, HashSet<string> fieldsOfInterest)
+        public static IEnumerable<Document> Read(string fileName, int skip, int take, HashSet<string> fieldsOfInterest, string urlFormat)
         {
-            return ReadGZipJsonFile(fileName, skip, take, fieldsOfInterest);
+            return ReadGZipJsonFile(fileName, skip, take, fieldsOfInterest, urlFormat);
         }
 
-        public static IEnumerable<Document> ReadGZipJsonFile(string fileName, int skip, int take, HashSet<string> fieldsOfInterest)
+        public static IEnumerable<Document> ReadGZipJsonFile(string fileName, int skip, int take, HashSet<string> fieldsOfInterest, string urlFormat)
         {
             using (var stream = File.OpenRead(fileName))
             using (var zip = new GZipStream(stream, CompressionMode.Decompress))
@@ -42,15 +43,21 @@ namespace Sir.Wikipedia
                     if (jobject.ContainsKey("title"))
                     {
                         var fields = new List<Field>();
+                        string title = null;
 
                         foreach (var kvp in jobject)
                         {
                             if (fieldsOfInterest.Contains(kvp.Key))
                                 fields.Add(new Field(kvp.Key, kvp.Value.ToString()));
+
+                            if (kvp.Key == "title")
+                                title = kvp.Value.ToString();
                         }
 
-                        fields.Add(
-                            new Field("url", $"https://www.wikidata.org/wiki/{jobject["wikibase_item"]}"));
+                        var url = string.Format(urlFormat, Uri.EscapeDataString(title));
+                        var uri = new Uri(url);
+
+                        fields.Add(new Field("url", uri.ToString()));
 
                         yield return new Document(fields);
                         took++;
