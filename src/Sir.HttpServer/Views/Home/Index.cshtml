@@ -24,10 +24,9 @@
         <h1>Create your own personalized web search index</h1>
         <p>
             Add some of your favorite pages and sites to a search index that you curate and command over.
-            You may add more sites and pages later on and excluding that which you are not interested in is easy.
+            You may add more sites later.
         </p>
         <h2>Add URLs</h2>
-        <p>(Click on an URL to remove it from the list.)</p>
         <p>
             <label>
                 <input type="radio" id="scope" name="scope" value="page" checked />
@@ -41,16 +40,18 @@
         <div>
             @if (errorMessage != null)
             {
-                <div><span style="background-color:orangered;font-size:10pt;">@errorMessage</span></div>
+            <div><span style="background-color:orangered;font-size:10pt;">@errorMessage</span></div>
             }
             <label>
                 <input type="text" placeholder="Enter URL here, e.g. https://mysite.com" id="siteurl" name="url" /><input type="submit" value="Add" name="add" id="add" />
             </label>
+            <h3>URLs</h3>
+            <p>Click on an URL to remove it from the list.</p>
             <div id="sitelist">
                 @foreach (var url in urlList)
                 {
                     var href = $"/deleteurl{queryString}&url={url}&returnUrl=/";
-                    <a href="@href">@url</a><br />
+                <a href="@href">@url</a><br />
                 }
             </div>
         </div>
