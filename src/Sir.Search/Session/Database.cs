@@ -368,6 +368,25 @@ namespace Sir.Search
             return false;
         }
 
+        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, SearchSession searchSession)
+        {
+            var query = new QueryParser<T>(directory, this, model, _logger)
+                .Parse(collection, value, key, key, and: true, or: false);
+
+            if (query != null)
+            {
+                var document = searchSession.SearchScalar(query);
+
+                if (document != null)
+                {
+                    if (document.Score >= model.IdenticalAngle)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         public FileStream CreateLockFile(string directory, ulong collectionId)
         {
             return new FileStream(Path.Combine(directory, collectionId + ".lock"),

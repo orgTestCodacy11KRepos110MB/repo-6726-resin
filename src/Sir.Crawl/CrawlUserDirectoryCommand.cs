@@ -13,7 +13,7 @@ using System.Threading;
 namespace Sir.Crawl
 {
     /// <summary>
-    /// crawluserdirectory --dataDirectory c:\data\resin --userDirectory c:\data\resin\user
+    /// Example: crawluserdirectory --dataDirectory c:\data\resin --userDirectory c:\data\resin\user
     /// </summary>
     public class CrawlUserDirectoryCommand : ICommand
     {
@@ -28,6 +28,7 @@ namespace Sir.Crawl
             var minIdleTime = args.ContainsKey("minIdleTime") ? int.Parse(args["minIdleTime"]) : 500;
             var urlCollectionId = "url".ToHash();
             var htmlClient = new HtmlWeb();
+            var model = new BagOfCharsModel();
 
             htmlClient.UserAgent = "Crawlcrawler (+https://crawlcrawler.com)";
 
@@ -36,6 +37,7 @@ namespace Sir.Crawl
 #endif
 
             using (var database = new Database(logger))
+            using (var dataSearchSession = new SearchSession(dataDirectory, database, model, logger))
             {
                 foreach (var userDirectory in Directory.EnumerateDirectories(rootUserDirectory))
                 {
@@ -58,12 +60,15 @@ namespace Sir.Crawl
                         }
 
                         if (verified)
+                        {
                             continue;
+                        }
 
                         var collectionId = uri.Host.ToHash();
 
-                        if (database.DocumentExists(dataDirectory, uri.Host, "url", uri.ToString(), _model))
+                        if (database.DocumentExists(dataDirectory, uri.Host, "url", uri.ToString(), _model, dataSearchSession))
                         {
+                            database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
                             continue;
                         }
 
@@ -78,22 +83,23 @@ namespace Sir.Crawl
                             if (result != null)
                             {
                                 database.StoreIndexAndWrite(dataDirectory, collectionId, result.Document, _model);
+                                database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
+                                
+                                int crawlCount = 1;
 
-                                if (scope == "page")
-                                    database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
-
-                                foreach (var link in result.Links.Take(maxNoRequestsPerSession))
+                                foreach (var link in result.Links)
                                 {
-                                    if (database.DocumentExists(dataDirectory, link.Host, "url", link.ToString(), _model))
+                                    if (crawlCount == maxNoRequestsPerSession)
+                                        break;
+
+                                    if (database.DocumentExists(dataDirectory, link.Host, "url", link.ToString(), _model, dataSearchSession))
                                     {
                                         continue;
                                     }
 
                                     while (idleTime.ElapsedMilliseconds < minIdleTime)
                                     {
-                                        logger.LogInformation($"crawl sleeps");
-
-                                        Thread.Sleep(100);
+                                        Thread.Sleep(200);
                                     }
 
                                     idleTime.Restart();
@@ -101,10 +107,14 @@ namespace Sir.Crawl
                                     var r = Crawl(link, htmlClient, siteWide: false, logger);
 
                                     if (r != null)
+                                    {
                                         database.StoreIndexAndWrite(dataDirectory, collectionId, r.Document, _model);
+                                    }
+
+                                    crawlCount++;
                                 }
 
-                                logger.LogInformation($"requesting {result.Links.Count + 1} resources from {uri.Host} and storing the responses took {time.Elapsed}.");
+                                logger.LogInformation($"crawling {crawlCount} resources from {uri.Host} and storing the responses took {time.Elapsed}.");
                             }
                         }
                         catch (Exception ex)
@@ -127,10 +137,18 @@ namespace Sir.Crawl
             try
             {
                 var doc = htmlClient.Load(uri);
-                var title = doc.DocumentNode.Descendants("title").FirstOrDefault().InnerText;
-                var sb = new StringBuilder();
 
-                logger.LogInformation($"requested {uri}");
+                logger.LogInformation($"crawled {uri}");
+
+                var titleNode = doc.DocumentNode.Descendants("title").FirstOrDefault();
+
+                if (titleNode == null || string.IsNullOrWhiteSpace(titleNode.InnerText))
+                {
+                    return null;
+                }
+                
+                var title = titleNode.InnerText;
+                var sb = new StringBuilder();
 
                 foreach (var node in doc.DocumentNode.DescendantsAndSelf())
                 {
@@ -181,7 +199,7 @@ namespace Sir.Crawl
                         }
                         catch (Exception ex) 
                         {
-                            logger.LogInformation(ex.ToString());
+                            logger.LogError(ex, "Crawl error occurred while iterating <a> tags.");
                         }
 
                         if (linkUri != null)
@@ -198,7 +216,7 @@ namespace Sir.Crawl
             }
             catch (Exception ex)
             {
-                logger.LogInformation(ex.ToString());
+                logger.LogError(ex, ex.Message);
 
                 return null;
             }

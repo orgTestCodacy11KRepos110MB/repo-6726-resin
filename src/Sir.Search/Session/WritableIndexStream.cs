@@ -50,7 +50,7 @@ namespace Sir.Search
                     var size = columnWriter.CreatePage(column.Value, vectorStream, postingsStream, pageIndexWriter);
 
                     if (_logger != null)
-                        _logger.LogInformation($"serialized column {column.Key}, weight {column.Value.Weight} {size} in {time.Elapsed}");
+                        _logger.LogDebug($"serialized column {column.Key}, weight {column.Value.Weight} {size} in {time.Elapsed}");
                 }
             }
         }
