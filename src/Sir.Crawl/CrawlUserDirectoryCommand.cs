@@ -137,16 +137,17 @@ namespace Sir.Crawl
             try
             {
                 var doc = htmlClient.Load(uri);
-
-                logger.LogInformation($"crawled {uri}");
-
                 var titleNode = doc.DocumentNode.Descendants("title").FirstOrDefault();
 
                 if (titleNode == null || string.IsNullOrWhiteSpace(titleNode.InnerText))
                 {
+                    logger.LogInformation($"unsuccessful crawl of {uri}");
+
                     return null;
                 }
-                
+
+                logger.LogInformation($"crawled {uri}");
+
                 var title = titleNode.InnerText;
                 var sb = new StringBuilder();
 
@@ -176,8 +177,16 @@ namespace Sir.Crawl
                 if (siteWide)
                 {
                     var root = $"{uri.Scheme}://{uri.Host}{uri.PathAndQuery}";
+                    var nodes = doc.DocumentNode.SelectNodes("//a[@href]");
 
-                    foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//a[@href]"))
+                    if (nodes == null)
+                    {
+                        logger.LogInformation($"unable to parse {uri}");
+
+                        return null;
+                    }
+
+                    foreach (HtmlNode link in nodes)
                     {
                         var href = link.Attributes["href"].Value;
                         Uri linkUri = null;
@@ -197,7 +206,7 @@ namespace Sir.Crawl
                                 linkUri = new Uri($"{root}{uri.PathAndQuery}{href}");
                             }
                         }
-                        catch (Exception ex) 
+                        catch (Exception ex)
                         {
                             logger.LogError(ex, "Crawl error occurred while iterating <a> tags.");
                         }
@@ -216,7 +225,7 @@ namespace Sir.Crawl
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, ex.Message);
+                logger.LogError(ex, $"error while crawling url {uri} (sitewide: {siteWide})");
 
                 return null;
             }
