@@ -26,6 +26,8 @@ namespace Sir.Crawl
             var rootUserDirectory = args["userDirectory"];
             var maxNoRequestsPerSession = args.ContainsKey("maxNoRequestsPerSession") ? int.Parse(args["maxNoRequestsPerSession"]) : 10;
             var minIdleTime = args.ContainsKey("minIdleTime") ? int.Parse(args["minIdleTime"]) : 500;
+            var refresh = args.ContainsKey("refresh");
+
             var urlCollectionId = "url".ToHash();
             var htmlClient = new HtmlWeb();
             var model = new BagOfCharsModel();
@@ -35,7 +37,6 @@ namespace Sir.Crawl
 #if DEBUG
             htmlClient.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36";
 #endif
-
             using (var database = new Database(logger))
             using (var dataSearchSession = new SearchSession(dataDirectory, database, model, logger))
             {
@@ -59,7 +60,7 @@ namespace Sir.Crawl
                                 verified = (bool)field.Value;
                         }
 
-                        if (verified)
+                        if (verified && !refresh)
                         {
                             continue;
                         }
