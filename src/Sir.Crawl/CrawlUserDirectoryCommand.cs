@@ -80,10 +80,12 @@ namespace Sir.Crawl
                             var idleTime = Stopwatch.StartNew();
                             var result = Crawl(uri, htmlClient, siteWide, logger);
 
+                            // set document to "verified" even if response was null
+                            database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
+
                             if (result != null)
                             {
                                 database.StoreIndexAndWrite(dataDirectory, collectionId, result.Document, _model);
-                                database.Update(userDirectory, urlCollectionId, url.Id, verifiedKeyId, true);
                                 
                                 int crawlCount = 1;
 
