@@ -21,8 +21,12 @@
         @if (query == null)
         {
     <div style="padding: 5px 5px 5px 5px;">
-        <h2>This is your search index.</h2>
-        <p>Bookmark this page.</p>
+        <h3>Information about your search index:</h3>
+        <p>
+        We're constantly crawling the web to to ensure that the URLs in user indices are updated. 
+        If you don't see all the content here that you expected, wait a couple of minutes and come back.
+        </p>
+        <p>Pro tip: bookmark this page, so that you won't forget how to find your search index.</p>
         <p>Manage URLs and update frequency by clicking <a style="color:white;" href="/options?queryId=@Context.Request.Query["queryId"]" title="Options">&#9776;</a>.</p>
         @if (expired)
         {
