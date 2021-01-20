@@ -14,19 +14,26 @@ namespace Sir.HttpServer.Controllers
         }
 
         [HttpGet("/addurl")]
-        public ActionResult AddUrl(string url, string scope, string returnUrl, string queryId)
+        public ActionResult AddUrl(string url, string[] urls, string scope, string returnUrl, string queryId)
         {
+            var urlList = urls.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => new Uri(s).ToString()).ToList();
+
             if (url is null)
             {
-                throw new ArgumentNullException(nameof(url));
+                var query = $"?urls={string.Join("&urls=", urlList.Select(s => Uri.EscapeDataString(s)))}&errorMessage=Cannot add empty URL.";
+
+                if (!string.IsNullOrWhiteSpace(queryId))
+                    query += $"&queryId={queryId}";
+
+                var retUri = new Uri(returnUrl + query, UriKind.Relative);
+
+                return Redirect(retUri.ToString());
             }
 
             if (returnUrl is null)
             {
-                throw new ArgumentNullException(nameof(returnUrl));
+                return BadRequest();
             }
-
-            var urlList = Request.Query["urls"].Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => new Uri(s).ToString()).ToList();
 
             Uri uri;
 
