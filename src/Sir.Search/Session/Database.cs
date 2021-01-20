@@ -428,7 +428,7 @@ namespace Sir.Search
                         _keys.Add(key, keys);
                     }
 
-                    LogInformation($"loaded key mappings into memory from directory {directory} in {timer.Elapsed}");
+                    LogDebug($"loaded key mappings into memory from directory {directory} in {timer.Elapsed}");
                 }
             }
         }
