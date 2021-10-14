@@ -70,6 +70,8 @@ p {
     margin-top: 15px;
     margin-bottom: 15px;
     font-size: 10pt;
+    padding: 5px;
+    background-color: #323232;
 }
 
 ul.document-list {
@@ -171,7 +173,7 @@ input[type="submit"].action-button {
     margin: 0px 0px 0px 0px;
     height: 30px;
     font-size: 9pt;
-    background-color: #383838;
+    background-color: #525252;
     color: white;
     vertical-align: middle;
 }
