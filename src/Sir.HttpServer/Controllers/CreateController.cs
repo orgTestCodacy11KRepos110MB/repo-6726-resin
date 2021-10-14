@@ -106,7 +106,7 @@ namespace Sir.HttpServer.Controllers
         {
             if (urls.Length == 0 || urls[0] == null)
             {
-                var queryString = $"?errorMessage=URL list is empty.";
+                var queryString = $"?errorMessage={StringUtil.Base64Encode("URL list is empty")}.";
                 var returnUri = new Uri(returnUrl + queryString, UriKind.Relative);
 
                 return Redirect(returnUri.ToString());

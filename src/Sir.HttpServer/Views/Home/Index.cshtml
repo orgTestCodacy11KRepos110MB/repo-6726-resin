@@ -17,7 +17,7 @@
         queryString = $"?{queryString}";
     }
 
-    var errorMessage = Context.Request.Query["errorMessage"].ToString();
+    var errorMessage = Sir.HttpServer.StringUtil.Base64Decode(Context.Request.Query["errorMessage"].ToString());
 }
 <div id="create-collection-form">
     <form action="/addurl" method="get">
@@ -38,9 +38,9 @@
             </label>
         </p>
         <div>
-            @if (errorMessage != null)
+            @if (!string.IsNullOrEmpty(errorMessage))
             {
-            <div><span style="background-color:orangered;font-size:10pt;">@errorMessage</span></div>
+            <div><span style="margin: 5px 5px 5px 5px;background-color:orangered;font-size:10pt;">@errorMessage</span></div>
             }
             <label>
                 <input type="text" placeholder="Enter URL here, e.g. https://mysite.com" id="siteurl" name="url" /><input type="submit" value="Add" name="add" id="add" />
