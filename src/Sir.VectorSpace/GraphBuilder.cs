@@ -254,16 +254,7 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void MergeDocIdsConcurrent(this VectorNode target, VectorNode source)
-        {
-            lock (target.Sync)
-            {
-                if (source.DocIds != null)
-                {
-                    target.DocIds.AddRange(source.DocIds);
-                }
-            }
-        }
+
 
         public static void Serialize(this VectorNode node, Stream stream)
         {

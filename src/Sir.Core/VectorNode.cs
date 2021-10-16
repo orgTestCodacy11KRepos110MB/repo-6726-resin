@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Sir.VectorSpace
+namespace Sir
 {
     /// <summary>
     /// Binary tree that consists of nodes that carry vectors as their payload. 
@@ -111,6 +111,17 @@ namespace Sir.VectorSpace
             Vector = vector;
         }
 
+        public static void MergeDocIdsConcurrent(VectorNode target, VectorNode source)
+        {
+            lock (target.Sync)
+            {
+                if (source.DocIds != null)
+                {
+                    target.DocIds.AddRange(source.DocIds);
+                }
+            }
+        }
+
         public void MergeOrAddConcurrent(
             VectorNode node,
             IModel model)
@@ -123,7 +134,7 @@ namespace Sir.VectorSpace
 
                 if (angle >= model.IdenticalAngle)
                 {
-                    cursor.MergeDocIdsConcurrent(node);
+                    MergeDocIdsConcurrent(cursor, node);
 
                     break;
                 }

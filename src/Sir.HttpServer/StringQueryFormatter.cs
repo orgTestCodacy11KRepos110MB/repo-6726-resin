@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Sir.VectorSpace;
+using Sir.Search;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Sir.Search
+namespace Sir.HttpServer
 {
     public class StringQueryFormatter : IQueryFormatter<string>
     {

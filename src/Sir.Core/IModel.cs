@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.VectorSpace
+namespace Sir
 {
     /// <summary>
     /// Vector space model.
