@@ -9,11 +9,11 @@ namespace Sir.HttpServer
 {
     public class StringQueryFormatter : IQueryFormatter<string>
     {
-        private readonly Database _sessionFactory;
+        private readonly Dispatcher _sessionFactory;
         private readonly ILogger _log;
         private readonly string _directory;
 
-        public StringQueryFormatter(string directory, Database sessionFactory, ILogger log)
+        public StringQueryFormatter(string directory, Dispatcher sessionFactory, ILogger log)
         {
             _sessionFactory = sessionFactory;
             _log = log;

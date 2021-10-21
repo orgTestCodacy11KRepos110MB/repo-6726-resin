@@ -13,13 +13,13 @@ namespace Sir.Search
     /// </summary>
     public class SearchSession : DocumentStreamSession, IDisposable, ISearchSession
     {
-        private readonly Database _sessionFactory;
+        private readonly Dispatcher _sessionFactory;
         private readonly IModel _model;
         private readonly ILogger _logger;
 
         public SearchSession(
             string directory, 
-            Database sessionFactory,
+            Dispatcher sessionFactory,
             IModel model,
             ILogger logger = null) : base(directory, sessionFactory)
         {

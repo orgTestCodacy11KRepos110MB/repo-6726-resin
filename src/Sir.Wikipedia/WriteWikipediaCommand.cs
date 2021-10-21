@@ -31,7 +31,7 @@ namespace Sir.Wikipedia
 
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest, "https://en.wikipedia.org/wiki/{0}");
 
-            using (var sessionFactory = new Database(logger))
+            using (var sessionFactory = new Dispatcher(logger))
             {
                 var debugger = new BatchDebugger(logger, sampleSize);
 

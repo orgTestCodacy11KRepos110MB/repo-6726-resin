@@ -11,14 +11,14 @@ namespace Sir.Search
     {
         private readonly string _directory;
         private readonly ulong _collectionId;
-        private readonly Database _sessionFactory;
+        private readonly Dispatcher _sessionFactory;
         private readonly ILogger _logger;
         private readonly IDictionary<(long keyId, string fileExtension), Stream> _streams;
 
         public WritableIndexStream(
             string directory,
             ulong collectionId, 
-            Database sessionFactory, 
+            Dispatcher sessionFactory, 
             ILogger logger = null)
         {
             _directory = directory;

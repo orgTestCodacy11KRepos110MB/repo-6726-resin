@@ -7,7 +7,7 @@ namespace Sir.VectorSpace
         /// <summary>
         /// Read document IDs into memory.
         /// </summary>
-        public static void Materialize(Query query, IDatabase sessionFactory)
+        public static void Materialize(Query query, IDispatcher sessionFactory)
         {
             Parallel.ForEach(query.AllTerms(), term =>
             {

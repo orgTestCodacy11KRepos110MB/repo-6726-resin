@@ -2,7 +2,7 @@
 
 namespace Sir
 {
-    public interface IDatabase
+    public interface IDispatcher
     {
         Stream CreateSeekableWritableStream(string directory, ulong collectionId, string fileExtension);
         Stream CreateSeekableWritableStream(string directory, ulong collectionId, long keyId, string fileExtension);

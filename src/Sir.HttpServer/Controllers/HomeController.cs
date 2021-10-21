@@ -7,7 +7,7 @@ namespace Sir.HttpServer.Controllers
     {
         private readonly IConfigurationProvider _config;
 
-        public HomeController(IConfigurationProvider config, Database sessionFactory) 
+        public HomeController(IConfigurationProvider config, Dispatcher sessionFactory) 
             : base(config, sessionFactory)
         {
             _config = config;

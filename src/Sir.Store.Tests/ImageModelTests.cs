@@ -14,7 +14,7 @@ namespace Sir.Tests
     {
         private ILoggerFactory _loggerFactory;
         private ILogger<ImageModelTests> _logger;
-        private Database _sessionFactory;
+        private Dispatcher _sessionFactory;
         private IImage[] _data;
         private string _directory = @"c:\temp\sir_tests";
 
@@ -77,7 +77,7 @@ namespace Sir.Tests
 
             _logger = _loggerFactory.CreateLogger<ImageModelTests>();
 
-            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
+            _sessionFactory = new Dispatcher(logger: _loggerFactory.CreateLogger<Dispatcher>());
 
             _data = new MnistReader(
                 @"C:\temp\mnist\t10k-images.idx3-ubyte",

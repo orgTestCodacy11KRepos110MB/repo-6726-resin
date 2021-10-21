@@ -16,11 +16,11 @@ namespace Sir.Documents
         private readonly ValueIndexWriter _keyIx;
         private readonly DocIndexWriter _docIx;
         private readonly ulong _collectionId;
-        private readonly IDatabase _database;
+        private readonly IDispatcher _database;
         private readonly string _directory;
         private readonly object _keyLock = new object();
         
-        public DocumentWriter(string directory, ulong collectionId, IDatabase database, bool append = true)
+        public DocumentWriter(string directory, ulong collectionId, IDispatcher database, bool append = true)
         {
             var valueStream = append ? database.CreateAppendStream(directory, collectionId, "val") : database.CreateSeekableWritableStream(directory, collectionId, "val");
             var keyStream = database.CreateAppendStream(directory, collectionId, "key");

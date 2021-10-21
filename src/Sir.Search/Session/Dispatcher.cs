@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 namespace Sir.Search
 {
     /// <summary>
-    /// Multi-directory stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating collections.
+    /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating collections.
     /// </summary>
-    public class Database : IDisposable, IDatabase
+    public class Dispatcher : IDisposable, IDispatcher
     {
         private IDictionary<ulong, IDictionary<ulong, long>> _keys;
         private ILogger _logger;
         private readonly object _syncKeys = new object();
 
-        public Database(ILogger logger = null)
+        public Dispatcher(ILogger logger = null)
         {
             _logger = logger;
             _keys = new Dictionary<ulong, IDictionary<ulong, long>>();

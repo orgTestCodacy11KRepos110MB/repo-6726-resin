@@ -9,10 +9,10 @@ namespace Sir.Search
     public class DocumentStreamSession : IDisposable
     {
         private readonly string _directory;
-        private readonly Database _database;
+        private readonly Dispatcher _database;
         private readonly IDictionary<ulong, DocumentReader> _documentReaders;
 
-        public DocumentStreamSession(string directory, Database database) 
+        public DocumentStreamSession(string directory, Dispatcher database) 
         {
             _directory = directory;
             _database = database;
