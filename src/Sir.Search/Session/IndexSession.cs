@@ -44,13 +44,10 @@ namespace Sir.Search
 
             if (!_index.TryGetValue(tree.KeyId.Value, out column))
             {
-                lock (_index)
+                if (!_index.TryGetValue(tree.KeyId.Value, out column))
                 {
-                    if (!_index.TryGetValue(tree.KeyId.Value, out column))
-                    {
-                        column = new VectorNode();
-                        _index.Add(tree.KeyId.Value, column);
-                    }
+                    column = new VectorNode();
+                    _index.Add(tree.KeyId.Value, column);
                 }
             }
 

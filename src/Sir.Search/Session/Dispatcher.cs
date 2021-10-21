@@ -173,17 +173,17 @@ namespace Sir.Search
 
                         using (var indexSession = new IndexSession<T>(model, model))
                         {
-                            Parallel.ForEach(payload, document =>
+                            foreach (var document in payload)
                             {
                                 foreach (var node in document.Nodes)
                                 {
                                     indexSession.Put(node);
                                 }
 
-                                Interlocked.Increment(ref count);
+                                count++;
 
                                 debugger.Step(indexSession);
-                            });
+                            }
 
                             writeQueue.Enqueue(indexSession);
                         }
