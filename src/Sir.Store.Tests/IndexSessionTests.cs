@@ -11,6 +11,7 @@ namespace Sir.Tests
 {
     public class IndexSessionTests
     {
+        private ILoggerFactory _loggerFactory;
         private Dispatcher _sessionFactory;
         private string _directory = @"c:\temp\sir_tests";
 
@@ -90,7 +91,7 @@ namespace Sir.Tests
 
             var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
 
-            using (var searchSession = new SearchSession(_directory, _sessionFactory, model))
+            using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
             {
                 Assert.DoesNotThrow(() =>
                 {
@@ -155,7 +156,7 @@ namespace Sir.Tests
 
             var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
 
-            using (var searchSession = new SearchSession(_directory, _sessionFactory, model))
+            using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
             {
                 Assert.DoesNotThrow(() =>
                 {
@@ -184,7 +185,7 @@ namespace Sir.Tests
         [SetUp]
         public void Setup()
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
+            _loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
@@ -192,7 +193,7 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _sessionFactory = new Dispatcher(loggerFactory.CreateLogger<Dispatcher>());
+            _sessionFactory = new Dispatcher(logger: _loggerFactory.CreateLogger<Dispatcher>());
         }
 
         [TearDown]
