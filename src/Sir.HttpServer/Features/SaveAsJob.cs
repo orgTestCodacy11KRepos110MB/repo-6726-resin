@@ -85,7 +85,7 @@ namespace Sir.HttpServer.Features
                     }
                 }
 
-                _sessionFactory.SaveAs(
+                _sessionFactory.StoreDataAndPersistIndex(
                     _directory,
                     targetCollectionId,
                     documents,

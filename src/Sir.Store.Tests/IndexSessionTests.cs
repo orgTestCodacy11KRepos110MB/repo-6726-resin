@@ -29,7 +29,7 @@ namespace Sir.Tests
                     indexSession.Put(i, 0, _data[i]);
                 }
 
-                tree = indexSession.GetInMemoryIndex()[0];
+                tree = indexSession.InMemoryIndices()[0];
             }
 
             Debug.WriteLine(PathFinder.Visualize(tree));
@@ -83,7 +83,7 @@ namespace Sir.Tests
                         
                         writeSession.Put(doc);
                         indexSession.Put(doc.Id, keyId, data);
-                        stream.Write(indexSession.GetInMemoryIndex());
+                        stream.Write(indexSession.InMemoryIndices());
                     }
                 }
             }
@@ -141,7 +141,7 @@ namespace Sir.Tests
                     indexSession.Put(doc.Id, keyId, data);
                 }
 
-                var indices = indexSession.GetInMemoryIndex();
+                var indices = indexSession.InMemoryIndices();
 
                 index = indices[keyId];
 

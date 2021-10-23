@@ -203,7 +203,7 @@ namespace Sir.HttpServer.Features
                 {
                     var time = Stopwatch.StartNew();
 
-                    _sessionFactory.StoreIndexAndWrite(_directory, wetCollectionId, writePayload, _model, reportSize: 1000);
+                    _sessionFactory.StoreDataAndPersistIndex(_directory, wetCollectionId, writePayload, _model, reportSize: 1000);
 
                     Status["index"] = 100;
 

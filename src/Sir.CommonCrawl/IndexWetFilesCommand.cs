@@ -23,7 +23,7 @@ namespace Sir.CommonCrawl
             {
                 sessionFactory.Truncate(dataDirectory, collectionId);
 
-                sessionFactory.StoreIndexAndWrite(
+                sessionFactory.StoreDataAndPersistIndex(
                     dataDirectory,
                     collectionId,
                     ReadWetFile(fileName)

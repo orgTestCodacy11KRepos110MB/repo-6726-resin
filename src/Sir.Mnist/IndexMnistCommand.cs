@@ -49,7 +49,7 @@ namespace Sir.Mnist
                         debugger.Step(indexSession);
                     }
 
-                    var indices = indexSession.GetInMemoryIndex();
+                    var indices = indexSession.InMemoryIndices();
 
                     tree = indices[imageIndexId];
 

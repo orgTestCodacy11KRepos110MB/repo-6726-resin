@@ -62,7 +62,7 @@ namespace Sir.Search
             return new IndexInfo(GetGraphInfo());
         }
 
-        public IDictionary<long, VectorNode> GetInMemoryIndex()
+        public IDictionary<long, VectorNode> InMemoryIndices()
         {
             return _index;
         }

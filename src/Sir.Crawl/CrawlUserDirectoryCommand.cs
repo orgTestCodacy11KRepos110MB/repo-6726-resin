@@ -86,7 +86,7 @@ namespace Sir.Crawl
 
                             if (result != null)
                             {
-                                database.StoreIndexAndWrite(dataDirectory, collectionId, result.Document, _model);
+                                database.StoreDataAndPersistIndex(dataDirectory, collectionId, result.Document, _model);
                                 
                                 int crawlCount = 1;
 
@@ -111,7 +111,7 @@ namespace Sir.Crawl
 
                                     if (r != null)
                                     {
-                                        database.StoreIndexAndWrite(dataDirectory, collectionId, r.Document, _model);
+                                        database.StoreDataAndPersistIndex(dataDirectory, collectionId, r.Document, _model);
                                     }
 
                                     crawlCount++;

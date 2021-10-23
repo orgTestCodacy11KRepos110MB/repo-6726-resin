@@ -41,7 +41,7 @@ namespace Sir.CommonCrawl
             {
                 using (var queue = new ProducerConsumerQueue<Document>(document =>
                 {
-                    database.StoreAndIndex(document, writeSession, indexSession);
+                    database.StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
                 }))
                 {
                     foreach (var document in ReadWatFile(fileName, refFileName).Select(dic =>
@@ -56,7 +56,7 @@ namespace Sir.CommonCrawl
 
                 using (var stream = new WritableIndexStream(dataDirectory, collectionId, database, logger: logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndex());
+                    stream.Write(indexSession.InMemoryIndices());
                 }
             }
 

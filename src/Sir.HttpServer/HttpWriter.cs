@@ -27,7 +27,7 @@ namespace Sir.HttpServer
             var documents = Deserialize<IEnumerable<Document>>(request.Body);
             var collectionId = request.Query["collection"].First().ToHash();
 
-            _sessionFactory.StoreIndexAndWrite(
+            _sessionFactory.StoreDataAndPersistIndex(
                 _config.Get("data_dir"),
                 collectionId,
                 documents,

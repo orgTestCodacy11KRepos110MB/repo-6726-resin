@@ -26,7 +26,7 @@ namespace Sir.Search
             _logger = logger;
             _keys = new Dictionary<ulong, IDictionary<ulong, long>>();
 
-            LogDebug($"database initiated");
+            LogInformation($"database initiated");
         }
 
         public IEnumerable<Document> Select(string directory, ulong collectionId, HashSet<string> select, int skip = 0, int take = 0)
@@ -146,6 +146,8 @@ namespace Sir.Search
         {
             var collectionId = collection.ToHash();
 
+            LogDebug($"optimizing collection {collectionId}");
+
             using (var debugger = new IndexDebugger(_logger, reportFrequency))
             using (var documents = new DocumentStreamSession(directory, this))
             {
@@ -153,7 +155,7 @@ namespace Sir.Search
                 {
                     using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                     {
-                        stream.Write(indexSession.GetInMemoryIndex());
+                        stream.Write(indexSession.InMemoryIndices());
                     }
                 }))
                 {
@@ -197,20 +199,10 @@ namespace Sir.Search
                 }
             }
 
-            LogInformation($"optimized collection {collection}");
+            LogDebug($"optimized collection {collection}");
         }
 
-        public void SaveAs<T>(
-            string targetDirectory,
-            ulong targetCollectionId, 
-            IEnumerable<Document> documents,
-            IModel<T> model,
-            int reportSize = 1000)
-        {
-            StoreIndexAndWrite(targetDirectory, targetCollectionId, documents, model, reportSize);
-        }
-
-        public void StoreAndIndex<T>(IEnumerable<Document> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000)
+        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<Document> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000)
         {
             var debugger = new IndexDebugger(_logger, reportSize);
 
@@ -230,7 +222,7 @@ namespace Sir.Search
             }
         }
 
-        public void StoreAndIndex<T>(
+        public void StoreDataAndBuildInMemoryIndex<T>(
             Document document, 
             WriteSession writeSession, 
             IndexSession<T> indexSession)
@@ -246,22 +238,22 @@ namespace Sir.Search
             }
         }
 
-        public void IndexAndWrite<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, int reportSize = 1000)
+        public void PersistIndex<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, int reportSize = 1000)
         {
             using (var indexSession = new IndexSession<T>(model, model))
             {
-                Index(collectionId, job, model, indexSession);
+                BuildIndex(collectionId, job, model, indexSession);
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndex());
+                    stream.Write(indexSession.InMemoryIndices());
                 }
             }
         }
 
-        public void Index<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IndexSession<T> indexSession)
+        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IndexSession<T> indexSession)
         {
-            LogInformation($"indexing collection {collectionId}");
+            LogDebug($"building index for collection {collectionId}");
 
             var time = Stopwatch.StartNew();
 
@@ -290,33 +282,33 @@ namespace Sir.Search
                 }
             }
 
-            LogInformation($"processed indexing job (collection {collectionId}) in {time.Elapsed}");
+            LogDebug($"built index (collection {collectionId}) in {time.Elapsed}");
         }
 
-        public void StoreIndexAndWrite<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, int reportSize = 1000)
+        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
             using (var indexSession = new IndexSession<T>(model, model))
             {
-                StoreAndIndex(job, writeSession, indexSession, reportSize);
+                StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndex());
+                    stream.Write(indexSession.InMemoryIndices());
                 }
             }
         }
 
-        public void StoreIndexAndWrite<T>(string directory, ulong collectionId, Document document, IModel<T> model)
+        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
             using (var indexSession = new IndexSession<T>(model, model))
             {
-                StoreAndIndex(document, writeSession, indexSession);
+                StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndex());
+                    stream.Write(indexSession.InMemoryIndices());
                 }
             }
         }
@@ -525,9 +517,7 @@ namespace Sir.Search
 
             if (!File.Exists(fileName))
             {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                {
-                }
+                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
             }
 
             return new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
@@ -539,9 +529,7 @@ namespace Sir.Search
 
             if (!File.Exists(fileName))
             {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                {
-                }
+                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
             }
 
             return new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
@@ -553,9 +541,7 @@ namespace Sir.Search
 
             if (!File.Exists(fileName))
             {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                {
-                }
+                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
             }
 
             return new FileStream(fileName, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
@@ -567,9 +553,7 @@ namespace Sir.Search
 
             if (!File.Exists(fileName))
             {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                {
-                }
+                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
             }
 
             return new FileStream(fileName, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
