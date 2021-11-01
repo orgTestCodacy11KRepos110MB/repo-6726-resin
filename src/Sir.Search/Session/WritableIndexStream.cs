@@ -36,7 +36,7 @@ namespace Sir.Search
             }
         }
 
-        public void Write(IDictionary<long, VectorNode> index)
+        public void Persist(IDictionary<long, VectorNode> index)
         {
             foreach (var column in index)
             {

@@ -14,7 +14,7 @@ namespace Sir.Documents
         
         public DocumentWriter(string directory, ulong collectionId, IStreamDispatcher database, bool append = true) : base(directory, collectionId, database, append)
         {
-            var docStream = database.CreateAppendStream(directory, collectionId, "docs");
+            var docStream = append ? database.CreateAppendStream(directory, collectionId, "docs") : database.CreateSeekableWritableStream(directory, collectionId, "docs");
             var docIndexStream = database.CreateAppendStream(directory, collectionId, "dix");
 
             _docs = new DocMapWriter(docStream);
@@ -29,6 +29,11 @@ namespace Sir.Documents
         public (long offset, int length) PutDocumentMap(IList<(long keyId, long valId)> doc)
         {
             return _docs.Put(doc);
+        }
+
+        public void UpdateDocumentMap(long offsetOfMap, int indexInMap, long keyId, long valId)
+        {
+            _docs.Overwrite(offsetOfMap, indexInMap, keyId, valId);
         }
 
         public void PutDocumentAddress(long docId, long offset, int len)

@@ -112,8 +112,11 @@ namespace Sir.KeyValue
             return _valIx.Put(offset, len, dataType);
         }
 
-        public void UpdateValue(long offset, object value)
+        public void OverwriteFixedLengthValue(long offset, object value, Type type)
         {
+            if (type == typeof(string) || type == typeof(byte[]))
+                throw new InvalidOperationException();
+
             _vals.Stream.Seek(offset, System.IO.SeekOrigin.Begin);
             _vals.Put(value);
         }

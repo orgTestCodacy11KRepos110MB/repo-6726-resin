@@ -18,23 +18,35 @@ namespace Sir.Search
         {
             var docAddress = _reader.GetDocumentAddress(docId);
             var docMap = _reader.GetDocumentMap(docAddress.offset, docAddress.length);
-            long valueId = -1;
+            (long keyId, long valId) mapping = (-1, -1);
+            int mappingIx = 0;
 
-            foreach (var field in docMap)
+            for (;mappingIx < docMap.Count; mappingIx++)
             {
-                if (field.keyId == keyId)
+                var fieldMapping = docMap[mappingIx];
+
+                if (fieldMapping.keyId == keyId)
                 {
-                    valueId = field.valId;
+                    mapping = fieldMapping;
                     break;
                 }
             }
 
-            if (valueId == -1)
+            if (mapping.valId == -1)
                 throw new Exception($"There was no field with keyId {keyId} in document {docId}.");
+            
+            if (value is string || value is byte[])
+            {
+                var valueInfo = _writer.PutValue(mapping.keyId, value, out _);
 
-            var valueAddress = _reader.GetAddressOfValue(valueId);
+                _writer.UpdateDocumentMap(docAddress.offset, mappingIx, mapping.keyId, valueInfo.valueId);
+            }
+            else
+            {
+                var valueAddress = _reader.GetAddressOfValue(mapping.valId);
 
-            _writer.UpdateValue(valueAddress.offset, value);
+                _writer.OverwriteFixedLengthValue(valueAddress.offset, value, value.GetType());
+            }
         }
 
         public virtual void Dispose()

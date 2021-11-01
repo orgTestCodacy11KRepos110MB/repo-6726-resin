@@ -5,7 +5,7 @@ using System.IO;
 namespace Sir.Documents
 {
     /// <summary>
-    /// Write document maps (key_id/val_id) to a stream.
+    /// Writes document maps (key_id/val_id) to a bitmap.
     /// </summary>
     public class DocMapWriter : IDisposable
     {
@@ -35,6 +35,15 @@ namespace Sir.Documents
             }
 
             return (off, sizeof(long) * 2 * doc.Count);
+        }
+
+        public void Overwrite(long offsetOfMap, int indexInMap, long keyId, long valId)
+        {
+            // seek to the value part of the key/value block that is referenced by indexInMap
+            _stream.Seek(offsetOfMap + (indexInMap*(sizeof(long)*2)) + sizeof(long), SeekOrigin.Begin);
+
+            // overwrite
+            _stream.Write(BitConverter.GetBytes(valId));
         }
 
         public void Dispose()

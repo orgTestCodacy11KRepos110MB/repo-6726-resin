@@ -21,6 +21,13 @@ namespace Sir.KeyValue
             _stream.Flush();
         }
 
+        /// <summary>
+        /// Store address of data block.
+        /// </summary>
+        /// <param name="offset">Offset of data</param>
+        /// <param name="len">Length of data</param>
+        /// <param name="dataType">Data type</param>
+        /// <returns>Record identifier</returns>
         public long Put(long offset, int len, byte dataType)
         {
             var position = _stream.Position;

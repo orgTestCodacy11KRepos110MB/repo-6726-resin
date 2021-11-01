@@ -152,7 +152,7 @@ namespace Sir.Search
                 {
                     using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                     {
-                        stream.Write(indexSession.InMemoryIndices());
+                        stream.Persist(indexSession.InMemoryIndices());
                     }
                 }))
                 {
@@ -243,7 +243,7 @@ namespace Sir.Search
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.InMemoryIndices());
+                    stream.Persist(indexSession.InMemoryIndices());
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace Sir.Search
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.InMemoryIndices());
+                    stream.Persist(indexSession.InMemoryIndices());
                 }
             }
         }
@@ -305,7 +305,7 @@ namespace Sir.Search
 
                 using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.InMemoryIndices());
+                    stream.Persist(indexSession.InMemoryIndices());
                 }
             }
         }

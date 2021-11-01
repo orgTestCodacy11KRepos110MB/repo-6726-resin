@@ -84,7 +84,7 @@ namespace Sir.Tests
                         
                         writeSession.Put(doc);
                         indexSession.Put(doc.Id, keyId, data);
-                        stream.Write(indexSession.InMemoryIndices());
+                        stream.Persist(indexSession.InMemoryIndices());
                     }
                 }
             }
@@ -148,7 +148,7 @@ namespace Sir.Tests
 
                 using (var stream = new WritableIndexStream(_directory, collectionId, _sessionFactory))
                 {
-                    stream.Write(indices);
+                    stream.Persist(indices);
                 }
             }
 
