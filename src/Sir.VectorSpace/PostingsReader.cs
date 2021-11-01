@@ -11,11 +11,11 @@ namespace Sir.VectorSpace
     /// </summary>
     public class PostingsReader : IDisposable
     {
-        private readonly IDispatcher _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly IDictionary<(ulong collectionId, long keyId), Stream> _streams;
         private readonly string _directory;
 
-        public PostingsReader(string directory, IDispatcher sessionFactory)
+        public PostingsReader(string directory, IStreamDispatcher sessionFactory)
         {
             _directory = directory;
             _sessionFactory = sessionFactory;

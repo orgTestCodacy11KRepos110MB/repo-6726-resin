@@ -9,7 +9,7 @@ namespace Sir.HttpServer.Controllers
 {
     public class OptionsController : UIController
     {
-        public OptionsController(IConfigurationProvider config, Dispatcher database) : base(config, database)
+        public OptionsController(IConfigurationProvider config, Database database) : base(config, database)
         {
         }
 

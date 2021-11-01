@@ -11,9 +11,9 @@ namespace Sir.HttpServer.Controllers
         private IConfigurationProvider config;
 
         protected IConfigurationProvider Config { get; }
-        protected Dispatcher Database { get; }
+        protected Database Database { get; }
 
-        public UIController(IConfigurationProvider config, Dispatcher database)
+        public UIController(IConfigurationProvider config, Database database)
         {
             Config = config;
             Database = database;

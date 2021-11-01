@@ -8,7 +8,7 @@ namespace Sir.Search
         private readonly DocumentReader _reader;
         private readonly DocumentWriter _writer;
 
-        public UpdateSession(string directory, ulong collectionId, Dispatcher sessionFactory) 
+        public UpdateSession(string directory, ulong collectionId, Database sessionFactory) 
         {
             _reader = new DocumentReader(directory, collectionId, sessionFactory);
             _writer = new DocumentWriter(directory, collectionId, sessionFactory, append:false);

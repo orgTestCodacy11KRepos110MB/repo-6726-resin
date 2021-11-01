@@ -111,7 +111,7 @@ namespace Sir.Cmd
             var pageSize = int.Parse(args["pageSize"]);
             var fields = new HashSet<string>(args["fields"].Split(','));
 
-            using (var sessionFactory = new Dispatcher(logger))
+            using (var sessionFactory = new Database(logger))
             {
                 sessionFactory.Optimize(
                     dataDirectory,
@@ -145,7 +145,7 @@ namespace Sir.Cmd
         {
             var collectionId = collection.ToHash();
 
-            using (var sessionFactory = new Dispatcher(log))
+            using (var sessionFactory = new Database(log))
             {
                 sessionFactory.Truncate(dataDirectory, collectionId);
             }
@@ -155,7 +155,7 @@ namespace Sir.Cmd
         {
             var collectionId = collection.ToHash();
 
-            using (var sessionFactory = new Dispatcher(log))
+            using (var sessionFactory = new Database(log))
             {
                 sessionFactory.TruncateIndex(dataDirectory, collectionId);
             }
@@ -163,7 +163,7 @@ namespace Sir.Cmd
 
         private static void Rename(string dataDirectory, string currentCollectionName, string newCollectionName, ILogger log)
         {
-            using (var sessionFactory = new Dispatcher(log))
+            using (var sessionFactory = new Database(log))
             {
                 sessionFactory.Rename(dataDirectory, currentCollectionName.ToHash(), newCollectionName.ToHash());
             }
@@ -192,7 +192,7 @@ namespace Sir.Cmd
             var collectionId = collection.ToHash();
             var model = new BagOfCharsModel();
 
-            using (var sessionFactory = new Dispatcher(logger))
+            using (var sessionFactory = new Database(logger))
             using (var documents = new DocumentStreamSession(dataDirectory, sessionFactory))
             using (var documentReader = new DocumentReader(dataDirectory, collectionId, sessionFactory))
             {

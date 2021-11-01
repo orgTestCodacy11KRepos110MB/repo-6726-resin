@@ -12,7 +12,7 @@ namespace Sir.Tests
     public class IndexSessionTests
     {
         private ILoggerFactory _loggerFactory;
-        private Dispatcher _sessionFactory;
+        private Database _sessionFactory;
         private string _directory = @"c:\temp\sir_tests";
 
         private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
@@ -193,7 +193,7 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _sessionFactory = new Dispatcher(logger: _loggerFactory.CreateLogger<Dispatcher>());
+            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
         }
 
         [TearDown]

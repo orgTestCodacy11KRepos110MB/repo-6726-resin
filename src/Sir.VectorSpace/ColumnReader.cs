@@ -11,7 +11,7 @@ namespace Sir.VectorSpace
     /// </summary>
     public class ColumnReader : IColumnReader
     {
-        private readonly IDispatcher _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly ILogger _logger;
         private readonly Stream _vectorFile;
         private readonly Stream _ixFile;
@@ -21,7 +21,7 @@ namespace Sir.VectorSpace
             IList<(long offset, long length)> pages,
             Stream indexStream,
             Stream vectorStream,
-            IDispatcher sessionFactory,
+            IStreamDispatcher sessionFactory,
             ILogger logger)
         {
             _sessionFactory = sessionFactory;

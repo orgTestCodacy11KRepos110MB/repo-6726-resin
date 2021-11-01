@@ -1,27 +1,24 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sir.Core;
 using Sir.Documents;
-using Sir.VectorSpace;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Sir.Search
 {
     /// <summary>
     /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating collections.
     /// </summary>
-    public class Dispatcher : IDisposable, IDispatcher
+    public class Database : IDisposable, IStreamDispatcher
     {
         private IDictionary<ulong, IDictionary<ulong, long>> _keys;
         private ILogger _logger;
         private readonly object _syncKeys = new object();
 
-        public Dispatcher(ILogger logger = null)
+        public Database(ILogger logger = null)
         {
             _logger = logger;
             _keys = new Dictionary<ulong, IDictionary<ulong, long>>();

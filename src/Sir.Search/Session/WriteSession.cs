@@ -66,7 +66,7 @@ namespace Sir.Search
         private void Write(long keyId, object val, IList<(long, long)> docMap)
         {
             // store value
-            var kvmap = _streamWriter.Put(keyId, val, out _);
+            var kvmap = _streamWriter.PutValue(keyId, val, out _);
 
             // store refs to k/v pair
             docMap.Add(kvmap);
