@@ -44,7 +44,7 @@ namespace Sir.Search
                 var vectorStream = GetOrCreateAppendStream(column.Key, "vec");
                 var postingsStream = GetOrCreateAppendStream(column.Key, "pos");
 
-                using (var columnWriter = new ColumnWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
+                using (var columnWriter = new ColumnarIndexWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
                 using (var pageIndexWriter = new PageIndexWriter(GetOrCreateAppendStream(column.Key, "ixtp"), keepStreamOpen: true))
                 {
                     var size = columnWriter.CreatePage(column.Value, vectorStream, postingsStream, pageIndexWriter);

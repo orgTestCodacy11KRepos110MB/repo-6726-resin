@@ -59,7 +59,7 @@ namespace Sir.Tests
             using (var vectorStream = new MemoryStream())
             using (var pageStream = new MemoryStream())
             {
-                using (var writer = new ColumnWriter(indexStream, keepStreamOpen:true))
+                using (var writer = new ColumnarIndexWriter(indexStream, keepStreamOpen:true))
                 {
                     writer.CreatePage(tree, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen:true));
                 }

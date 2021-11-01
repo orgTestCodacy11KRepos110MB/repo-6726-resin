@@ -291,8 +291,8 @@ namespace Sir.VectorSpace
         /// <summary>
         /// Persist tree to disk.
         /// </summary>
-        /// <param name="node">Tree to perist.</param>
-        /// <param name="indexStream">stream to perist tree into</param>
+        /// <param name="node">Tree to persist.</param>
+        /// <param name="indexStream">stream to persist tree into</param>
         /// <param name="vectorStream">stream to persist vectors in</param>
         /// <param name="postingsStream">optional stream to persist any posting references into</param>
         /// <returns></returns>
@@ -338,23 +338,19 @@ namespace Sir.VectorSpace
         {
             node.PostingsOffset = postingsStream.Position;
 
-            SerializeHeaderAndPayload(node.DocIds, node.DocIds.Count, postingsStream);
+            SerializeHeaderAndPostingsPayload(node.DocIds, node.DocIds.Count, postingsStream);
         }
 
-        public static void SerializeHeaderAndPayload(IEnumerable<long> items, int itemCount, Stream stream)
+        public static void SerializeHeaderAndPostingsPayload(IList<long> items, int itemCount, Stream stream)
         {
-            var payload = new long[itemCount + 1];
+            if (items.Count == 0) throw new ArgumentException("can't be empty", nameof(items));
 
-            payload[0] = itemCount;
-
-            var index = 1;
+            stream.Write(BitConverter.GetBytes((long)itemCount));
 
             foreach (var item in items)
             {
-                payload[index++] = item;
+                stream.Write(BitConverter.GetBytes(item));
             }
-
-            stream.Write(MemoryMarshal.Cast<long, byte>(payload));
         }
     }
 }

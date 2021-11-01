@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace Sir.VectorSpace
 {
     /// <summary>
-    /// Read (reduce) postings.
+    /// Read postings.
     /// </summary>
     public class PostingsReader : IDisposable
     {
