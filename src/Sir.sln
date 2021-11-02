@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{
 		..\push-to-nuget.bat = ..\push-to-nuget.bat
 		..\README.md = ..\README.md
 		..\sir.bat = ..\sir.bat
+		todo.txt = todo.txt
 		..\USER-GUIDE.md = ..\USER-GUIDE.md
 	EndProjectSection
 EndProject
@@ -43,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Mnist", "Sir.Mnist\Sir.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Wikipedia", "Sir.Wikipedia\Sir.Wikipedia.csproj", "{6F3C960C-7652-430C-A253-081E1506BA81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sir.Crawl", "Sir.Crawl\Sir.Crawl.csproj", "{C529285B-07EC-4DA2-A6DC-1710DAE286FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Crawl", "Sir.Crawl\Sir.Crawl.csproj", "{C529285B-07EC-4DA2-A6DC-1710DAE286FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
