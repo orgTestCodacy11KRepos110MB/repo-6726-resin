@@ -16,11 +16,11 @@ namespace Sir.Search
             column.MergeOrAddSupervised(node, this);
         }
 
-        public IEnumerable<IVector> Tokenize(IImage data)
+        public IEnumerable<ISerializableVector> Tokenize(IImage data)
         {
             var pixels = data.Pixels.Select(x => Convert.ToSingle(x));
 
-            yield return new IndexedVector(pixels, data.Label);
+            yield return new SerializableVector(pixels, data.Label);
         }
     }
 }

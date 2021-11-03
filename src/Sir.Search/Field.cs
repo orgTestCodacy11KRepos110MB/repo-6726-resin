@@ -8,14 +8,14 @@ namespace Sir.Search
     [DebuggerDisplay("{Name}")]
     public class Field
     {
-        private IEnumerable<IVector> _tokens;
+        private IEnumerable<ISerializableVector> _tokens;
 
         public VectorNode Tree { get; private set; }
         public long KeyId { get; set; }
         public long DocumentId { get; set; }
         public string Name { get; }
         public object Value { get; set; }
-        public IEnumerable<IVector> Tokens { get { return _tokens; } }
+        public IEnumerable<ISerializableVector> Tokens { get { return _tokens; } }
 
         public Field(string name, object value, long keyId = -1, long documentId = -1)
         {
@@ -28,7 +28,7 @@ namespace Sir.Search
             DocumentId = documentId;
         }
 
-        private IEnumerable<IVector> GetTokens()
+        private IEnumerable<ISerializableVector> GetTokens()
         {
             foreach (var node in PathFinder.All(Tree))
                 yield return node.Vector;

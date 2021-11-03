@@ -22,7 +22,7 @@ namespace Sir.KeyValue
                 _stream.Dispose();
         }
 
-        public IEnumerable<IVector> GetVectors<T>(long offset, int len, byte dataType, Func<T, IEnumerable<IVector>> tokenizer)
+        public IEnumerable<ISerializableVector> GetVectors<T>(long offset, int len, byte dataType, Func<T, IEnumerable<ISerializableVector>> tokenizer)
         {
             int read;
             Span<byte> buf = new byte[len];

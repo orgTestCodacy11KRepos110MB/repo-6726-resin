@@ -1,6 +1,12 @@
+big
+----
 memory mapping
 update index
 refactor indexing (one word occurs in one page only)
 async IO (for scalability)
 indexing of types other than string
 enable combining types in a document/model
+
+small
+-----
+make loggers non-mandatory ctor params

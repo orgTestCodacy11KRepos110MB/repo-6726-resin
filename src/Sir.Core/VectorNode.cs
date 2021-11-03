@@ -22,7 +22,7 @@ namespace Sir
         public long ComponentCount { get; set; }
         public long VectorOffset { get; set; }
         public long PostingsOffset { get; set; }
-        public IVector Vector { get; set; }
+        public ISerializableVector Vector { get; set; }
 
         public object Sync { get; } = new object();
 
@@ -74,7 +74,7 @@ namespace Sir
             VectorOffset = -1;
         }
 
-        public VectorNode(IVector vector = null, long docId = -1, long postingsOffset = -1, long? keyId = null, List<long> docIds = null)
+        public VectorNode(ISerializableVector vector = null, long docId = -1, long postingsOffset = -1, long? keyId = null, List<long> docIds = null)
         {
             Vector = vector;
             ComponentCount = vector == null ? 0 : vector.ComponentCount;
@@ -101,7 +101,7 @@ namespace Sir
             }
         }
 
-        public VectorNode(long postingsOffset, long vecOffset, long terminator, long weight, IVector vector)
+        public VectorNode(long postingsOffset, long vecOffset, long terminator, long weight, ISerializableVector vector)
         {
             PostingsOffset = postingsOffset;
             VectorOffset = vecOffset;

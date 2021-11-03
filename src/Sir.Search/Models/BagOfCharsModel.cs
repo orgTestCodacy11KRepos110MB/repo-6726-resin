@@ -15,7 +15,7 @@ namespace Sir.Search
             column.MergeOrAddConcurrent(node, this);
         }
 
-        public IEnumerable<IVector> Tokenize(string data)
+        public IEnumerable<ISerializableVector> Tokenize(string data)
         {
             ReadOnlyMemory<char> source = data.AsMemory();
 
@@ -39,7 +39,7 @@ namespace Sir.Search
                         {
                             var len = index - offset;
 
-                            var vector = new IndexedVector(
+                            var vector = new SerializableVector(
                                 embedding,
                                 NumOfDimensions,
                                 new string(source.Span.Slice(offset, len)));
@@ -56,13 +56,30 @@ namespace Sir.Search
                 {
                     var len = index - offset;
 
-                    var vector = new IndexedVector(
+                    var vector = new SerializableVector(
                                 embedding,
                                 NumOfDimensions,
                                 new string(source.Span.Slice(offset, len)));
 
                     yield return vector;
                 }
+            }
+        }
+    }
+
+    public static class TokenizeOperations
+    {
+        public static void AddOrAppendToComponent(this SortedList<int, float> vec, int key)
+        {
+            float v;
+
+            if (vec.TryGetValue(key, out v))
+            {
+                vec[key] = v + 1;
+            }
+            else
+            {
+                vec.Add(key, 1);
             }
         }
     }
@@ -86,7 +103,7 @@ namespace Sir.Search
             column.Build(node, this);
         }
 
-        public IEnumerable<IVector> Tokenize(string data)
+        public IEnumerable<ISerializableVector> Tokenize(string data)
         {
             return _wordTokenizer.Tokenize(data);
         }
@@ -110,16 +127,16 @@ namespace Sir.Search
                 column.MergeOrAdd(node, this);
             }
 
-            public IEnumerable<IVector> Tokenize(string data)
+            public IEnumerable<ISerializableVector> Tokenize(string data)
             {
-                var tokens = (IList<IVector>)_wordTokenizer.Tokenize(data);
+                var tokens = (IList<ISerializableVector>)_wordTokenizer.Tokenize(data);
 
                 for (int i = 0; i < tokens.Count; i++)
                 {
                     var context0 = i - 1;
                     var context1 = i + 1;
                     var token = tokens[i];
-                    var vector = new IndexedVector(NumOfDimensions, token.Label);
+                    var vector = new SerializableVector(NumOfDimensions, token.Label);
 
                     if (context0 >= 0)
                     {

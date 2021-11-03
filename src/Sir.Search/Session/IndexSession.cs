@@ -26,7 +26,7 @@ namespace Sir.Search
             Put(docId, keyId, tokens);
         }
 
-        public void Put(long docId, long keyId, IEnumerable<IVector> tokens)
+        public void Put(long docId, long keyId, IEnumerable<ISerializableVector> tokens)
         {
             var tree = new VectorNode(keyId: keyId);
 

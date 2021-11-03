@@ -7,7 +7,7 @@ namespace Sir.VectorSpace
 {
     public static class PathFinder
     {
-        public static Hit ClosestMatch(VectorNode root, IVector vector, IModel model)
+        public static Hit ClosestMatch(VectorNode root, ISerializableVector vector, IModel model)
         {
             var best = root;
             var cursor = root;
@@ -239,7 +239,7 @@ namespace Sir.VectorSpace
             Stream vectorStream,
             IDistanceCalculator model)
         {
-            var vector = VectorOperations.DeserializeVector(vecOffset, (int)componentCount, model.NumOfDimensions, vectorStream);
+            var vector = SerializableVector.Deserialize(vecOffset, (int)componentCount, model.NumOfDimensions, vectorStream);
             var node = new VectorNode(postingsOffset, vecOffset, terminator, weight, vector);
 
             return node;

@@ -9,7 +9,7 @@ namespace Sir
     /// <typeparam name="T">The type of data the model should consist of.</typeparam>
     public interface IModel<T> : IModel
     {
-        IEnumerable<IVector> Tokenize(T data);
+        IEnumerable<ISerializableVector> Tokenize(T data);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Sir
     public interface IDistanceCalculator
     {
         int NumOfDimensions { get; }
-        double CosAngle(IVector vec1, IVector vec2);
-        double CosAngle(IVector vector, long vectorOffset, int componentCount, Stream vectorStream);
+        double CosAngle(ISerializableVector vec1, ISerializableVector vec2);
+        double CosAngle(ISerializableVector vector, long vectorOffset, int componentCount, Stream vectorStream);
     }
 }

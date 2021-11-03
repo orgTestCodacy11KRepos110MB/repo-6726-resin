@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Mnist;
 using Sir.Search;
@@ -12,17 +11,17 @@ namespace Sir.Tests
 {
     public class ImageModelTests
     {
-        private ILoggerFactory _loggerFactory;
-        private ILogger<ImageModelTests> _logger;
-        private Database _sessionFactory;
-        private IImage[] _data;
-        private string _directory = @"c:\temp\sir_tests";
-
         [Test]
-        public void Can_train_in_memory()
+        public void Can_create_in_memory_linear_classifier()
         {
+            // Use the same set of images to both create and validate a linear classifier.
+
+            var trainingData = new MnistReader(
+                @"resources\t10k-images.idx3-ubyte",
+                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
+
             var model = new LinearClassifierImageModel();
-            var tree = model.CreateTree(model, _data);
+            var tree = model.CreateTree(model, trainingData);
 
             Print(tree);
 
@@ -31,23 +30,23 @@ namespace Sir.Tests
                 var count = 0;
                 var errors = 0;
 
-                foreach (var word in _data)
+                foreach (var image in trainingData)
                 {
-                    foreach (var queryVector in model.Tokenize(word))
+                    foreach (var queryVector in model.Tokenize(image))
                     {
                         var hit = PathFinder.ClosestMatch(tree, queryVector, model);
 
                         if (hit == null)
                         {
-                            throw new Exception($"unable to find {word} in tree.");
+                            throw new Exception($"unable to find {image} in tree.");
                         }
 
-                        if (!hit.Node.Vector.Label.Equals(word.Label))
+                        if (!hit.Node.Vector.Label.Equals(image.Label))
                         {
                             errors++;
                         }
 
-                        Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                        Debug.WriteLine($"{image} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
 
                         count++;
                     }
@@ -64,36 +63,10 @@ namespace Sir.Tests
             });
         }
 
-        [SetUp]
-        public void Setup()
-        {
-            _loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddDebug();
-            });
-
-            _logger = _loggerFactory.CreateLogger<ImageModelTests>();
-
-            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
-
-            _data = new MnistReader(
-                @"C:\temp\mnist\t10k-images.idx3-ubyte",
-                @"C:\temp\mnist\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _sessionFactory.Dispose();
-        }
-
         private static void Print(VectorNode tree)
         {
             var diagram = PathFinder.Visualize(tree);
-            File.WriteAllText(@"c:\temp\imagemodeltesttree.txt", diagram);
+            File.WriteAllText("imagemodeltesttree.txt", diagram);
             Debug.WriteLine(diagram);
         }
     }

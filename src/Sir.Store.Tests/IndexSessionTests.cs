@@ -12,7 +12,7 @@ namespace Sir.Tests
     public class IndexSessionTests
     {
         private ILoggerFactory _loggerFactory;
-        private Database _sessionFactory;
+        private Database _database;
         private string _directory = @"c:\temp\sir_tests";
 
         private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
@@ -63,14 +63,14 @@ namespace Sir.Tests
         public void Can_search_filestreamed_with_multiple_pages()
         {
             var model = new BagOfCharsModel();
-            const string collection = "Can_search_streamed_with_one_page_per_document";
+            const string collection = "Can_search_filestreamed_with_multiple_pages";
             var collectionId = collection.ToHash();
             const string fieldName = "description";
 
-            _sessionFactory.Truncate(_directory, collectionId);
+            _database.Truncate(_directory, collectionId);
 
-            using (var stream = new WritableIndexStream(_directory, collectionId, _sessionFactory))
-            using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _sessionFactory)))
+            using (var stream = new WritableIndexStream(_directory, collectionId, _database))
+            using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
 
@@ -89,9 +89,9 @@ namespace Sir.Tests
                 }
             }
 
-            var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
+            var queryParser = new QueryParser<string>(_directory, _database, model);
 
-            using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
+            using (var searchSession = new SearchSession(_directory, _database, model, _loggerFactory.CreateLogger<SearchSession>()))
             {
                 Assert.DoesNotThrow(() =>
                 {
@@ -118,17 +118,17 @@ namespace Sir.Tests
         }
 
         [Test]
-        public void Can_search_streamed()
+        public void Can_search_filestreamed()
         {
             var model = new BagOfCharsModel();
             VectorNode index;
-            const string collection = "Can_search_streamed";
+            const string collection = "Can_search_filestreamed";
             var collectionId = collection.ToHash();
             const string fieldName = "description";
 
-            _sessionFactory.Truncate(_directory, collectionId);
+            _database.Truncate(_directory, collectionId);
 
-            using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _sessionFactory)))
+            using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
             using (var indexSession = new IndexSession<string>(model, model))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -146,7 +146,7 @@ namespace Sir.Tests
 
                 index = indices[keyId];
 
-                using (var stream = new WritableIndexStream(_directory, collectionId, _sessionFactory))
+                using (var stream = new WritableIndexStream(_directory, collectionId, _database))
                 {
                     stream.Persist(indices);
                 }
@@ -154,9 +154,9 @@ namespace Sir.Tests
 
             Debug.WriteLine(PathFinder.Visualize(index));
 
-            var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
+            var queryParser = new QueryParser<string>(_directory, _database, model);
 
-            using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
+            using (var searchSession = new SearchSession(_directory, _database, model, _loggerFactory.CreateLogger<SearchSession>()))
             {
                 Assert.DoesNotThrow(() =>
                 {
@@ -193,13 +193,13 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
+            _database = new Database(logger: _loggerFactory.CreateLogger<Database>());
         }
 
         [TearDown]
         public void TearDown()
         {
-            _sessionFactory.Dispose();
+            _database.Dispose();
         }
     }
 }

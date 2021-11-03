@@ -10,7 +10,7 @@ namespace Sir.Search
     {
         public abstract int NumOfDimensions { get; }
 
-        public double CosAngle(IVector vec1, IVector vec2)
+        public double CosAngle(ISerializableVector vec1, ISerializableVector vec2)
         {
             var dotSelf1 = vec1.Value.Norm(2);
             var dotSelf2 = vec2.Value.Norm(2);
@@ -19,7 +19,7 @@ namespace Sir.Search
             return dotProduct / (dotSelf1 * dotSelf2);
         }
 
-        public double CosAngle(IVector vector, long vectorOffset, int componentCount, Stream vectorStream)
+        public double CosAngle(ISerializableVector vector, long vectorOffset, int componentCount, Stream vectorStream)
         {
             Span<byte> buf = new byte[componentCount * 2 * sizeof(int)];
 

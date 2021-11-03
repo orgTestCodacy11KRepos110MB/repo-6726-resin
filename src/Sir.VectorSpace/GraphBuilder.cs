@@ -312,7 +312,7 @@ namespace Sir.VectorSpace
                 if (node.PostingsOffset == -1 && postingsStream != null)
                     SerializePostings(node, postingsStream);
 
-                node.VectorOffset = VectorOperations.SerializeVector(node.Vector, vectorStream);
+                node.VectorOffset = SerializableVector.Serialize(node.Vector, vectorStream);
 
                 Serialize(node, indexStream);
 

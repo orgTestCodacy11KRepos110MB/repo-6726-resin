@@ -31,7 +31,7 @@ namespace Sir.VectorSpace
             _pages = pages;
         }
 
-        public Hit ClosestMatch(IVector vector, IModel model)
+        public Hit ClosestMatch(ISerializableVector vector, IModel model)
         {
             var time = Stopwatch.StartNew();
             var hits = new List<Hit>();
@@ -65,7 +65,7 @@ namespace Sir.VectorSpace
             return best;
         }
 
-        private Hit ClosestMatchInPage(IVector queryVector, IModel model, long pageOffset, long pageSize)
+        private Hit ClosestMatchInPage(ISerializableVector queryVector, IModel model, long pageOffset, long pageSize)
         {
             _ixFile.Seek(pageOffset, SeekOrigin.Begin);
 

@@ -4,6 +4,6 @@ namespace Sir.VectorSpace
 {
     public interface IColumnReader : IDisposable
     {
-        Hit ClosestMatch(IVector vector, IModel model);
+        Hit ClosestMatch(ISerializableVector vector, IModel model);
     }
 }

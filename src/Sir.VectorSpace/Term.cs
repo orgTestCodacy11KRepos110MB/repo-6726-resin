@@ -5,7 +5,7 @@ namespace Sir.VectorSpace
     [System.Diagnostics.DebuggerDisplay("{Key}:{Label}")]
     public class Term : BooleanStatement
     {
-        public IVector Vector { get; }
+        public ISerializableVector Vector { get; }
         public long KeyId { get; }
         public string Key { get; }
         public string Directory { get; }
@@ -20,7 +20,7 @@ namespace Sir.VectorSpace
             ulong collectionId,
             long keyId, 
             string key, 
-            IVector vector, 
+            ISerializableVector vector, 
             bool and, 
             bool or, 
             bool not)

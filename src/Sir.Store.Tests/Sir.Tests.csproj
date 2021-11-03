@@ -23,4 +23,13 @@
     <ProjectReference Include="..\Sir.Wikipedia\Sir.Wikipedia.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="resources\t10k-images.idx3-ubyte">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\t10k-labels.idx1-ubyte">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
