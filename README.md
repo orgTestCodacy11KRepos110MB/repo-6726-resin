@@ -67,3 +67,19 @@ Currently, Wikipedia size data sets produce indices capable of sub-second phrase
 - [ ] v2.1 - voice-to-text
 - [ ] v2.2 - text-to-image
 - [ ] v2.3 - AI
+
+## Backlog
+
+### Huge
+- Distribute data set across many servers (sharding, replication; RPC) or in other ways allow for horisontal scaling
+
+### Big
+- Memory mapping (to increase speed of querying and perhaps also writing; to increase scalability)
+- Update index (allow removal of documents; allow appending to an already persisted index token's postings list)
+- Async IO (for scalability)
+- Indexing of types other than string
+- Enable combining fields with different types in a document/model
+- Split application into "crawler" and "search"
+
+### Small
+- Make loggers non-mandatory ctor params
