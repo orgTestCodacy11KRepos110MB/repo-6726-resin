@@ -49,11 +49,11 @@ Currently, Wikipedia size data sets produce indices capable of sub-second phrase
 
 ### Libraries
 
+- __[Sir.Search](https://github.com/kreeben/resin/blob/master/src/Sir.Search/README.md)__: In-process search engine.  
+- __Sir.Core__: Core types and shared interfaces, such as `IModel`, `ICommand` and `IVector`.
 - __Sir.CommonCrawl__: Command for downloading and indexing Common Crawl WAT and WET files.  
 - __Sir.Mnist__: Command for training and testing the accuracy of a index of MNIST images.  
 - __Sir.Wikipedia__: Command for indexing Wikipedia.  
-- __[Sir.Search](https://github.com/kreeben/resin/blob/master/src/Sir.Search/README.md)__: In-process search engine.  
-- __Sir.Core__: Shared interfaces and types, such as `IModel`, `ICommand` and `IVector`.
 
 ## Roadmap
 
