@@ -49,6 +49,12 @@ namespace Sir.Search
                 _logger.LogDebug(message);
         }
 
+        public void LogError(Exception ex, string message)
+        {
+            if (_logger != null)
+                _logger.LogError(ex, message);
+        }
+
         public long GetDocCount(string directory, string collection)
         {
             var fileName = Path.Combine(directory, $"{collection.ToHash()}.dix");

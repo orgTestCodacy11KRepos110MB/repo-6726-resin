@@ -22,7 +22,7 @@ namespace Sir.VectorSpace
             Stream indexStream,
             Stream vectorStream,
             IStreamDispatcher sessionFactory,
-            ILogger logger)
+            ILogger logger = null)
         {
             _sessionFactory = sessionFactory;
             _logger = logger;
@@ -46,7 +46,7 @@ namespace Sir.VectorSpace
                 }
             }
 
-            _logger.LogDebug($"scanned {_pages.Count} segments in {time.Elapsed}");
+            LogDebug($"scanned {_pages.Count} segments in {time.Elapsed}");
 
             Hit best = null;
 
@@ -173,6 +173,24 @@ namespace Sir.VectorSpace
             {
                 _ixFile.Seek(distance, SeekOrigin.Current);
             }
+        }
+
+        private void LogInformation(string message)
+        {
+            if (_logger != null)
+                _logger.LogInformation(message);
+        }
+
+        private void LogDebug(string message)
+        {
+            if (_logger != null)
+                _logger.LogDebug(message);
+        }
+
+        private void LogError(Exception ex, string message)
+        {
+            if (_logger != null)
+                _logger.LogError(ex, message);
         }
 
         public void Dispose()

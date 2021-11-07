@@ -66,23 +66,23 @@ namespace Sir.Search
 
             // Scan
             Scan(query);
-            _logger.LogDebug($"scanning took {timer.Elapsed}");
+            LogDebug($"scanning took {timer.Elapsed}");
             timer.Restart();
 
             // Materialize
             Materializer.Materialize(query, _sessionFactory);
-            _logger.LogDebug($"materializing took {timer.Elapsed}");
+            LogDebug($"materializing took {timer.Elapsed}");
             timer.Restart();
 
             // Reduce
             IDictionary<(ulong, long), double> scoredResult = new Dictionary<(ulong, long), double>();
             Reducer.Reduce(query, ref scoredResult);
-            _logger.LogDebug("reducing took {0}", timer.Elapsed);
+            LogDebug($"reducing took {timer.Elapsed}");
             timer.Restart();
 
             // Sort
             var sorted = Sort(scoredResult, skip, take);
-            _logger.LogDebug("sorting took {0}", timer.Elapsed);
+            LogDebug($"sorting took {timer.Elapsed}");
 
             return sorted;
         }
@@ -159,7 +159,7 @@ namespace Sir.Search
                     result.Add(doc);
             }
 
-            _logger.LogDebug($"reading documents took {timer.Elapsed}");
+            LogDebug($"reading documents took {timer.Elapsed}");
 
             return result;
         }
@@ -183,6 +183,24 @@ namespace Sir.Search
                     _sessionFactory,
                     _logger);
             }
+        }
+
+        private void LogInformation(string message)
+        {
+            if (_logger != null)
+                _logger.LogInformation(message);
+        }
+
+        private void LogDebug(string message)
+        {
+            if (_logger != null)
+                _logger.LogDebug(message);
+        }
+
+        private void LogError(Exception ex, string message)
+        {
+            if (_logger != null)
+                _logger.LogError(ex, message);
         }
 
         public override void Dispose()

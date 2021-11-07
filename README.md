@@ -80,6 +80,3 @@ Currently, Wikipedia size data sets produce indices capable of sub-second phrase
 - Indexing of types other than string
 - Enable combining fields with different types in a document/model
 - Split application into "crawler" and "search"
-
-### Small
-- Make loggers non-mandatory ctor params
