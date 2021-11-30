@@ -161,7 +161,7 @@ div.q button {
     border-right: none;
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
-    height: 30px;
+    height: 35px;
 }
 
 input[type="submit"].action-button {
@@ -261,8 +261,8 @@ input[type="text"].collection {
 
 div.q input[type="text"] {
     float:left;
-    width: 90%;
-    padding: 0px 0px 0px 0px;
+    width: 85%;
+    padding: 2px 2px 2px 2px;
     margin: 0px 0px 0px 0px;
     border: none;
     height: 30px;

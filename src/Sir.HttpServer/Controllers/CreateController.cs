@@ -114,7 +114,7 @@ namespace Sir.HttpServer.Controllers
 
             if (agree != "yes")
             {
-                var queryString = $"?urls={string.Join("&urls=", urls.Select(s => Uri.EscapeDataString(s)))}&errorMessage=It is required that you read and agree to the terms.";
+                var queryString = $"?urls={string.Join("&urls=", urls.Select(s => Uri.EscapeDataString(s)))}&errorMessage={StringUtil.Base64Encode("It is required that you read and agree to the terms.")}";
                 var returnUri = new Uri(returnUrl + queryString, UriKind.Relative);
 
                 return Redirect(returnUri.ToString());
