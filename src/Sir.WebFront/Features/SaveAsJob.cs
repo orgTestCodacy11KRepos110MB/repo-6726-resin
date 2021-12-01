@@ -65,7 +65,7 @@ namespace Sir.HttpServer.Features
                     or: Or);
 
                 var targetCollectionId = _target.ToHash();
-                IEnumerable<Document> documents;
+                IEnumerable<IDocument> documents;
 
                 using (var readSession = new SearchSession(_directory, _sessionFactory, _model, _logger))
                 {

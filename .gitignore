@@ -10,6 +10,7 @@ packages
 src/publish
 src/publish_tools
 src/sir.httpserver/appdata
+src/sir.webfront/appdata
 *.log
 *.log.txt
 log/*.*

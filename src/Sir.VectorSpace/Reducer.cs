@@ -7,7 +7,7 @@ namespace Sir.VectorSpace
         /// <summary>
         /// Reduce query to a list of document IDs.
         /// </summary>
-        public static void Reduce(Query query, ref IDictionary<(ulong, long), double> result)
+        public static void Reduce(IQuery query, ref IDictionary<(ulong, long), double> result)
         {
             IDictionary<(ulong, long), double> queryResult = new Dictionary<(ulong, long), double>();
 
@@ -88,7 +88,7 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void Reduce(IList<Term> terms, ref IDictionary<(ulong Key, long Value), double> result)
+        public static void Reduce(IList<ITerm> terms, ref IDictionary<(ulong Key, long Value), double> result)
         {
             foreach (var term in terms)
             {
@@ -96,7 +96,7 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void Reduce(Term term, ref IDictionary<(ulong, long), double> result)
+        public static void Reduce(ITerm term, ref IDictionary<(ulong, long), double> result)
         {
             if (term.PostingsOffsets == null)
                 return;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,20 +13,20 @@ namespace Sir.HttpServer
     /// <summary>
     /// Query a collection.
     /// </summary>
-    public class HttpReader : IHttpReader
+    public class SearchClient
     {
-        private readonly ILogger<HttpReader> _logger;
+        private readonly ILogger<SearchClient> _logger;
         private readonly Database _sessionFactory;
         private readonly HttpQueryParser _httpQueryParser;
         private readonly IConfigurationProvider _config;
         private readonly string[] _fields;
         private readonly string[] _select;
 
-        public HttpReader(
-            Database sessionFactory, 
+        public SearchClient(
+            Database sessionFactory,
             HttpQueryParser httpQueryParser,
             IConfigurationProvider config,
-            ILogger<HttpReader> logger)
+            ILogger<SearchClient> logger)
         {
             _logger = logger;
             _sessionFactory = sessionFactory;
@@ -85,6 +86,21 @@ namespace Sir.HttpServer
 
         public void Dispose()
         {
+        }
+    }
+
+    public class StringUtil
+    {
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }
 }

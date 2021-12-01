@@ -17,7 +17,7 @@ namespace Sir.Search
             _streamWriter = streamWriter;
         }
 
-        public void Put(Document document)
+        public void Put(IDocument document)
         {
             var docMap = new List<(long keyId, long valId)>();
 
@@ -49,7 +49,7 @@ namespace Sir.Search
             _streamWriter.PutDocumentAddress(document.Id, docMeta.offset, docMeta.length);
         }
 
-        private void Write(Field field, IList<(long, long)> docMap)
+        private void Write(IField field, IList<(long, long)> docMap)
         {
             field.KeyId = EnsureKeyExists(field.Name);
 

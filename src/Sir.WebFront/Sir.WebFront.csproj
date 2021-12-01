@@ -28,6 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Shared\SearchForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\DocumentList.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="sir.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -35,6 +44,7 @@
 
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName></AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,7 +54,6 @@
   <ItemGroup>
     <Folder Include="AppData\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -204,11 +204,11 @@ namespace Sir.Search
             return root;
         }
 
-        private IList<Term> ParseTerms(string collectionName, string key, T value, bool and, bool or, bool not)
+        private IList<ITerm> ParseTerms(string collectionName, string key, T value, bool and, bool or, bool not)
         {
             var collectionId = collectionName.ToHash();
             long keyId;
-            var terms = new List<Term>();
+            var terms = new List<ITerm>();
 
             if (_sessionFactory.TryGetKeyId(_directory, collectionId, key.ToHash(), out keyId))
             {

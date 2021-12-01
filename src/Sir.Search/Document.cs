@@ -1,40 +1,39 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Sir.VectorSpace;
 using System;
 using System.Collections.Generic;
 
 namespace Sir.Search
 {
     [JsonConverter(typeof(DocumentJsonConverter))]
-    public class Document
+    public class Document : IDocument
     {
         public ulong CollectionId { get; set; }
-        public long Id { get; set; } 
+        public long Id { get; set; }
         public double Score { get; set; }
-        public IList<Field> Fields { get; set; }
+        public IList<IField> Fields { get; set; }
 
         /// <summary>
         /// Empty ctor used for over-the-wire serialization.
         /// </summary>
         public Document()
         {
-            Fields = new List<Field>();
+            Fields = new List<IField>();
         }
 
-        public Document(IEnumerable<Field> fields, ulong collectionId = ulong.MinValue, long documentId = -1, double score = -1)
+        public Document(IEnumerable<IField> fields, ulong collectionId = ulong.MinValue, long documentId = -1, double score = -1)
         {
             Id = documentId;
             Score = score;
             CollectionId = collectionId;
 
-            if (fields is IList<Field>)
+            if (fields is IList<IField>)
             {
-                Fields = (IList<Field>)fields;
+                Fields = (IList<IField>)fields;
             }
             else
             {
-                Fields = new List<Field>();
+                Fields = new List<IField>();
 
                 foreach (var field in Fields)
                 {
@@ -45,7 +44,7 @@ namespace Sir.Search
             }
         }
 
-        public Field Get(string key)
+        public IField Get(string key)
         {
             foreach (var field in Fields)
             {
@@ -58,7 +57,7 @@ namespace Sir.Search
             return null;
         }
 
-        public bool TryGetValue(string key, out Field value)
+        public bool TryGetValue(string key, out IField value)
         {
             foreach (var field in Fields)
             {

@@ -1,5 +1,5 @@
 ﻿@using Sir;
-@model Sir.Search.SearchResult
+@model Sir.SearchResult
 @{
     var jsonDownloadLink = $"{Context.Request.Path.Value.ToLower().Replace("/search", "/query")}{Context.Request.QueryString}";
     var crawlLink = $"{Context.Request.Path.Value.ToLower().Replace("/search", "/crawl")}{Context.Request.QueryString}";

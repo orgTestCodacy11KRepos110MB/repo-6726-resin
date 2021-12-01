@@ -3,7 +3,7 @@
 namespace Sir.VectorSpace
 {
     [System.Diagnostics.DebuggerDisplay("{Key}:{Label}")]
-    public class Term : BooleanStatement
+    public class Term : BooleanStatement, ITerm
     {
         public ISerializableVector Vector { get; }
         public long KeyId { get; }
@@ -18,11 +18,11 @@ namespace Sir.VectorSpace
         public Term(
             string directory,
             ulong collectionId,
-            long keyId, 
-            string key, 
-            ISerializableVector vector, 
-            bool and, 
-            bool or, 
+            long keyId,
+            string key,
+            ISerializableVector vector,
+            bool and,
+            bool or,
             bool not)
             : base(and, or, not)
         {

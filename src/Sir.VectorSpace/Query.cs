@@ -13,16 +13,16 @@ namespace Sir.VectorSpace
     ///     }
     /// }
     /// </example>
-    public class Query : BooleanStatement
+    public class Query : BooleanStatement, IQuery
     {
-        public IList<Term> Terms { get; }
+        public IList<ITerm> Terms { get; }
         public HashSet<string> Select { get; }
-        public Query And { get; set; }
-        public Query Or { get; set; }
-        public Query Not { get; set; }
+        public IQuery And { get; set; }
+        public IQuery Or { get; set; }
+        public IQuery Not { get; set; }
 
         public Query(
-            IList<Term> terms,
+            IList<ITerm> terms,
             IEnumerable<string> select,
             bool and,
             bool or,
@@ -82,14 +82,14 @@ namespace Sir.VectorSpace
             }
         }
 
-        public IEnumerable<Term> AllTerms()
+        public IEnumerable<ITerm> AllTerms()
         {
             foreach (var q in All())
                 foreach (var term in q.Terms)
                     yield return term;
         }
 
-        public IEnumerable<Query> All()
+        public IEnumerable<IQuery> All()
         {
             yield return this;
 

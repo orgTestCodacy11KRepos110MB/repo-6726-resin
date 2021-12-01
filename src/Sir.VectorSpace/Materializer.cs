@@ -16,7 +16,7 @@ namespace Sir.VectorSpace
             });
         }
 
-        public static void Materialize(Term term, PostingsReader postingsReader)
+        public static void Materialize(ITerm term, PostingsReader postingsReader)
         {
             if (term.PostingsOffsets == null)
                 return;

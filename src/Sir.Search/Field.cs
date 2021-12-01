@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Sir.Search
 {
     [DebuggerDisplay("{Name}")]
-    public class Field
+    public class Field : IField
     {
         private IEnumerable<ISerializableVector> _tokens;
 
@@ -42,7 +42,7 @@ namespace Sir.Search
 
             foreach (var token in tokens)
             {
-                model.ExecutePut<string>(Tree, new VectorNode(token, keyId:KeyId));
+                model.ExecutePut<string>(Tree, new VectorNode(token, keyId: KeyId));
             }
 
             _tokens = GetTokens();

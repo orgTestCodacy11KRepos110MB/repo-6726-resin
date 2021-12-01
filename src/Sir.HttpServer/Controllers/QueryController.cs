@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Sir.Search;
-using Sir.VectorSpace;
 
 namespace Sir.HttpServer.Controllers
 {
@@ -46,7 +44,7 @@ namespace Sir.HttpServer.Controllers
             }
         }
 
-        private void Serialize(IEnumerable<Document> docs, Stream stream)
+        private void Serialize(IEnumerable<IDocument> docs, Stream stream)
         {
             using (StreamWriter writer = new StreamWriter(stream))
             using (JsonTextWriter jsonWriter = new JsonTextWriter(writer))
