@@ -62,7 +62,7 @@ namespace Sir.Search
             if (!File.Exists(fileName))
                 return 0;
 
-            return new FileInfo(fileName).Length / (sizeof(long) + sizeof(int));
+            return new FileInfo(fileName).Length / DocIndexWriter.BlockSize;
         }
 
         public void Truncate(string directory, ulong collectionId)
