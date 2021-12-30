@@ -1,5 +1,4 @@
 ﻿using Sir.VectorSpace;
-using System;
 using System.Collections.Generic;
 
 namespace Sir.Search
@@ -12,22 +11,20 @@ namespace Sir.Search
 
         public void ExecutePut<T>(VectorNode column, VectorNode node)
         {
-            column.MergeOrAddConcurrent(node, this);
+            column.MergeOrAdd(node, this);
         }
 
         public IEnumerable<ISerializableVector> Tokenize(string data)
         {
-            ReadOnlyMemory<char> source = data.AsMemory();
+            var source = data.ToCharArray();
 
             if (source.Length > 0)
             {
                 var embedding = new SortedList<int, float>();
-                var offset = 0;
-                int index = 0;
 
-                for (; index < source.Length; index++)
+                for (int index = 0; index < source.Length; index++)
                 {
-                    char c = char.ToLower(source.Span[index]);
+                    char c = char.ToLower(source[index]);
 
                     if (char.IsLetterOrDigit(c))
                     {
@@ -37,29 +34,21 @@ namespace Sir.Search
                     {
                         if (embedding.Count > 0)
                         {
-                            var len = index - offset;
-
                             var vector = new SerializableVector(
                                 embedding,
-                                NumOfDimensions,
-                                new string(source.Span.Slice(offset, len)));
+                                NumOfDimensions);
 
                             embedding.Clear();
                             yield return vector;
                         }
-
-                        offset = index + 1;
                     }
                 }
 
                 if (embedding.Count > 0)
                 {
-                    var len = index - offset;
-
                     var vector = new SerializableVector(
                                 embedding,
-                                NumOfDimensions,
-                                new string(source.Span.Slice(offset, len)));
+                                NumOfDimensions);
 
                     yield return vector;
                 }

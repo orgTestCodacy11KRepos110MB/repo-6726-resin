@@ -38,7 +38,7 @@ namespace Sir
             {
                 _right = value;
                 _right.Ancestor = this;
-                IncrementWeight();
+                IncrementWeightConcurrently();
             }
         }
 
@@ -49,7 +49,7 @@ namespace Sir
             {
                 _left = value;
                 _left.Ancestor = this;
-                IncrementWeight();
+                IncrementWeightConcurrently();
             }
         }
 
@@ -145,7 +145,7 @@ namespace Sir
                         if (Interlocked.CompareExchange(ref cursor._left, node, null) == null)
                         {
                             node.Ancestor = cursor;
-                            cursor.IncrementWeight();
+                            cursor.IncrementWeightConcurrently();
                             break;
                         }
                         else
@@ -165,7 +165,7 @@ namespace Sir
                         if (Interlocked.CompareExchange(ref cursor._right, node, null) == null)
                         {
                             node.Ancestor = cursor;
-                            cursor.IncrementWeight();
+                            cursor.IncrementWeightConcurrently();
                             break;
                         }
                         else
@@ -181,7 +181,7 @@ namespace Sir
             }
         }
 
-        public void IncrementWeight()
+        public void IncrementWeightConcurrently()
         {
             Interlocked.Increment(ref _weight);
 
@@ -190,6 +190,20 @@ namespace Sir
             while (cursor != null)
             {
                 Interlocked.Increment(ref cursor._weight);
+
+                cursor = cursor.Ancestor;
+            }
+        }
+
+        public void IncrementWeight()
+        {
+            _weight++;
+
+            var cursor = Ancestor;
+
+            while (cursor != null)
+            {
+                cursor._weight++;
 
                 cursor = cursor.Ancestor;
             }
