@@ -42,9 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AppData\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
