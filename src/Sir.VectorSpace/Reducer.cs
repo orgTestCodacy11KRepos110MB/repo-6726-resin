@@ -5,7 +5,7 @@ namespace Sir.VectorSpace
     public static class Reducer
     {
         /// <summary>
-        /// Reduce query to a list of document IDs.
+        /// Reduce query to a list of scored document IDs.
         /// </summary>
         public static void Reduce(IQuery query, ref IDictionary<(ulong, long), double> result)
         {

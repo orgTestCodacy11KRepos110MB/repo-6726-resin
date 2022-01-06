@@ -69,9 +69,9 @@ namespace Sir.Search
             LogDebug($"scanning took {timer.Elapsed}");
             timer.Restart();
 
-            // Materialize
-            PostingsMaterializer.Materialize(query, _sessionFactory);
-            LogDebug($"materializing took {timer.Elapsed}");
+            // Map each query term to a list of document IDs
+            PostingsMapper.Map(query, _sessionFactory);
+            LogDebug($"mapping took {timer.Elapsed}");
             timer.Restart();
 
             // Reduce

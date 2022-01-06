@@ -1,20 +1,20 @@
 ﻿namespace Sir.VectorSpace
 {
-    public static class PostingsMaterializer
+    public static class PostingsMapper
     {
         /// <summary>
         /// Read document IDs into memory.
         /// </summary>
-        public static void Materialize(Query query, IStreamDispatcher sessionFactory)
+        public static void Map(Query query, IStreamDispatcher sessionFactory)
         {
             foreach(var term in query.AllTerms())
             {
                 using (var reader = new PostingsReader(term.Directory, sessionFactory))
-                    Materialize(term, reader);
+                    Map(term, reader);
             }
         }
 
-        public static void Materialize(ITerm term, PostingsReader postingsReader)
+        public static void Map(ITerm term, PostingsReader postingsReader)
         {
             if (term.PostingsOffsets == null)
                 return;
