@@ -88,23 +88,35 @@ namespace Sir.Search
         }
 
         /// <summary>
-        /// Score each term and find their posting list locations.
+        /// Find the angle in vector space between the term and the closest matching node and record its posting list address.
         /// </summary>
         private void Scan(Query query)
         {
             if (query == null)
                 return;
 
-            Parallel.ForEach(query.AllTerms(), term =>
-            //foreach (var term in query.AllTerms())
-            {
-                var columnReader = GetColumnReader(term.Directory, term.CollectionId, term.KeyId);
+            var readers = new Dictionary<(string, ulong, long), IColumnReader>();
 
-                if (columnReader != null)
+            try
+            {
+                foreach (var term in query.AllTerms())
                 {
-                    using (columnReader)
+                    IColumnReader reader;
+                    var key = (term.Directory, term.CollectionId, term.KeyId);
+
+                    if (!readers.TryGetValue(key, out reader))
                     {
-                        var hit = columnReader.ClosestMatch(term.Vector, _model);
+                        reader = GetColumnReader(term.Directory, term.CollectionId, term.KeyId);
+
+                        if (reader != null)
+                        {
+                            readers.Add(key, reader);
+                        }
+                    }
+
+                    if (reader != null)
+                    {
+                        var hit = reader.ClosestMatch(term.Vector, _model);
 
                         if (hit != null)
                         {
@@ -113,7 +125,14 @@ namespace Sir.Search
                         }
                     }
                 }
-            });
+            }
+            finally
+            {
+                foreach (var reader in readers.Values)
+                {
+                    reader.Dispose();
+                }
+            }
         }
 
         private static ScoredResult Sort(IDictionary<(ulong, long), double> documents, int skip, int take)
