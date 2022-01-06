@@ -211,7 +211,7 @@ namespace Sir.VectorSpace
 
         public override string ToString()
         {
-            return Label.ToString();
+            return Value.ToString();
         }
     }
 }

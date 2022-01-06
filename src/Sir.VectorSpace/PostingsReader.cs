@@ -41,11 +41,11 @@ namespace Sir.VectorSpace
 
             stream.Seek(postingsOffset, SeekOrigin.Begin);
 
-            Span<byte> buf = stackalloc byte[sizeof(long)];
+            Span<byte> headerBuf = stackalloc byte[sizeof(long)];
 
-            stream.Read(buf);
+            stream.Read(headerBuf);
 
-            var numOfPostings = BitConverter.ToInt64(buf);
+            var numOfPostings = BitConverter.ToInt64(headerBuf);
 
             var len = sizeof(long) * numOfPostings;
 

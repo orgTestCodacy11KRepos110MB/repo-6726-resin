@@ -35,7 +35,7 @@ namespace Sir.Search
             {
                 Fields = new List<IField>();
 
-                foreach (var field in Fields)
+                foreach (var field in fields)
                 {
                     field.DocumentId = Id;
 

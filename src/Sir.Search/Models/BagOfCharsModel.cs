@@ -21,8 +21,10 @@ namespace Sir.Search
             if (source.Length > 0)
             {
                 var embedding = new SortedList<int, float>();
+                var offset = 0;
+                int index = 0;
 
-                for (int index = 0; index < source.Length; index++)
+                for (; index < source.Length; index++)
                 {
                     char c = char.ToLower(source[index]);
 
@@ -34,21 +36,29 @@ namespace Sir.Search
                     {
                         if (embedding.Count > 0)
                         {
+                            var len = index - offset;
+
                             var vector = new SerializableVector(
                                 embedding,
-                                NumOfDimensions);
+                                NumOfDimensions,
+                                new string(source, offset, len));
 
                             embedding.Clear();
                             yield return vector;
                         }
+
+                        offset = index + 1;
                     }
                 }
 
                 if (embedding.Count > 0)
                 {
+                    var len = index - offset;
+
                     var vector = new SerializableVector(
                                 embedding,
-                                NumOfDimensions);
+                                NumOfDimensions,
+                                new string(source, offset, len));
 
                     yield return vector;
                 }

@@ -30,7 +30,7 @@ namespace Sir.Search
 
         public SearchResult Search(Query query, int skip, int take)
         {
-            var result = ScanResolveReduceSort(query, skip, take);
+            var result = Execute(query, skip, take);
 
             if (result != null)
             {
@@ -46,7 +46,7 @@ namespace Sir.Search
 
         public Document SearchScalar(Query query)
         {
-            var result = ScanResolveReduceSort(query, 0, 1);
+            var result = Execute(query, 0, 1);
 
             if (result != null)
             {
@@ -60,7 +60,7 @@ namespace Sir.Search
             return null;
         }
 
-        private ScoredResult ScanResolveReduceSort(Query query, int skip, int take)
+        private ScoredResult Execute(Query query, int skip, int take)
         {
             var timer = Stopwatch.StartNew();
 
@@ -70,7 +70,7 @@ namespace Sir.Search
             timer.Restart();
 
             // Materialize
-            Materializer.Materialize(query, _sessionFactory);
+            PostingsMaterializer.Materialize(query, _sessionFactory);
             LogDebug($"materializing took {timer.Elapsed}");
             timer.Restart();
 

@@ -112,7 +112,7 @@ namespace Sir.Tests
                         }
                     });
                     var r = searchSession.Search(queryParser.Parse(collection, _data[documentIdToUpdate], fieldName, fieldName, and: true, or: false), 0, 1);
-                    Assert.IsTrue(updatedWord == searchSession.Search(queryParser.Parse(collection, _data[documentIdToUpdate], fieldName, fieldName, and: true, or: false), 0, 1).Documents.First().Fields.First().Value.ToString());
+                    Assert.IsTrue(updatedWord == r.Documents.First().Fields.First().Value.ToString());
                 }
             }
         }
