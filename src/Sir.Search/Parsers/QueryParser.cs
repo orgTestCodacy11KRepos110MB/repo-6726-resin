@@ -212,7 +212,7 @@ namespace Sir.Search
 
             if (_sessionFactory.TryGetKeyId(_directory, collectionId, key.ToHash(), out keyId))
             {
-                var tokens = _model.Tokenize(value);
+                var tokens = _model.CreateEmbedding(value);
 
                 foreach (var term in tokens)
                 {

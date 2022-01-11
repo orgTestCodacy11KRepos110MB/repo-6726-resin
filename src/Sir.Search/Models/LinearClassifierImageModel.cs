@@ -16,7 +16,7 @@ namespace Sir.Search
             column.MergeOrAddSupervised(node, this);
         }
 
-        public IEnumerable<ISerializableVector> Tokenize(IImage data)
+        public IEnumerable<ISerializableVector> CreateEmbedding(IImage data)
         {
             var pixels = data.Pixels.Select(x => Convert.ToSingle(x));
 

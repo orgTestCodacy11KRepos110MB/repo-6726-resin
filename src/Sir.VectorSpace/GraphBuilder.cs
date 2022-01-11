@@ -13,7 +13,7 @@ namespace Sir.VectorSpace
 
             foreach (var item in data)
             {
-                foreach (var vector in model.Tokenize(item))
+                foreach (var vector in model.CreateEmbedding(item))
                 {
                     indexingStrategy.ExecutePut<T>(root, new VectorNode(vector));
                 }

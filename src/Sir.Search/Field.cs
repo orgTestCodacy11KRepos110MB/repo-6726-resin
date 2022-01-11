@@ -36,7 +36,7 @@ namespace Sir.Search
 
         public void Analyze<T>(IModel<T> model)
         {
-            var tokens = model.Tokenize((T)Value);
+            var tokens = model.CreateEmbedding((T)Value);
 
             Tree = new VectorNode();
 

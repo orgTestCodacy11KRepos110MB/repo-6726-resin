@@ -21,7 +21,7 @@ namespace Sir.Search
 
         public void Put(long docId, long keyId, T value)
         {
-            var tokens = _model.Tokenize(value);
+            var tokens = _model.CreateEmbedding(value);
 
             Put(docId, keyId, tokens);
         }
@@ -59,7 +59,7 @@ namespace Sir.Search
             return new IndexInfo(GetGraphInfo());
         }
 
-        public IDictionary<long, VectorNode> InMemoryIndices()
+        public IDictionary<long, VectorNode> GetInMemoryIndices()
         {
             return _index;
         }
@@ -94,7 +94,7 @@ namespace Sir.Search
 
         public void Put(long docId, long keyId, T value)
         {
-            var vectors = _model.Tokenize(value);
+            var vectors = _model.CreateEmbedding(value);
             VectorNode column;
 
             if (!_index.TryGetValue(keyId, out column))

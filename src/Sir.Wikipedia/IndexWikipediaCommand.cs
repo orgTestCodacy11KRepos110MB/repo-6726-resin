@@ -44,7 +44,7 @@ namespace Sir.Wikipedia
                 {
                     foreach (var page in payload.Batch(pageSize))
                     {
-                        using (var indexStream = new WritableIndexStream(dataDirectory, collectionId, sessionFactory, logger: logger))
+                        using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                         using (var indexSession = new IndexSession<string>(model, model))
                         {
                             foreach (var document in page)
@@ -60,7 +60,7 @@ namespace Sir.Wikipedia
                                 debugger.Step(indexSession);
                             }
 
-                            indexStream.Persist(indexSession.InMemoryIndices());
+                            indexStream.CreatePage(indexSession.GetInMemoryIndices());
 
                             //foreach (var column in indexSession.InMemoryIndex)
                             //{

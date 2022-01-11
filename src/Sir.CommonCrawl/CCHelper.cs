@@ -54,9 +54,9 @@ namespace Sir.CommonCrawl
                     }
                 }
 
-                using (var stream = new WritableIndexStream(dataDirectory, collectionId, database, logger: logger))
+                using (var stream = new IndexWriter(dataDirectory, collectionId, database, logger: logger))
                 {
-                    stream.Persist(indexSession.InMemoryIndices());
+                    stream.CreatePage(indexSession.GetInMemoryIndices());
                 }
             }
 

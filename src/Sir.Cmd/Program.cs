@@ -200,7 +200,7 @@ namespace Sir.Cmd
 
                 foreach (var field in doc.Fields)
                 {
-                    var tokens = model.Tokenize(field.Value.ToString());
+                    var tokens = model.CreateEmbedding(field.Value.ToString());
                     var tree = new VectorNode();
 
                     foreach (var token in tokens)

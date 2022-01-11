@@ -156,9 +156,9 @@ namespace Sir.Search
             {
                 using (var writeQueue = new ProducerConsumerQueue<IndexSession<T>>(indexSession =>
                 {
-                    using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
+                    using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                     {
-                        stream.Persist(indexSession.InMemoryIndices());
+                        stream.CreatePage(indexSession.GetInMemoryIndices());
                     }
                 }))
                 {
@@ -247,9 +247,9 @@ namespace Sir.Search
             {
                 BuildIndex(collectionId, job, model, indexSession);
 
-                using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
+                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Persist(indexSession.InMemoryIndices());
+                    stream.CreatePage(indexSession.GetInMemoryIndices());
                 }
             }
         }
@@ -295,9 +295,9 @@ namespace Sir.Search
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
-                using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
+                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Persist(indexSession.InMemoryIndices());
+                    stream.CreatePage(indexSession.GetInMemoryIndices());
                 }
             }
         }
@@ -309,9 +309,9 @@ namespace Sir.Search
             {
                 StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 
-                using (var stream = new WritableIndexStream(directory, collectionId, this, logger: _logger))
+                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Persist(indexSession.InMemoryIndices());
+                    stream.CreatePage(indexSession.GetInMemoryIndices());
                 }
             }
         }

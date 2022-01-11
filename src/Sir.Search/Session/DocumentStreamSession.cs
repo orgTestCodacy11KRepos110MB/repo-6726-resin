@@ -184,7 +184,7 @@ namespace Sir.Search
                 {
                     var vInfo = streamReader.GetAddressOfValue(kvp.valId);
 
-                    foreach (var vector in streamReader.GetVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.Tokenize(value)))
+                    foreach (var vector in streamReader.GetVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value)))
                     {
                         tree.AddIfUnique(new VectorNode(vector, docId:doc.docId, keyId:kvp.keyId), model);
                     }

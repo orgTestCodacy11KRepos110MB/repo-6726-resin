@@ -14,7 +14,7 @@ namespace Sir.Search
             column.MergeOrAdd(node, this);
         }
 
-        public IEnumerable<ISerializableVector> Tokenize(string data)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data)
         {
             var source = data.ToCharArray();
 
@@ -102,9 +102,9 @@ namespace Sir.Search
             column.Build(node, this);
         }
 
-        public IEnumerable<ISerializableVector> Tokenize(string data)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data)
         {
-            return _wordTokenizer.Tokenize(data);
+            return _wordTokenizer.CreateEmbedding(data);
         }
 
         public class ContinuousBagOfWordsModel : DistanceCalculator, IModel<string>
@@ -126,9 +126,9 @@ namespace Sir.Search
                 column.MergeOrAdd(node, this);
             }
 
-            public IEnumerable<ISerializableVector> Tokenize(string data)
+            public IEnumerable<ISerializableVector> CreateEmbedding(string data)
             {
-                var tokens = (IList<ISerializableVector>)_wordTokenizer.Tokenize(data);
+                var tokens = (IList<ISerializableVector>)_wordTokenizer.CreateEmbedding(data);
 
                 for (int i = 0; i < tokens.Count; i++)
                 {

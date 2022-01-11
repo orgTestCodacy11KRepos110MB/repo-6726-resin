@@ -29,7 +29,7 @@ namespace Sir.Tests
             {
                 foreach (var word in _data)
                 {
-                    foreach (var queryVector in model.Tokenize(word))
+                    foreach (var queryVector in model.CreateEmbedding(word))
                     {
                         var hit = PathFinder.ClosestMatch(tree, queryVector, model);
 
@@ -59,7 +59,7 @@ namespace Sir.Tests
             using (var vectorStream = new MemoryStream())
             using (var pageStream = new MemoryStream())
             {
-                using (var writer = new ColumnarIndexWriter(indexStream, keepStreamOpen:true))
+                using (var writer = new ColumnWriter(indexStream, keepStreamOpen:true))
                 {
                     writer.CreatePage(tree, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen:true));
                 }
@@ -73,7 +73,7 @@ namespace Sir.Tests
                     {
                         foreach (var word in _data)
                         {
-                            foreach (var queryVector in model.Tokenize(word))
+                            foreach (var queryVector in model.CreateEmbedding(word))
                             {
                                 var hit = reader.ClosestMatch(queryVector, model);
 
@@ -100,7 +100,7 @@ namespace Sir.Tests
         {
             const string data = "Ferriman–Gallwey score"; // NOTE: string contains "En dash" character: https://unicode-table.com/en/#2013
             var model = new BagOfCharsModel();
-            var tokens = model.Tokenize(data);
+            var tokens = model.CreateEmbedding(data);
             var labels = tokens.Select(x => x.Label.ToString()).ToList();
 
             var t0 = data.Substring(0, 8);

@@ -30,7 +30,7 @@ namespace Sir.Tests
                     indexSession.Put(i, 0, _data[i]);
                 }
 
-                tree = indexSession.InMemoryIndices()[0];
+                tree = indexSession.GetInMemoryIndices()[0];
             }
 
             Debug.WriteLine(PathFinder.Visualize(tree));
@@ -39,7 +39,7 @@ namespace Sir.Tests
             {
                 foreach (var word in _data)
                 {
-                    foreach (var queryVector in model.Tokenize(word))
+                    foreach (var queryVector in model.CreateEmbedding(word))
                     {
                         var hit = PathFinder.ClosestMatch(tree, queryVector, model);
 
@@ -69,7 +69,7 @@ namespace Sir.Tests
 
             _database.Truncate(_directory, collectionId);
 
-            using (var stream = new WritableIndexStream(_directory, collectionId, _database))
+            using (var stream = new IndexWriter(_directory, collectionId, _database))
             using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -84,7 +84,7 @@ namespace Sir.Tests
                         
                         writeSession.Put(doc);
                         indexSession.Put(doc.Id, keyId, data);
-                        stream.Persist(indexSession.InMemoryIndices());
+                        stream.CreatePage(indexSession.GetInMemoryIndices());
                     }
                 }
             }
@@ -142,13 +142,13 @@ namespace Sir.Tests
                     indexSession.Put(doc.Id, keyId, data);
                 }
 
-                var indices = indexSession.InMemoryIndices();
+                var indices = indexSession.GetInMemoryIndices();
 
                 index = indices[keyId];
 
-                using (var stream = new WritableIndexStream(_directory, collectionId, _database))
+                using (var stream = new IndexWriter(_directory, collectionId, _database))
                 {
-                    stream.Persist(indices);
+                    stream.CreatePage(indices);
                 }
             }
 

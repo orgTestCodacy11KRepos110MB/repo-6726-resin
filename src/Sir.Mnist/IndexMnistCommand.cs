@@ -49,13 +49,13 @@ namespace Sir.Mnist
                         debugger.Step(indexSession);
                     }
 
-                    var indices = indexSession.InMemoryIndices();
+                    var indices = indexSession.GetInMemoryIndices();
 
                     tree = indices[imageIndexId];
 
-                    using (var stream = new WritableIndexStream(dataDirectory, collectionId, sessionFactory, logger: logger))
+                    using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                     {
-                        stream.Persist(indices);
+                        stream.CreatePage(indices);
                     }
                 }
             }

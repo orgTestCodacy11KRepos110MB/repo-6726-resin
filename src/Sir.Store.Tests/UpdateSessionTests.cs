@@ -29,7 +29,7 @@ namespace Sir.Tests
             {
                 _database.Truncate(_directory, collectionId);
 
-                using (var stream = new WritableIndexStream(_directory, collectionId, _database))
+                using (var index = new IndexWriter(_directory, collectionId, _database))
                 using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
                 {
                     var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -44,7 +44,7 @@ namespace Sir.Tests
 
                             writeSession.Put(doc);
                             indexSession.Put(doc.Id, keyId, data);
-                            stream.Persist(indexSession.InMemoryIndices());
+                            index.CreatePage(indexSession.GetInMemoryIndices());
                         }
                     }
                 }
@@ -89,6 +89,11 @@ namespace Sir.Tests
 
                         foreach (var word in _data)
                         {
+                            if (count++ == documentIdToUpdate)
+                            {
+                                continue;
+                            }
+
                             var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false);
                             var result = searchSession.Search(query, 0, 1);
                             var document = result.Documents.FirstOrDefault();
@@ -104,11 +109,6 @@ namespace Sir.Tests
                             }
 
                             Debug.WriteLine($"{word} matched with {document.Score * 100}% certainty.");
-
-                            if (count++ == documentIdToUpdate)
-                            {
-                                continue;
-                            }
                         }
                     });
                     var r = searchSession.Search(queryParser.Parse(collection, _data[documentIdToUpdate], fieldName, fieldName, and: true, or: false), 0, 1);

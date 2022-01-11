@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Sir.Search
 {
-    public class WritableIndexStream : IDisposable
+    public class IndexWriter : IDisposable
     {
         private readonly string _directory;
         private readonly ulong _collectionId;
@@ -15,7 +15,7 @@ namespace Sir.Search
         private readonly ILogger _logger;
         private readonly IDictionary<(long keyId, string fileExtension), Stream> _streams;
 
-        public WritableIndexStream(
+        public IndexWriter(
             string directory,
             ulong collectionId, 
             Database sessionFactory, 
@@ -36,7 +36,7 @@ namespace Sir.Search
             }
         }
 
-        public void Persist(IDictionary<long, VectorNode> index)
+        public void CreatePage(IDictionary<long, VectorNode> index)
         {
             foreach (var column in index)
             {
@@ -44,7 +44,7 @@ namespace Sir.Search
                 var vectorStream = GetOrCreateAppendStream(column.Key, "vec");
                 var postingsStream = GetOrCreateAppendStream(column.Key, "pos");
 
-                using (var columnWriter = new ColumnarIndexWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
+                using (var columnWriter = new ColumnWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
                 using (var pageIndexWriter = new PageIndexWriter(GetOrCreateAppendStream(column.Key, "ixtp"), keepStreamOpen: true))
                 {
                     var size = columnWriter.CreatePage(column.Value, vectorStream, postingsStream, pageIndexWriter);
