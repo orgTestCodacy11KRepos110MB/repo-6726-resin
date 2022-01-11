@@ -149,16 +149,16 @@ namespace Sir.Search
         {
             var collectionId = collection.ToHash();
 
-            LogDebug($"optimizing collection {collectionId}");
+            LogDebug($"optimizing indices for {string.Join(',', selectFields)} in collection {collectionId}");
 
             using (var debugger = new IndexDebugger(_logger, reportFrequency))
             using (var documents = new DocumentStreamSession(directory, this))
             {
                 using (var writeQueue = new ProducerConsumerQueue<IndexSession<T>>(indexSession =>
                 {
-                    using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
+                    using (var index = new IndexWriter(directory, collectionId, this, logger: _logger))
                     {
-                        stream.CreatePage(indexSession.GetInMemoryIndices());
+                        index.CreatePage(indexSession.GetInMemoryIndices());
                     }
                 }))
                 {

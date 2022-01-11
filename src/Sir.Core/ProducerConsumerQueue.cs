@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sir.Core
@@ -69,7 +70,7 @@ namespace Sir.Core
         {
             _queue.Add(item);
 
-            _enqueued++;
+            Interlocked.Increment(ref _enqueued);
         }
 
         public void Join()
@@ -87,39 +88,6 @@ namespace Sir.Core
         {
             Join();
             _queue.Dispose();
-        }
-    }
-
-    public class KeyedProducerConsumerQueue<TKeyType, IValueType> : IDisposable
-    {
-        private readonly ConcurrentDictionary<TKeyType, ProducerConsumerQueue<IValueType>> _queues;
-        private readonly int _numOfConsumers;
-        private readonly Action<IValueType> _consumingAction;
-
-        public KeyedProducerConsumerQueue(Action<IValueType> consumingAction, int numOfConsumers = 1)
-        {
-            if (consumingAction == null)
-            {
-                throw new ArgumentNullException(nameof(consumingAction));
-            }
-
-            _numOfConsumers = numOfConsumers;
-            _consumingAction = consumingAction;
-            _queues = new ConcurrentDictionary<TKeyType, ProducerConsumerQueue<IValueType>>();
-        }
-
-        public void Enqueue(TKeyType key, IValueType item)
-        {
-            var queue = _queues.GetOrAdd(key, new ProducerConsumerQueue<IValueType>(_consumingAction, _numOfConsumers));
-            queue.Enqueue(item);
-        }
-
-        public void Dispose()
-        {
-            foreach (var queue in _queues.Values)
-            {
-                queue.Dispose();
-            }
         }
     }
 }
