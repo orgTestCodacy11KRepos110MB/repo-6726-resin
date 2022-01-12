@@ -22,18 +22,16 @@ namespace Sir.HttpServer
             _parser = parser;
         }
 
-        public async Task<Query> ParseRequest(HttpRequest request, IEnumerable<string> collections = null, IEnumerable<string> fields = null, IEnumerable<string> select = null)
+        public async Task<Query> ParseRequest(HttpRequest request, IEnumerable<string> collections = null)
         {
-            if (select == null)
-                select = request.Query["select"].ToArray();
+            var select = request.Query["select"].ToArray();
 
             if (request.Method == "GET")
             {
                 if (collections == null)
                     collections = request.Query["collection"].ToArray();
 
-                if (fields == null)
-                    fields = request.Query["field"].ToArray();
+                var fields = request.Query["field"].ToArray();
 
                 var naturalLanguage = request.Query["q"].ToString();
                 bool and = request.Query.ContainsKey("AND");

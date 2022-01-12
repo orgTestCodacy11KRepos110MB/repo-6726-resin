@@ -18,8 +18,6 @@ namespace Sir.HttpServer
         private readonly Database _sessionFactory;
         private readonly HttpQueryParser _httpQueryParser;
         private readonly IConfigurationProvider _config;
-        private readonly string[] _fields;
-        private readonly string[] _select;
 
         public HttpReader(
             Database sessionFactory, 
@@ -31,8 +29,6 @@ namespace Sir.HttpServer
             _sessionFactory = sessionFactory;
             _httpQueryParser = httpQueryParser;
             _config = config;
-            _fields = _config.GetMany("default_fields");
-            _select = _config.GetMany("default_select_fields");
         }
 
         public async Task<SearchResult> Read(HttpRequest request, IModel<string> model)
@@ -60,7 +56,7 @@ namespace Sir.HttpServer
                 }
             }
 
-            var query = await _httpQueryParser.ParseRequest(request, collections, _fields, _select);
+            var query = await _httpQueryParser.ParseRequest(request, collections);
 
             if (query == null)
             {
