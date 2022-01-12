@@ -10,7 +10,7 @@ using System.IO;
 namespace Sir.Search
 {
     /// <summary>
-    /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating collections.
+    /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating document collections.
     /// </summary>
     public class Database : IDisposable, IStreamDispatcher
     {
