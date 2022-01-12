@@ -6,16 +6,23 @@
     background-color:silver;
 }
 
+#page {
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    width: 100%;
+}
+
 #header {
     margin: 4px 4px 4px 4px;
-    border-radius: 20px;
+    padding: 0px 0px 0px 0px;
+    border-radius: 15px;
     background-color: white;
 }
 
 #top-nav {
     margin: 4px 4px 0px 4px;
     padding: 5px 5px 5px 5px;
-    border-radius: 20px;
+    border-radius: 15px;
     background-color: black;
     color: white;
     font-size: 12pt;
@@ -24,17 +31,18 @@
 #left-nav {
     margin: 4px 4px 4px 4px;
     padding: 10px 10px 10px 10px;
-    border-radius: 20px;
-    background-color: #d6d6d6;
+    border-radius: 15px;
+    background-color: white;
     color: black;
     font-size: 12pt;
     float: left;
+    width: 200px;
 }
 
 #main {
     margin: 4px 4px 4px 4px;
     padding: 10px 10px 10px 10px;
-    border-radius: 20px;
+    border-radius: 15px;
     background-color: white;
     color: black;
     font-size: 12pt;
@@ -43,4 +51,9 @@
 
 #logo {
     height: 50px;
+    margin: 2px 0px 0px 0px;
+}
+
+.query-field-simple{
+    width: 300px;
 }
