@@ -241,19 +241,6 @@ namespace Sir.Search
             }
         }
 
-        public void PersistIndex<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, int reportSize = 1000)
-        {
-            using (var indexSession = new IndexSession<T>(model, model))
-            {
-                BuildIndex(collectionId, job, model, indexSession);
-
-                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
-                {
-                    stream.CreatePage(indexSession.GetInMemoryIndices());
-                }
-            }
-        }
-
         public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IndexSession<T> indexSession)
         {
             LogDebug($"building index for collection {collectionId}");
