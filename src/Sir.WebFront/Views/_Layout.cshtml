@@ -7,32 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/css/theme.css">
 </head>
 <body>
-    <nav>
-        <div class="nav-nav">
-            <div class="nav-inner">
-                <a href="/">New index</a> <span>|</span> <a href="/about?queryId=@Context.Request.Query["queryId"]">About</a> <span>|</span> <a href="/terms?queryId=@Context.Request.Query["queryId"]">Terms</a> <span>|</span> <a href="/contact?queryId=@Context.Request.Query["queryId"]">Help</a> <span>|</span> <a href="/buymecoffee?queryId=@Context.Request.Query["queryId"]">Buy me a coffee</a>
-            </div>
-        </div>
-</nav>
-    <div class="outer-container">
-        <div class="logo1">
-            @if (!string.IsNullOrWhiteSpace(Context.Request.Query["queryId"]))
-            {
-                <a href="/search?queryId=@Context.Request.Query["queryId"]"><img src="/apple-touch-icon.png" title="CrawlCrawler" alt="CrawlCrawler" /></a>
-            }
-            else
-            {
-                <a href="/"><img src="/apple-touch-icon.png" title="CrawlCrawler" alt="CrawlCrawler" /></a>
-            }
-        </div>
-        <div id="topnav">
-            @if (!string.IsNullOrWhiteSpace(Context.Request.Query["queryId"]))
-            {
-                <a href="/options?queryId=@Context.Request.Query["queryId"]" title="Options">&#9776;</a>
-            }
-        </div>
-        <br style="clear:both;" />
-        @RenderBody()
-    </div>
+    <div id="header"><img id="logo" src="~/android-chrome-192x192.png" alt="Crawlcrawler" title="Crawlcrawler" /></div>
+    <div id="top-nav">sdds</div>
+    <div id="left-nav"><h3>Collections</h3><a href="/create/">Create new collection</a></div>
+    <div id="main">@RenderBody()</div>
 </body>
 </html>

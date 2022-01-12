@@ -2,375 +2,45 @@
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
     font-family: Arial, sans-serif;
-    font-size: 10pt;
-    background-color:black;
-    color:white;
+    font-size: 12pt;
+    background-color:silver;
 }
 
-h1 {
-    margin-top: 10px;
-    margin-bottom: 16px;
-    font-size: 17pt;
+#header {
+    margin: 4px 4px 4px 4px;
+    border-radius: 20px;
+    background-color: white;
 }
 
-h2 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 13pt;
-}
-
-h3 {
-    margin-top: 20px;
-    margin-bottom: 15px;
-    font-size: 10pt;
-}
-
-h4{
-    margin-top:10px;
-    margin-bottom:10px;
-}
-
-h5 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-sup, sub {
-    font-size: x-small;
-    color: #ff7700;
-    font-weight: 600;
-}
-
-label {
-    font-size: 10pt;
-}
-
-a {
-    text-decoration: none;
-    color: #ff7700;
-}
-
-a.result-link {
-    font-size: 11pt;
-    color: white;
-}
-
-a.result-link:visited {
-    color: #dedede;
-}
-
-a:visited h1 {
-}
-
-a h1 {
-    text-decoration: none;
-}
-
-p {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    font-size: 10pt;
-    padding: 5px;
-    background-color: #323232;
-}
-
-ul.document-list {
-    padding: 0px 5px 0px 0px;
-    margin: 0px 0px 0px 0px;
-    list-style-type: none;
-}
-
-ul.document-list li {
-    font-size: 9pt;
-}
-
-.outer-container {
-    max-width: 935px;
-    margin-left: 10px;
-    margin-right:10px;
-}
-
-.sub {
-    font-size: 0.2em;
-    color: #ff7700;
-    margin-left: 2px;
-    margin-right: 2px;
-}
-
-.result-list {
-    margin-right: 5px;
-    margin-top: 15px;
-}
-
-pre, .pre {
-    background-color: #d4d4d4;
-    padding: 0px 5px 5px 0px;
-    margin-top: 5px;
-    overflow: scroll;
-}
-
-div.upvote {
-    font-size: 0.75em;
-    margin-bottom: 3px;
-    margin-right: 4px;
-    float: left;
-}
-
-.document-info{
-    font-size: 9pt;
-    color:silver;
-}
-
-.document-body {
-    margin-left: 0px;
-    margin-bottom: 20px;
-    margin-top: 5px;
-}
-
-.document-stats{
-    margin-top:5px;
-}
-
-a.document-subtitle {
-    color: gray;
-}
-
-a.document-subtitle:visited {
-    color: gray;
-}
-
-input[type="checkbox"] {
-    vertical-align: sub;
-}
-
-button, input[type="button"], input[type="submit"] {
-    font-size: 9pt;
-    height: 32px;
-    background-color: #383838;
-    border: 1px solid #f0f0f0;
-    color: white;
-    vertical-align: middle;
-}
-
-div.q button {
-    float: left;
-    width: 10%;
-    border-top: 1px solid orange;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-    height: 35px;
-}
-
-input[type="submit"].action-button {
-    border-top: 1px solid orange;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    padding: 0px 10px 0px 10px;
-    margin: 0px 0px 0px 0px;
-    height: 30px;
-    font-size: 9pt;
-    background-color: #525252;
-    color: white;
-    vertical-align: middle;
-}
-
-select {
+#top-nav {
+    margin: 4px 4px 0px 4px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 20px;
     background-color: black;
-    border: 1px solid #f0f0f0;
     color: white;
+    font-size: 12pt;
 }
 
-input[type="text"] {
-    height: 20px;
-    background-color: black;
-    border: 1px solid #f0f0f0;
-    color: white;
-}
-
-.advanced {
-    color: #ff7700;
-    font-size: 0.7em;
-    margin-top: 10px;
-    margin-left: 2px;
-}
-
-.logo1 {
-    margin-bottom: 5px;
-    width: 55px;
-    height: 55px;
-    float:left;
-}
-
-#topnav{
-    float:right;
-    font-size:30px;
-    height:55px;
-    margin-top: 8px;
-}
-
-#topnav a{
-    color:white;
-}
-
-.intro {
-    font-size: 10pt;
-    font-style: italic;
-    font-weight: 500;
-    text-shadow: 1px 1px 1px #404040;
-}
-
-.logo1 img {
-    height: auto;
-    width: 55px;
-    height: 55px;
-}
-
-.search-fields {
-    font-size: 10pt;
-    border: 1px solid #f0f0f0;
-    margin-left: 0px;
-    margin-right: 5px;
-    margin-top: 0px;
-    margin-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 10px;
-    padding-bottom: 5px;
-    float: left;
-}
-
-.search-fields a {
-    text-decoration: underline;
-}
-
-input[type="text"].collection {
+#left-nav {
+    margin: 4px 4px 4px 4px;
     padding: 10px 10px 10px 10px;
-    color: #ff7700;
-    font-size: xx-large;
-    font-weight: 700;
-    border: none;
-}
-
-.input-wrapper {
-    width: 100%;
-}
-
-div.q input[type="text"] {
-    float:left;
-    width: 85%;
-    padding: 2px 2px 2px 2px;
-    margin: 0px 0px 0px 0px;
-    border: none;
-    height: 30px;
-    background-color:white;
-    color:black;
-}
-
-div.q {
-    width: 100%;
-}
-
-.toolbar-wrapper {
-    margin-left: 0px;
-    margin-bottom: 10px;
-    margin-top: 15px;
-    font-size:8pt;
-}
-
-.blog-wrapper {
-    font-size: 10pt;
-    margin-left: 0px;
-    background-color: #f2f2f2;
-    padding: 10px 25px 10px 10px;
-    max-width: 700px;
-    overflow: hidden;
-}
-
-.validation-error {
-    color: white;
-    background-color: gray;
-}
-
-.toolbar{
-    margin-top:5px;
-}
-
-p.splash {
-    background-color: lightgoldenrodyellow;
-    border: 1px solid black;
-    padding: 2px 2px 2px 2px;
-    font-size: 10pt;
-}
-
-.disclaimer{
-    font-size: 8pt;
-}
-
-footer p.footer-hero{
-    font-size:9pt;
-}
-
-nav {
-    font-size: 10pt;
-    margin-top: 0px;
-    margin-bottom: 10px;
-    min-height: 7px;
-    background-color: #151515;
-    padding: 5px 5px 5px 10px;
-    text-align: center;
-}
-
-nav a {
-    text-decoration: none;
-    color: #ff7700;
-}
-
-nav p {
-    margin-top: 10px;
-}
-
-
-.nav-nav {
-    color: silver;
-}
-
-.nav-nav span {
+    border-radius: 20px;
+    background-color: #d6d6d6;
     color: black;
-    margin-left:1px;
-    margin-right:1px;
+    font-size: 12pt;
+    float: left;
 }
 
-.nav-inner{
-    width: 100%;
-    max-width: 925px;
+#main {
+    margin: 4px 4px 4px 4px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 20px;
+    background-color: white;
+    color: black;
+    font-size: 12pt;
+    float: left;
 }
 
-#siteurl {
-    width: 82%;
-    padding: 5px 5px 5px 5px;
-    vertical-align:middle;
-}
-
-#sitelist {
-    border: 1px solid white;
-    font-size: 10pt;
-    width: 82%;
-    min-height: 100px;
-    padding: 5px 5px 5px 5px;
-}
-
-.options-menu{
-    line-height: 25px;
-}
-
-.options-menu a {
-    color: white;
-}
-
-.options-menu span {
-    color: #ff7700;
+#logo {
+    height: 50px;
 }
