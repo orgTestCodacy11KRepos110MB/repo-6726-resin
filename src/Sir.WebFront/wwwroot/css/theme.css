@@ -1,4 +1,8 @@
-﻿body {
+﻿:root{
+    --corner:25px;
+}
+
+body {
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
     font-family: Arial, sans-serif;
@@ -15,14 +19,15 @@
 #header {
     margin: 4px 4px 4px 4px;
     padding: 0px 0px 0px 0px;
-    border-radius: 15px;
+    border-radius: var(--corner);
     background-color: white;
+    width: 220px;
 }
 
 #top-nav {
     margin: 4px 4px 0px 4px;
     padding: 5px 5px 5px 5px;
-    border-radius: 15px;
+    border-radius: var(--corner);
     background-color: black;
     color: white;
     font-size: 12pt;
@@ -31,29 +36,35 @@
 #left-nav {
     margin: 4px 4px 4px 4px;
     padding: 10px 10px 10px 10px;
-    border-radius: 15px;
+    border-radius: var(--corner);
     background-color: white;
     color: black;
     font-size: 12pt;
-    float: left;
     width: 200px;
 }
 
 #main {
-    margin: 4px 4px 4px 4px;
-    padding: 10px 10px 10px 10px;
-    border-radius: 15px;
-    background-color: white;
-    color: black;
-    font-size: 12pt;
-    float: left;
+
 }
 
 #logo {
     height: 50px;
-    margin: 2px 0px 0px 0px;
+    margin: 2px 0px 2px 3px;
+    vertical-align: middle;
 }
 
 .query-field-simple{
     width: 300px;
+}
+
+.col{
+    float:left;
+}
+
+.section {
+    margin: 4px 4px 7px 4px;
+    padding: 10px 10px 10px 10px;
+    border-radius: var(--corner);
+    background-color: white;
+    display:table;
 }
