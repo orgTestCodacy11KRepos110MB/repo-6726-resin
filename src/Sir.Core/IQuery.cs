@@ -4,9 +4,9 @@ namespace Sir
 {
     public interface IQuery
     {
-        IQuery And { get; set; }
-        IQuery Not { get; set; }
-        IQuery Or { get; set; }
+        IQuery AndQuery { get; set; }
+        IQuery NotQuery { get; set; }
+        IQuery OrQuery { get; set; }
         HashSet<string> Select { get; }
         IList<ITerm> Terms { get; }
         bool IsUnion { get; set; }

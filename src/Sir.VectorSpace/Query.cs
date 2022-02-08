@@ -17,9 +17,9 @@ namespace Sir.VectorSpace
     {
         public IList<ITerm> Terms { get; }
         public HashSet<string> Select { get; }
-        public IQuery And { get; set; }
-        public IQuery Or { get; set; }
-        public IQuery Not { get; set; }
+        public IQuery AndQuery { get; set; }
+        public IQuery OrQuery { get; set; }
+        public IQuery NotQuery { get; set; }
 
         public Query(
             IList<ITerm> terms,
@@ -36,17 +36,17 @@ namespace Sir.VectorSpace
         {
             var count = Terms.Count;
 
-            if (And != null)
+            if (AndQuery != null)
             {
-                count += And.TotalNumberOfTerms();
+                count += AndQuery.TotalNumberOfTerms();
             }
-            if (Or != null)
+            if (OrQuery != null)
             {
-                count += Or.TotalNumberOfTerms();
+                count += OrQuery.TotalNumberOfTerms();
             }
-            if (Not != null)
+            if (NotQuery != null)
             {
-                count += Not.TotalNumberOfTerms();
+                count += NotQuery.TotalNumberOfTerms();
             }
 
             return count;
@@ -68,17 +68,17 @@ namespace Sir.VectorSpace
                 dic.Add(term.CollectionId);
             }
 
-            if (And != null)
+            if (AndQuery != null)
             {
-                And.GetNumOfCollections(dic);
+                AndQuery.GetNumOfCollections(dic);
             }
-            if (Or != null)
+            if (OrQuery != null)
             {
-                Or.GetNumOfCollections(dic);
+                OrQuery.GetNumOfCollections(dic);
             }
-            if (Not != null)
+            if (NotQuery != null)
             {
-                Not.GetNumOfCollections(dic);
+                NotQuery.GetNumOfCollections(dic);
             }
         }
 
@@ -93,25 +93,25 @@ namespace Sir.VectorSpace
         {
             yield return this;
 
-            if (And != null)
+            if (AndQuery != null)
             {
-                foreach (var q in And.All())
+                foreach (var q in AndQuery.All())
                     yield return q;
             }
-            if (Or != null)
+            if (OrQuery != null)
             {
-                foreach (var q in Or.All())
+                foreach (var q in OrQuery.All())
                     yield return q;
             }
-            if (Not != null)
+            if (NotQuery != null)
             {
-                foreach (var q in Not.All())
+                foreach (var q in NotQuery.All())
                     yield return q;
             }
         }
     }
 
-    public class BooleanStatement
+    public abstract class BooleanStatement
     {
         private bool _and;
         private bool _or;

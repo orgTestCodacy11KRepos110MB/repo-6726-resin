@@ -2,16 +2,16 @@
 
 namespace Sir.VectorSpace
 {
-    public static class Reducer
+    public class Scorer
     {
         /// <summary>
         /// Reduce query to a list of scored document IDs.
         /// </summary>
-        public static void Reduce(IQuery query, ref IDictionary<(ulong, long), double> result)
+        public void Score(IQuery query, ref IDictionary<(ulong CollectionId, long DocumentId), double> result)
         {
             IDictionary<(ulong, long), double> queryResult = new Dictionary<(ulong, long), double>();
 
-            Reduce(query.Terms, ref queryResult);
+            Score(query.Terms, ref queryResult);
 
             if (query.IsIntersection)
             {
@@ -74,90 +74,85 @@ namespace Sir.VectorSpace
                 }
             }
 
-            if (query.And != null)
+            if (query.AndQuery != null)
             {
-                Reduce(query.And, ref result);
+                Score(query.AndQuery, ref result);
             }
-            if (query.Or != null)
+            if (query.OrQuery != null)
             {
-                Reduce(query.Or, ref result);
+                Score(query.OrQuery, ref result);
             }
-            if (query.Not != null)
+            if (query.NotQuery != null)
             {
-                Reduce(query.Not, ref result);
+                Score(query.NotQuery, ref result);
             }
         }
 
-        public static void Reduce(IList<ITerm> terms, ref IDictionary<(ulong Key, long Value), double> result)
+        public static void Score(IList<ITerm> terms, ref IDictionary<(ulong CollectionId, long DocumentId), double> result)
         {
             foreach (var term in terms)
             {
-                Reduce(term, ref result);
-            }
-        }
+                if (term.PostingsOffsets == null)
+                    continue;
 
-        public static void Reduce(ITerm term, ref IDictionary<(ulong, long), double> result)
-        {
-            if (term.PostingsOffsets == null)
-                return;
-
-            if (term.IsIntersection)
-            {
-                if (result.Count == 0)
+                if (term.IsIntersection)
                 {
-                    foreach (var docId in term.Result)
+                    if (result.Count == 0)
                     {
-                        result.Add(docId, term.Score);
-                    }
-                }
-                else
-                {
-                    var intersection = new Dictionary<(ulong, long), double>();
-
-                    foreach (var doc in term.Result)
-                    {
-                        double score;
-
-                        if (result.TryGetValue(doc, out score))
+                        foreach (var docId in term.Result)
                         {
-                            intersection.Add(doc, score + term.Score);
+                            result.Add(docId, term.Score);
                         }
                     }
-
-                    result = intersection;
-                }
-            }
-            else if (term.IsUnion)
-            {
-                if (result.Count == 0)
-                {
-                    foreach (var docId in term.Result)
+                    else
                     {
-                        result.Add(docId, term.Score);
+                        var intersection = new Dictionary<(ulong, long), double>();
+
+                        foreach (var doc in term.Result)
+                        {
+                            double score;
+
+                            if (result.TryGetValue(doc, out score))
+                            {
+                                intersection.Add(doc, score + term.Score);
+                            }
+                        }
+
+                        result = intersection;
                     }
                 }
-                else
+                else if (term.IsUnion)
                 {
-                    foreach (var doc in term.Result)
+                    if (result.Count == 0)
                     {
-                        if (result.ContainsKey(doc))
+                        foreach (var docId in term.Result)
                         {
-                            result[doc] += term.Score;
+                            result.Add(docId, term.Score);
                         }
-                        else
+                    }
+                    else
+                    {
+                        foreach (var doc in term.Result)
                         {
-                            result[doc] = term.Score;
+                            if (result.ContainsKey(doc))
+                            {
+                                result[doc] += term.Score;
+                            }
+                            else
+                            {
+                                result[doc] = term.Score;
+                            }
                         }
                     }
                 }
-            }
-            else // Not
-            {
-                if (result.Count > 0)
+                else // Not
                 {
-                    foreach (var doc in term.Result)
+                    if (result.Count > 0)
                     {
-                        result.Remove(doc);
+                        foreach (var doc in term.Result)
+                        {
+                            result.Remove(doc);
+                        }
                     }
                 }
             }

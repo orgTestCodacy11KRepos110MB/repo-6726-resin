@@ -192,7 +192,7 @@ namespace Sir.Search
                             }
                             else
                             {
-                                cursor.Or = query;
+                                cursor.OrQuery = query;
 
                                 cursor = query;
                             }

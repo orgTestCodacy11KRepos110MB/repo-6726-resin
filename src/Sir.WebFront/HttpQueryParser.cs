@@ -104,17 +104,17 @@ namespace Sir.HttpServer
                 parent = termdic;
             }
 
-            if (q.And != null)
+            if (q.AndQuery != null)
             {
-                ParseQuery(q.And, parent);
+                ParseQuery(q.AndQuery, parent);
             }
-            if (q.Or != null)
+            if (q.OrQuery != null)
             {
-                ParseQuery(q.Or, parent);
+                ParseQuery(q.OrQuery, parent);
             }
-            if (q.Not != null)
+            if (q.NotQuery != null)
             {
-                ParseQuery(q.Not, parent);
+                ParseQuery(q.NotQuery, parent);
             }
         }
 

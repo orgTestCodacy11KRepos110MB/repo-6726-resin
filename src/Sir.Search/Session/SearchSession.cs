@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Sir.Search
 {
@@ -15,16 +14,22 @@ namespace Sir.Search
     {
         private readonly Database _sessionFactory;
         private readonly IModel _model;
+        private readonly PostingsResolver _postingsResolver;
+        private readonly Scorer _scorer;
         private readonly ILogger _logger;
 
         public SearchSession(
             string directory, 
             Database sessionFactory,
             IModel model,
-            ILogger logger = null) : base(directory, sessionFactory)
+            ILogger logger = null,
+            PostingsResolver postingsResolver = null,
+            Scorer scorer = null) : base(directory, sessionFactory)
         {
             _sessionFactory = sessionFactory;
             _model = model;
+            _postingsResolver = postingsResolver ?? new PostingsResolver();
+            _scorer = scorer ?? new Scorer();
             _logger = logger;
         }
 
@@ -69,15 +74,15 @@ namespace Sir.Search
             LogDebug($"scanning took {timer.Elapsed}");
             timer.Restart();
 
-            // Map each query term to a list of document IDs
-            PostingsMapper.Map(query, _sessionFactory);
-            LogDebug($"mapping took {timer.Elapsed}");
+            // Read postings lists
+            _postingsResolver.Resolve(query, _sessionFactory);
+            LogDebug($"reading postings took {timer.Elapsed}");
             timer.Restart();
-
-            // Reduce
-            IDictionary<(ulong, long), double> scoredResult = new Dictionary<(ulong, long), double>();
-            Reducer.Reduce(query, ref scoredResult);
-            LogDebug($"reducing took {timer.Elapsed}");
+            
+            // Score
+            IDictionary<(ulong CollectionId, long DocumentId), double> scoredResult = new Dictionary<(ulong, long), double>();
+            _scorer.Score(query, ref scoredResult);
+            LogDebug($"scoring took {timer.Elapsed}");
             timer.Restart();
 
             // Sort
@@ -88,7 +93,7 @@ namespace Sir.Search
         }
 
         /// <summary>
-        /// Find the angle in vector space between the term and the closest matching node and record its posting list address.
+        /// Scan the index to find the query terms closest matching nodes and record their posting list addresses.
         /// </summary>
         private void Scan(Query query)
         {
@@ -135,7 +140,10 @@ namespace Sir.Search
             }
         }
 
-        private static ScoredResult Sort(IDictionary<(ulong, long), double> documents, int skip, int take)
+        private static ScoredResult Sort(
+            IDictionary<(ulong CollectionId, long DocumentId), double> documents,
+            int skip, 
+            int take)
         {
             var sortedByScore = new List<KeyValuePair<(ulong, long), double>>(documents);
 
@@ -160,6 +168,35 @@ namespace Sir.Search
                 SortedDocuments = sortedByScore.GetRange(index, count), 
                 Total = sortedByScore.Count 
             };
+        }
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/3719719/fastest-safe-sorting-algorithm-implementation
+        /// </summary>
+        private static void QuickSort(int[] data, int left, int right)
+        {
+            int i = left - 1,
+                j = right;
+
+            while (true)
+            {
+                int d = data[left];
+                do i++; while (data[i] < d);
+                do j--; while (data[j] > d);
+
+                if (i < j)
+                {
+                    int tmp = data[i];
+                    data[i] = data[j];
+                    data[j] = tmp;
+                }
+                else
+                {
+                    if (left < j) QuickSort(data, left, j);
+                    if (++j < right) QuickSort(data, j, right);
+                    return;
+                }
+            }
         }
 
         private IList<Document> ReadDocs(

@@ -7,18 +7,18 @@ using System.Runtime.InteropServices;
 namespace Sir.VectorSpace
 {
     /// <summary>
-    /// Read postings.
+    /// Allocate postings in memory.
     /// </summary>
     public class PostingsReader : IDisposable
     {
-        private readonly IStreamDispatcher _sessionFactory;
+        private readonly IStreamDispatcher _streamDispatcher;
         private readonly IDictionary<(ulong collectionId, long keyId), Stream> _streams;
         private readonly string _directory;
 
-        public PostingsReader(string directory, IStreamDispatcher sessionFactory)
+        public PostingsReader(string directory, IStreamDispatcher streamDispatcher)
         {
             _directory = directory;
-            _sessionFactory = sessionFactory;
+            _streamDispatcher = streamDispatcher;
             _streams = new Dictionary<(ulong collectionId, long keyId), Stream>();
         }
 
@@ -30,7 +30,7 @@ namespace Sir.VectorSpace
             foreach (var postingsOffset in offsets)
                 GetPostingsFromStream(collectionId, keyId, postingsOffset, list);
 
-            _sessionFactory.LogDebug($"read {list.Count} postings from {offsets.Count} terms into memory in {time.Elapsed}");
+            _streamDispatcher.LogDebug($"read {list.Count} postings from {offsets.Count} terms into memory in {time.Elapsed}");
 
             return list;
         }
@@ -69,7 +69,7 @@ namespace Sir.VectorSpace
 
             if (!_streams.TryGetValue(key, out stream))
             {
-                stream = _sessionFactory.CreateReadStream(Path.Combine(_directory, $"{collectionId}.{keyId}.pos"));
+                stream = _streamDispatcher.CreateReadStream(Path.Combine(_directory, $"{collectionId}.{keyId}.pos"));
                 _streams.Add(key, stream);
             }
 
