@@ -5,7 +5,7 @@
         /// <summary>
         /// Read posting list document IDs into memory.
         /// </summary>
-        public void Resolve(Query query, IStreamDispatcher sessionFactory)
+        public void Resolve(IQuery query, IStreamDispatcher sessionFactory)
         {
             foreach(var term in query.AllTerms())
             {

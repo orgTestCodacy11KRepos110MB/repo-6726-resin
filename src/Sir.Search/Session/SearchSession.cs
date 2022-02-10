@@ -33,7 +33,7 @@ namespace Sir.Search
             _logger = logger;
         }
 
-        public SearchResult Search(Query query, int skip, int take)
+        public SearchResult Search(IQuery query, int skip, int take)
         {
             var result = Execute(query, skip, take);
 
@@ -49,7 +49,7 @@ namespace Sir.Search
             return new SearchResult(query, 0, 0, new Document[0]);
         }
 
-        public Document SearchScalar(Query query)
+        public Document SearchScalar(IQuery query)
         {
             var result = Execute(query, 0, 1);
 
@@ -65,11 +65,11 @@ namespace Sir.Search
             return null;
         }
 
-        private ScoredResult Execute(Query query, int skip, int take)
+        private ScoredResult Execute(IQuery query, int skip, int take)
         {
             var timer = Stopwatch.StartNew();
 
-            // Scan
+            // Scan index
             Scan(query);
             LogDebug($"scanning took {timer.Elapsed}");
             timer.Restart();
@@ -95,7 +95,7 @@ namespace Sir.Search
         /// <summary>
         /// Scan the index to find the query terms closest matching nodes and record their posting list addresses.
         /// </summary>
-        private void Scan(Query query)
+        private void Scan(IQuery query)
         {
             if (query == null)
                 return;
@@ -168,35 +168,6 @@ namespace Sir.Search
                 SortedDocuments = sortedByScore.GetRange(index, count), 
                 Total = sortedByScore.Count 
             };
-        }
-
-        /// <summary>
-        /// https://stackoverflow.com/questions/3719719/fastest-safe-sorting-algorithm-implementation
-        /// </summary>
-        private static void QuickSort(int[] data, int left, int right)
-        {
-            int i = left - 1,
-                j = right;
-
-            while (true)
-            {
-                int d = data[left];
-                do i++; while (data[i] < d);
-                do j--; while (data[j] > d);
-
-                if (i < j)
-                {
-                    int tmp = data[i];
-                    data[i] = data[j];
-                    data[j] = tmp;
-                }
-                else
-                {
-                    if (left < j) QuickSort(data, left, j);
-                    if (++j < right) QuickSort(data, j, right);
-                    return;
-                }
-            }
         }
 
         private IList<Document> ReadDocs(

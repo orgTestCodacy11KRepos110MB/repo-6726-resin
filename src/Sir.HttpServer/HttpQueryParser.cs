@@ -22,7 +22,7 @@ namespace Sir.HttpServer
             _parser = parser;
         }
 
-        public async Task<Query> ParseRequest(HttpRequest request, IEnumerable<string> collections = null)
+        public async Task<IQuery> ParseRequest(HttpRequest request, IEnumerable<string> collections = null)
         {
             var select = request.Query["select"].ToArray();
 
@@ -58,7 +58,7 @@ namespace Sir.HttpServer
             }
         }
 
-        public Query ParseFormattedString(string formattedQuery, string[] select)
+        public IQuery ParseFormattedString(string formattedQuery, string[] select)
         {
             var document = JsonConvert.DeserializeObject<IDictionary<string, object>>(
                 formattedQuery, new JsonConverter[] { new DictionaryConverter() });
@@ -66,7 +66,7 @@ namespace Sir.HttpServer
             return ParseDictionary(document, select);
         }
 
-        public Query ParseDictionary(IDictionary<string, object> document, string[] select)
+        public IQuery ParseDictionary(IDictionary<string, object> document, string[] select)
         {
             return _parser.Parse(document, select);
         }

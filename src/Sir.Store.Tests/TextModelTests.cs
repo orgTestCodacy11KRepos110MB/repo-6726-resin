@@ -13,7 +13,6 @@ namespace Sir.Tests
     {
         private ILoggerFactory _loggerFactory;
         private Database _sessionFactory;
-        private string _directory = @"c:\temp\sir_tests";
 
         private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
 

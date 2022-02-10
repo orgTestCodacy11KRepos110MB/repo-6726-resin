@@ -20,7 +20,7 @@ namespace Sir.Search
             _directory = directory;
         }
 
-        public Query Parse(
+        public IQuery Parse(
             string collection,
             T q,
             string field,
@@ -37,7 +37,7 @@ namespace Sir.Search
                 or);
         }
 
-        public Query Parse(
+        public IQuery Parse(
             IEnumerable<string> collections,
             T q, 
             string[] fields, 
@@ -115,7 +115,7 @@ namespace Sir.Search
             return Parse(root, select);
         }
 
-        public Query Parse(dynamic document, IEnumerable<string> select)
+        public IQuery Parse(dynamic document, IEnumerable<string> select)
         {
             Query root = null;
             Query cursor = null;
