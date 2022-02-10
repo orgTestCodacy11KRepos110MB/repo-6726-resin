@@ -19,7 +19,7 @@
             if (term.PostingsOffsets == null)
                 return;
 
-            term.Result = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffsets);
+            term.DocumentIds = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffsets);
         }
     }
 }

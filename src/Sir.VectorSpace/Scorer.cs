@@ -99,7 +99,7 @@ namespace Sir.VectorSpace
                 {
                     if (result.Count == 0)
                     {
-                        foreach (var docId in term.Result)
+                        foreach (var docId in term.DocumentIds)
                         {
                             result.Add(docId, term.Score);
                         }
@@ -108,7 +108,7 @@ namespace Sir.VectorSpace
                     {
                         var intersection = new Dictionary<(ulong, long), double>();
 
-                        foreach (var doc in term.Result)
+                        foreach (var doc in term.DocumentIds)
                         {
                             double score;
 
@@ -125,14 +125,14 @@ namespace Sir.VectorSpace
                 {
                     if (result.Count == 0)
                     {
-                        foreach (var docId in term.Result)
+                        foreach (var docId in term.DocumentIds)
                         {
                             result.Add(docId, term.Score);
                         }
                     }
                     else
                     {
-                        foreach (var doc in term.Result)
+                        foreach (var doc in term.DocumentIds)
                         {
                             if (result.ContainsKey(doc))
                             {
@@ -149,7 +149,7 @@ namespace Sir.VectorSpace
                 {
                     if (result.Count > 0)
                     {
-                        foreach (var doc in term.Result)
+                        foreach (var doc in term.DocumentIds)
                         {
                             result.Remove(doc);
                         }

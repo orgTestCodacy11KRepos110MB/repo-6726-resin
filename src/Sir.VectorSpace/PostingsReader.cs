@@ -25,17 +25,17 @@ namespace Sir.VectorSpace
         public IList<(ulong, long)> Read(ulong collectionId, long keyId, IList<long> offsets)
         {
             var time = Stopwatch.StartNew();
-            var list = new List<(ulong, long)>();
+            var documents = new List<(ulong, long)>();
 
             foreach (var postingsOffset in offsets)
-                GetPostingsFromStream(collectionId, keyId, postingsOffset, list);
+                GetPostingsFromStream(collectionId, keyId, postingsOffset, documents);
 
-            _streamDispatcher.LogDebug($"read {list.Count} postings from {offsets.Count} terms into memory in {time.Elapsed}");
+            _streamDispatcher.LogDebug($"read {documents.Count} postings from {offsets.Count} terms into memory in {time.Elapsed}");
 
-            return list;
+            return documents;
         }
 
-        private void GetPostingsFromStream(ulong collectionId, long keyId, long postingsOffset, IList<(ulong collectionId, long docId)> result)
+        private void GetPostingsFromStream(ulong collectionId, long keyId, long postingsOffset, IList<(ulong collectionId, long docId)> documents)
         {
             var stream = GetOrCreateStream(collectionId, keyId);
 
@@ -58,7 +58,7 @@ namespace Sir.VectorSpace
 
             foreach (var docId in MemoryMarshal.Cast<byte, long>(listBuf))
             {
-                result.Add((collectionId, docId));
+                documents.Add((collectionId, docId));
             }
         }
 

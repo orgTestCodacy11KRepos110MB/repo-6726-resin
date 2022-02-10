@@ -20,9 +20,9 @@ namespace Sir.Tests
         public void Can_traverse_index_in_memory()
         {
             var model = new BagOfCharsModel();
-            var tree = model.CreateTree(model, _data);
+            var index = model.CreateTree(model, _data);
 
-            Debug.WriteLine(PathFinder.Visualize(tree));
+            Debug.WriteLine(PathFinder.Visualize(index));
 
             Assert.DoesNotThrow(() => 
             {
@@ -30,11 +30,11 @@ namespace Sir.Tests
                 {
                     foreach (var queryVector in model.CreateEmbedding(word))
                     {
-                        var hit = PathFinder.ClosestMatch(tree, queryVector, model);
+                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
 
                         if (hit == null)
                         {
-                            throw new Exception($"unable to find {word} in tree.");
+                            throw new Exception($"unable to find {word} in index.");
                         }
 
                         if (hit.Score < model.IdenticalAngle)
@@ -52,7 +52,7 @@ namespace Sir.Tests
         public void Can_traverse_streamed()
         {
             var model = new BagOfCharsModel();
-            var tree = model.CreateTree(model, _data);
+            var index = model.CreateTree(model, _data);
 
             using (var indexStream = new MemoryStream())
             using (var vectorStream = new MemoryStream())
@@ -60,7 +60,7 @@ namespace Sir.Tests
             {
                 using (var writer = new ColumnWriter(indexStream, keepStreamOpen:true))
                 {
-                    writer.CreatePage(tree, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen:true));
+                    writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen:true));
                 }
 
                 pageStream.Position = 0;

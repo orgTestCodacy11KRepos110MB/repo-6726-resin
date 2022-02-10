@@ -21,9 +21,9 @@ namespace Sir.Tests
                 @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
 
             var model = new LinearClassifierImageModel();
-            var tree = model.CreateTree(model, trainingData);
+            var index = model.CreateTree(model, trainingData);
 
-            Print(tree);
+            Print(index);
 
             Assert.DoesNotThrow(() =>
             {
@@ -34,11 +34,11 @@ namespace Sir.Tests
                 {
                     foreach (var queryVector in model.CreateEmbedding(image))
                     {
-                        var hit = PathFinder.ClosestMatch(tree, queryVector, model);
+                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
 
                         if (hit == null)
                         {
-                            throw new Exception($"unable to find {image} in tree.");
+                            throw new Exception($"unable to find {image} in index.");
                         }
 
                         if (!hit.Node.Vector.Label.Equals(image.Label))
