@@ -29,7 +29,7 @@ namespace Sir.Wikipedia
             if (take == 0)
                 take = int.MaxValue;
 
-            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest, "https://en.wikipedia.org/wiki/{0}");
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
             using (var sessionFactory = new Database(logger))
             {

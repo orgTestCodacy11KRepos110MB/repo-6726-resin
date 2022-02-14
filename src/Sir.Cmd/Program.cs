@@ -95,7 +95,18 @@ namespace Sir.Cmd
 
             for (int i = 1; i < args.Length; i += 2)
             {
-                dic.Add(args[i].Replace("--", ""), i==args.Length-1?null:args[i + 1]);
+                var key = args[i].Replace("--", "");
+                var value = args[i + 1];
+
+                if (value.StartsWith("--"))
+                {
+                    dic.Add(key, "true");
+                    i--;
+                }
+                else
+                {
+                    dic.Add(key, i == args.Length - 1 ? null : value);
+                }
             }
 
             return dic;

@@ -9,7 +9,7 @@ namespace Sir.Wikipedia
 {
     public static class WikipediaHelper
     {
-        public static IEnumerable<Document> Read(string fileName, int skip, int take, HashSet<string> fieldsOfInterest, string urlFormat)
+        public static IEnumerable<Document> Read(string fileName, int skip, int take, HashSet<string> fieldsOfInterest, string urlFormat = "https://en.wikipedia.org/wiki/{0}")
         {
             return ReadGZipJsonFile(fileName, skip, take, fieldsOfInterest, urlFormat);
         }
@@ -40,25 +40,26 @@ namespace Sir.Wikipedia
 
                     var jobject = JObject.Parse(line);
 
-                    if (jobject.ContainsKey("title"))
+                    var fields = new List<Field>();
+
+                    foreach (var kvp in jobject)
                     {
-                        var fields = new List<Field>();
-                        string title = null;
-
-                        foreach (var kvp in jobject)
+                        if (fieldsOfInterest.Contains(kvp.Key))
                         {
-                            if (fieldsOfInterest.Contains(kvp.Key))
-                                fields.Add(new Field(kvp.Key, kvp.Value.ToString()));
-
-                            if (kvp.Key == "title")
-                                title = kvp.Value.ToString();
+                            fields.Add(new Field(kvp.Key, kvp.Value.ToString()));
                         }
+                    }
 
-                        var url = string.Format(urlFormat, Uri.EscapeDataString(title));
+                    if (fieldsOfInterest.Contains("url"))
+                    {
+                        var url = string.Format(urlFormat, Uri.EscapeDataString(jobject["title"].ToString()));
                         var uri = new Uri(url);
 
                         fields.Add(new Field("url", uri.ToString()));
+                    }
 
+                    if (fields.Count > 0)
+                    {
                         yield return new Document(fields);
                         took++;
                     }

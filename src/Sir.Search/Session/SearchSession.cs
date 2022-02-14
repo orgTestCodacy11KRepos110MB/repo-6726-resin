@@ -93,7 +93,7 @@ namespace Sir.Search
         }
 
         /// <summary>
-        /// Scan the index to find the query terms closest matching nodes and record their posting list addresses.
+        /// Scans the index to find the query's closest matching nodes and records their posting list addresses.
         /// </summary>
         private void Scan(IQuery query)
         {

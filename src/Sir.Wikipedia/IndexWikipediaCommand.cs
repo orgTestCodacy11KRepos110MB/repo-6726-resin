@@ -34,7 +34,7 @@ namespace Sir.Wikipedia
                 take = int.MaxValue;
 
             var model = new BagOfCharsModel();
-            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest, "https://en.wikipedia.org/wiki/{0}");
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
             using (var sessionFactory = new Database(logger))
             {
