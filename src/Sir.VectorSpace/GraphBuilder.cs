@@ -240,12 +240,6 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void MergePostings(this VectorNode target, VectorNode source)
-        {
-            if (source.PostingsOffsets != null)
-                ((List<long>)target.PostingsOffsets).AddRange(source.PostingsOffsets);
-        }
-
         public static void MergeDocIds(this VectorNode target, VectorNode source)
         {
             if (source.DocIds != null)

@@ -10,7 +10,7 @@ namespace Sir.VectorSpace
         public string Key { get; }
         public string Directory { get; }
         public ulong CollectionId { get; }
-        public IList<long> PostingsOffsets { get; set; }
+        public long PostingsOffset { get; set; }
         public double Score { get; set; }
         public IList<(ulong collectionId, long documentId)> DocumentIds { get; set; }
 
@@ -33,6 +33,7 @@ namespace Sir.VectorSpace
             IsIntersection = and;
             IsUnion = or;
             IsSubtraction = not;
+            PostingsOffset = -1;
         }
     }
 }

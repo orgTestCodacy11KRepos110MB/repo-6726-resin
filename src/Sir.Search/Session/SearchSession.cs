@@ -126,7 +126,7 @@ namespace Sir.Search
                         if (hit != null)
                         {
                             term.Score = hit.Score;
-                            term.PostingsOffsets = hit.Node.PostingsOffsets ?? new List<long> { hit.Node.PostingsOffset };
+                            term.PostingsOffset = hit.Node.PostingsOffset;
                         }
                     }
                 }

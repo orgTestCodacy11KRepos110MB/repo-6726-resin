@@ -92,7 +92,7 @@ namespace Sir.VectorSpace
         {
             foreach (var term in terms)
             {
-                if (term.PostingsOffsets == null)
+                if (term.PostingsOffset == -1)
                     continue;
 
                 if (term.IsIntersection)

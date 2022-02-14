@@ -44,6 +44,9 @@ namespace Sir.VectorSpace
                 {
                     hits.Add(hit);
                 }
+
+                //if (hit.Score >= model.IdenticalAngle)
+                //    break;
             }
 
             LogDebug($"scanned {_pages.Count} segments in {time.Elapsed}");
@@ -55,10 +58,6 @@ namespace Sir.VectorSpace
                 if (best == null || hit.Score > best.Score)
                 {
                     best = hit;
-                }
-                else if (hit.Score >= model.IdenticalAngle || hit.Score.Approximates(best.Score))
-                {
-                    best.Node.MergePostings(hit.Node);
                 }
             }
 
@@ -99,7 +98,7 @@ namespace Sir.VectorSpace
                     }
                     else if (angle == bestScore)
                     {
-                        bestNode.PostingsOffsets.Add(postingsOffset);
+                        bestNode.PostingsOffset = postingsOffset;
                     }
 
                     // We need to determine if we can traverse further left.
@@ -128,7 +127,7 @@ namespace Sir.VectorSpace
                     }
                     else if (angle > 0 && angle == bestScore)
                     {
-                        bestNode.PostingsOffsets.Add(postingsOffset);
+                        bestNode.PostingsOffset = postingsOffset;
                     }
 
                     // We need to determine if we can traverse further to the right.

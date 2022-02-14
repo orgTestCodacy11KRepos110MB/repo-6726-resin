@@ -22,15 +22,14 @@ namespace Sir.VectorSpace
             _streams = new Dictionary<(ulong collectionId, long keyId), Stream>();
         }
 
-        public IList<(ulong, long)> Read(ulong collectionId, long keyId, IList<long> offsets)
+        public IList<(ulong, long)> Read(ulong collectionId, long keyId, long offset)
         {
             var time = Stopwatch.StartNew();
             var documents = new List<(ulong, long)>();
 
-            foreach (var postingsOffset in offsets)
-                GetPostingsFromStream(collectionId, keyId, postingsOffset, documents);
+            GetPostingsFromStream(collectionId, keyId, offset, documents);
 
-            _streamDispatcher.LogDebug($"read {documents.Count} postings from {offsets.Count} terms into memory in {time.Elapsed}");
+            _streamDispatcher.LogDebug($"read {documents.Count} postings into memory in {time.Elapsed}");
 
             return documents;
         }

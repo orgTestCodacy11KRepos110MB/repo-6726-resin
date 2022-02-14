@@ -55,8 +55,6 @@ namespace Sir
 
         public long Terminator { get; set; }
 
-        public IList<long> PostingsOffsets { get; set; }
-
         public bool IsRoot => Ancestor == null && Vector == null;
 
         public long? KeyId { get; set; }
@@ -69,8 +67,7 @@ namespace Sir
 
         public VectorNode(long postingsOffset)
         {
-            PostingsOffset = -1;
-            PostingsOffsets = new List<long> { postingsOffset }; ;
+            PostingsOffset = postingsOffset;
             VectorOffset = -1;
         }
 
@@ -93,11 +90,6 @@ namespace Sir
                 {
                     DocIds.Add(docId);
                 }
-            }
-
-            if (postingsOffset > -1)
-            {
-                PostingsOffsets = new List<long> { postingsOffset };
             }
         }
 
