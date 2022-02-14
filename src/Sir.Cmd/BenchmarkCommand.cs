@@ -52,7 +52,7 @@ namespace Sir.Cmd
 
             for (int i = 0; i < numOfRuns; i++)
             {
-                new Database().Truncate(args["directory"], "wikipedia".ToHash());
+                new Database(logger).Truncate(args["directory"], "wikipedia".ToHash());
                 new IndexWikipediaCommand().Run(args, logger);
             }
                 
