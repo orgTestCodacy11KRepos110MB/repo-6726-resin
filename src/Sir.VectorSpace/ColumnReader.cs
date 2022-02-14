@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -38,7 +39,7 @@ namespace Sir.VectorSpace
 
             foreach (var page in _pages)
             {
-                var hit = ClosestMatchInPage(vector, model, page.offset, page.length);
+                var hit = ClosestMatchInPage(vector, model, page.offset);
 
                 if (hit.Score > 0)
                 {
@@ -64,21 +65,23 @@ namespace Sir.VectorSpace
             return best;
         }
 
-        private Hit ClosestMatchInPage(ISerializableVector queryVector, IModel model, long pageOffset, long pageSize)
+        private Hit ClosestMatchInPage(ISerializableVector queryVector, IModel model, long pageOffset)
         {
             _ixFile.Seek(pageOffset, SeekOrigin.Begin);
 
-            Span<byte> block = stackalloc byte[VectorNode.BlockSize];
+            var block = ArrayPool<byte>.Shared.Rent(VectorNode.BlockSize);
             VectorNode bestNode = null;
             double bestScore = 0;
-            var read = _ixFile.Read(block);
+            
+            _ixFile.Read(block, 0, VectorNode.BlockSize);
 
             while (true)
             {
-                var vecOffset = BitConverter.ToInt64(block.Slice(0));
-                var postingsOffset = BitConverter.ToInt64(block.Slice(sizeof(long)));
-                var componentCount = BitConverter.ToInt64(block.Slice(sizeof(long) * 2));
-                var terminator = BitConverter.ToInt64(block.Slice(sizeof(long) * 4));
+                var vecOffset = BitConverter.ToInt64(block, 0);
+                var postingsOffset = BitConverter.ToInt64(block, sizeof(long));
+                var componentCount = BitConverter.ToInt64(block, sizeof(long) * 2);
+                var terminator = BitConverter.ToInt64(block, sizeof(long) * 4);
+
                 var angle = model.CosAngle(queryVector, vecOffset, (int)componentCount, _vectorFile);
 
                 if (angle >= model.IdenticalAngle)
@@ -109,7 +112,7 @@ namespace Sir.VectorSpace
                         // There exists either a left and a right child or just a left child.
                         // Either way, we want to go left and the next node in bitmap is the left child.
 
-                        read += _ixFile.Read(block);
+                        _ixFile.Read(block, 0, VectorNode.BlockSize);
                     }
                     else
                     {
@@ -140,14 +143,14 @@ namespace Sir.VectorSpace
 
                         SkipTree();
 
-                        read += _ixFile.Read(block);
+                        _ixFile.Read(block, 0, VectorNode.BlockSize);
                     }
                     else if (terminator == 2)
                     {
                         // Next node in bitmap is the right child,
                         // which is good because we want to go right.
 
-                        read += _ixFile.Read(block);
+                        _ixFile.Read(block, 0, VectorNode.BlockSize);
                     }
                     else
                     {
@@ -163,9 +166,9 @@ namespace Sir.VectorSpace
 
         private void SkipTree()
         {
-            Span<byte> buf = stackalloc byte[VectorNode.BlockSize];
-            var read = _ixFile.Read(buf);
-            var sizeOfTree = BitConverter.ToInt64(buf.Slice(sizeof(long) * 3));
+            var buf = ArrayPool<byte>.Shared.Rent(VectorNode.BlockSize);
+            _ixFile.Read(buf, 0, VectorNode.BlockSize);
+            var sizeOfTree = BitConverter.ToInt64(buf, sizeof(long) * 3);
             var distance = sizeOfTree * VectorNode.BlockSize;
 
             if (distance > 0)

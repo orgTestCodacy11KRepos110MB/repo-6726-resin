@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -40,16 +41,13 @@ namespace Sir.VectorSpace
 
             stream.Seek(postingsOffset, SeekOrigin.Begin);
 
-            Span<byte> headerBuf = stackalloc byte[sizeof(long)];
+            var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long));
 
-            stream.Read(headerBuf);
+            stream.Read(headerBuf, 0, sizeof(long));
 
             var numOfPostings = BitConverter.ToInt64(headerBuf);
-
             var len = sizeof(long) * numOfPostings;
-
             Span<byte> listBuf = new byte[len];
-
             var read = stream.Read(listBuf);
 
             if (read != len)

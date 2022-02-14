@@ -21,7 +21,7 @@ namespace Sir.Search
             (long keyId, long valId) mapping = (-1, -1);
             int mappingIx = 0;
 
-            for (;mappingIx < docMap.Count; mappingIx++)
+            for (;mappingIx < docMap.Length; mappingIx++)
             {
                 var fieldMapping = docMap[mappingIx];
 

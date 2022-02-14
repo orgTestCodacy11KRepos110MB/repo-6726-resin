@@ -146,7 +146,7 @@ namespace Sir.Search
             var docMap = streamReader.GetDocumentMap(docInfo.offset, docInfo.length);
             T value = default(T);
 
-            for (int i = 0; i < docMap.Count; i++)
+            for (int i = 0; i < docMap.Length; i++)
             {
                 var kvp = docMap[i];
 
@@ -173,7 +173,7 @@ namespace Sir.Search
             var docMap = streamReader.GetDocumentMap(docInfo.offset, docInfo.length);
 
             // for each key, create a tree
-            for (int i = 0; i < docMap.Count; i++)
+            for (int i = 0; i < docMap.Length; i++)
             {
                 var kvp = docMap[i];
                 var kInfo = streamReader.GetAddressOfKey(kvp.keyId);
@@ -217,7 +217,7 @@ namespace Sir.Search
             var docMap = streamReader.GetDocumentMap(docInfo.offset, docInfo.length);
             var fields = new List<Field>();
 
-            for (int i = 0; i < docMap.Count; i++)
+            for (int i = 0; i < docMap.Length; i++)
             {
                 var kvp = docMap[i];
                 var kInfo = streamReader.GetAddressOfKey(kvp.keyId);

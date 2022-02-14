@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Buffers;
 using System.IO;
 
 namespace Sir.Documents
@@ -23,11 +23,11 @@ namespace Sir.Documents
                 _stream.Dispose();
         }
 
-        public IList<(long keyId, long valId)> Get(long offset, int length)
+        public (long keyId, long valId)[] Get(long offset, int length)
         {
             _stream.Seek(offset, SeekOrigin.Begin);
 
-            Span<byte> buf = stackalloc byte[length];
+            Span<byte> buf = ArrayPool<byte>.Shared.Rent(length);
             int read = _stream.Read(buf);
 
             if (read != length)
@@ -37,7 +37,7 @@ namespace Sir.Documents
 
             const int blockSize = sizeof(long) + sizeof(long);
             var blockCount = length / blockSize;
-            var docMapping = new List<(long, long)>();
+            var docMapping = new (long, long)[blockCount];
 
             for (int i = 0; i < blockCount; i++)
             {
@@ -45,7 +45,7 @@ namespace Sir.Documents
                 var key = BitConverter.ToInt64(buf.Slice(offs));
                 var val = BitConverter.ToInt64(buf.Slice(offs + sizeof(long)));
 
-                docMapping.Add((key, val));
+                docMapping[i] = (key, val);
             }
 
             return docMapping;

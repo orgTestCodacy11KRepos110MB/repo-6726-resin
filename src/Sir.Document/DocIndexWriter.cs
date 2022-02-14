@@ -9,7 +9,7 @@ namespace Sir.Documents
     public class DocIndexWriter :IDisposable
     {
         private readonly Stream _stream;
-        public static int BlockSize = sizeof(long)+sizeof(int);
+        public const int BlockSize = sizeof(long)+sizeof(int);
 
         public DocIndexWriter(Stream stream)
         {

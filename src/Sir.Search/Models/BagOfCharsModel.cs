@@ -11,7 +11,7 @@ namespace Sir.Search
 
         public void ExecutePut<T>(VectorNode column, VectorNode node)
         {
-            column.MergeOrAdd(node, this);
+            column.AddOrAppend(node, this);
         }
 
         public IEnumerable<ISerializableVector> CreateEmbedding(string data)
@@ -123,7 +123,7 @@ namespace Sir.Search
 
             public void ExecutePut<T>(VectorNode column, VectorNode node)
             {
-                column.MergeOrAdd(node, this);
+                column.AddOrAppend(node, this);
             }
 
             public IEnumerable<ISerializableVector> CreateEmbedding(string data)

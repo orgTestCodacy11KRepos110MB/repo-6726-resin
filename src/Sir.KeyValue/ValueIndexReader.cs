@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 
 namespace Sir.KeyValue
@@ -9,7 +10,7 @@ namespace Sir.KeyValue
     public class ValueIndexReader : IDisposable
     {
         private readonly Stream _stream;
-        private static int _blockSize = sizeof(long) + sizeof(int) + sizeof(byte);
+        private const int BlockSize = sizeof(long) + sizeof(int) + sizeof(byte);
 
         public ValueIndexReader(Stream stream)
         {
@@ -24,19 +25,14 @@ namespace Sir.KeyValue
 
         public (long offset, int len, byte dataType) Get(long id)
         {
-            var offset = id * _blockSize;
+            var offset = id * BlockSize;
 
             _stream.Seek(offset, SeekOrigin.Begin);
 
-            Span<byte> buf = stackalloc byte[_blockSize];
-            var read =  _stream.Read(buf);
+            Span<byte> buf = ArrayPool<byte>.Shared.Rent(BlockSize);
+             _stream.Read(buf);
 
-            if (read != _blockSize)
-            {
-                throw new InvalidDataException();
-            }
-
-            return (BitConverter.ToInt64(buf.Slice(0)), BitConverter.ToInt32(buf.Slice(sizeof(long))), buf[_blockSize - 1]);
+            return (BitConverter.ToInt64(buf.Slice(0)), BitConverter.ToInt32(buf.Slice(sizeof(long))), buf[BlockSize - 1]);
         }
     }
 }

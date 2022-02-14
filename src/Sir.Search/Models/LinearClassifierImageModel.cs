@@ -13,7 +13,7 @@ namespace Sir.Search
 
         public void ExecutePut<T>(VectorNode column, VectorNode node)
         {
-            column.MergeOrAddSupervised(node, this);
+            column.AddOrAppendSupervised(node, this);
         }
 
         public IEnumerable<ISerializableVector> CreateEmbedding(IImage data)

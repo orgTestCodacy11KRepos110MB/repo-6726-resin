@@ -43,7 +43,7 @@ namespace Sir.Documents
             return _docIx.Get(docId);
         }
 
-        public IList<(long keyId, long valId)> GetDocumentMap(long offset, int length)
+        public (long keyId, long valId)[] GetDocumentMap(long offset, int length)
         {
             return _docs.Get(offset, length);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -22,7 +23,7 @@ namespace Sir.VectorSpace
             return root;
         }
 
-        public static void MergeOrAddSupervised(
+        public static void AddOrAppendSupervised(
             this VectorNode root,
             VectorNode node,
             IModel model)
@@ -68,7 +69,7 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void MergeOrAdd(
+        public static void AddOrAppend(
             this VectorNode root, 
             VectorNode node,
             IModel model)
@@ -242,17 +243,14 @@ namespace Sir.VectorSpace
 
         public static void MergeDocIds(this VectorNode target, VectorNode source)
         {
-            if (source.DocIds != null)
-            {
-                target.DocIds.AddRange(source.DocIds);
-            }
+            target.DocIds.AddRange(source.DocIds);
         }
 
 
 
         public static void Serialize(this VectorNode node, Stream stream)
         {
-            long terminator = 1;
+            long terminator;
 
             if (node.Left == null && node.Right == null) // there are no children
             {
@@ -271,15 +269,11 @@ namespace Sir.VectorSpace
                 terminator = 0;
             }
 
-            Span<long> span = stackalloc long[5];
-
-            span[0] = node.VectorOffset;
-            span[1] = node.PostingsOffset;
-            span[2] = node.Vector.ComponentCount;
-            span[3] = node.Weight;
-            span[4] = terminator;
-
-            stream.Write(MemoryMarshal.Cast<long, byte>(span));
+            stream.Write(BitConverter.GetBytes(node.VectorOffset), 0, sizeof(long));
+            stream.Write(BitConverter.GetBytes(node.PostingsOffset), 0, sizeof(long));
+            stream.Write(BitConverter.GetBytes((long)node.Vector.ComponentCount), 0, sizeof(long));
+            stream.Write(BitConverter.GetBytes(node.Weight), 0, sizeof(long));
+            stream.Write(BitConverter.GetBytes(terminator), 0, sizeof(long));
         }
 
         /// <summary>

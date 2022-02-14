@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 
 namespace Sir.Documents
@@ -34,7 +35,8 @@ namespace Sir.Documents
 
             _stream.Seek(offs, SeekOrigin.Begin);
 
-            Span<byte> buf = stackalloc byte[DocIndexWriter.BlockSize];
+            Span<byte> buf = ArrayPool<byte>.Shared.Rent(DocIndexWriter.BlockSize);
+
             var read = _stream.Read(buf);
 
             if (read == 0)

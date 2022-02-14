@@ -216,7 +216,7 @@ namespace Sir.Cmd
 
                     foreach (var token in tokens)
                     {
-                        tree.MergeOrAdd(new VectorNode(token), model);
+                        tree.AddOrAppend(new VectorNode(token), model);
                     }
 
                     Console.WriteLine(field.Name);
