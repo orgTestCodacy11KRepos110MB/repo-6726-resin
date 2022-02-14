@@ -13,6 +13,8 @@ namespace Sir.Cmd
         {
             if (args.ContainsKey("tokenize"))
                 RunTokenizeBenchmark(args, logger);
+            else if (args.ContainsKey("index"))
+                RunIndexBenchmark(args, logger);
         }
 
         public void RunTokenizeBenchmark(IDictionary<string, string> args, ILogger logger)
@@ -36,6 +38,28 @@ namespace Sir.Cmd
             var avgPerRun = totalTime.TotalMilliseconds / numOfRuns;
             var avgPerDoc = totalTime.TotalMilliseconds / documents.Count;
             Console.WriteLine($"tokenized {documents.Count * numOfRuns} documents in a total of {timer.Elapsed}. Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
+        }
+
+        public void RunIndexBenchmark(IDictionary<string, string> args, ILogger logger)
+        {
+            const int numOfDocs = 10000;
+            const int numOfRuns = 1;
+
+            args.Add("skip", "0");
+            args.Add("take", numOfDocs.ToString());
+
+            var timer = Stopwatch.StartNew();
+
+            for (int i = 0; i < numOfRuns; i++)
+            {
+                new Database().Truncate(args["directory"], "wikipedia".ToHash());
+                new IndexWikipediaCommand().Run(args, logger);
+            }
+                
+            var totalTime = timer.Elapsed;
+            var avgPerRun = totalTime.TotalMilliseconds / numOfRuns;
+            var avgPerDoc = totalTime.TotalMilliseconds / numOfDocs;
+            Console.WriteLine($"indexed {numOfDocs * numOfRuns} documents in a total of {timer.Elapsed}. Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
         }
     }
 }

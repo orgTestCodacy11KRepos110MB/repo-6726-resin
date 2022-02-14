@@ -50,16 +50,16 @@ namespace Sir.Wikipedia
                         }
                     }
 
-                    if (fieldsOfInterest.Contains("url"))
-                    {
-                        var url = string.Format(urlFormat, Uri.EscapeDataString(jobject["title"].ToString()));
-                        var uri = new Uri(url);
-
-                        fields.Add(new Field("url", uri.ToString()));
-                    }
-
                     if (fields.Count > 0)
                     {
+                        if (fieldsOfInterest.Contains("url"))
+                        {
+                            var url = string.Format(urlFormat, Uri.EscapeDataString(jobject["title"].ToString()));
+                            var uri = new Uri(url);
+
+                            fields.Add(new Field("url", uri.ToString()));
+                        }
+
                         yield return new Document(fields);
                         took++;
                     }

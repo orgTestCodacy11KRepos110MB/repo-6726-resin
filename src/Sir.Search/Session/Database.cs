@@ -503,6 +503,11 @@ namespace Sir.Search
 
         public Stream CreateAppendStream(string directory, ulong collectionId, string fileExtension)
         {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             var fileName = Path.Combine(directory, $"{collectionId}.{fileExtension}");
 
             if (!File.Exists(fileName))
@@ -515,6 +520,11 @@ namespace Sir.Search
 
         public Stream CreateAppendStream(string directory, ulong collectionId, long keyId, string fileExtension)
         {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             var fileName = Path.Combine(directory, $"{collectionId}.{keyId}.{fileExtension}");
 
             if (!File.Exists(fileName))
@@ -527,6 +537,11 @@ namespace Sir.Search
 
         public Stream CreateSeekableWritableStream(string directory, ulong collectionId, long keyId, string fileExtension)
         {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             var fileName = Path.Combine(directory, $"{collectionId}.{keyId}.{fileExtension}");
 
             if (!File.Exists(fileName))
@@ -539,6 +554,11 @@ namespace Sir.Search
 
         public Stream CreateSeekableWritableStream(string directory, ulong collectionId, string fileExtension)
         {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             var fileName = Path.Combine(directory, $"{collectionId}.{fileExtension}");
 
             if (!File.Exists(fileName))
