@@ -21,20 +21,41 @@ namespace Sir.Search
         }
 
         public IQuery Parse(
-            string collection,
-            T q,
+            ulong collectionId,
+            T query,
             string field,
             string select,
             bool and,
             bool or)
         {
-            return Parse(
-                new string[] { collection },
-                q,
-                new string[] { field },
-                new string[] { select },
+            var terms = CreateTerms(
+                collectionId,
+                field,
+                query,
                 and,
-                or);
+                or,
+                !and && !or);
+
+            return new Query(terms, new string[] { select }, and, or, !and && !or);
+        }
+
+        public IQuery Parse(
+            string collection,
+            T query,
+            string field,
+            string select,
+            bool and,
+            bool or)
+        {
+            var terms = CreateTerms(
+                collection,
+                field,
+                query,
+                and,
+                or,
+                !and && !or);
+
+            return new Query(terms, new string[] { select }, and, or, !and && !or);
         }
 
         public IQuery Parse(
@@ -177,7 +198,7 @@ namespace Sir.Search
                     {
                         foreach (var kvp in kvps)
                         {
-                            var terms = ParseTerms(collection, kvp.key, kvp.value, and, or, not);
+                            var terms = CreateTerms(collection, kvp.key, kvp.value, and, or, not);
 
                             if (terms.Count == 0)
                             {
@@ -204,9 +225,14 @@ namespace Sir.Search
             return root;
         }
 
-        private IList<ITerm> ParseTerms(string collectionName, string key, T value, bool and, bool or, bool not)
+        private IList<ITerm> CreateTerms(string collectionName, string key, T value, bool and, bool or, bool not)
         {
             var collectionId = collectionName.ToHash();
+            return CreateTerms(collectionId, key, value, and, or, not);
+        }
+
+        private IList<ITerm> CreateTerms(ulong collectionId, string key, T value, bool and, bool or, bool not)
+        {
             long keyId;
             var terms = new List<ITerm>();
 

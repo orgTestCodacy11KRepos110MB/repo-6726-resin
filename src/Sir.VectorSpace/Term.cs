@@ -13,6 +13,7 @@ namespace Sir.VectorSpace
         public long PostingsOffset { get; set; }
         public double Score { get; set; }
         public IList<(ulong collectionId, long documentId)> DocumentIds { get; set; }
+        public object Label => Vector.Label;
 
         public Term(
             string directory,
