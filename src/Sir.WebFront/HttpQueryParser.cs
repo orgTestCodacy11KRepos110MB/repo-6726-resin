@@ -39,13 +39,13 @@ namespace Sir.HttpServer
                 bool and = request.Query.ContainsKey("AND");
                 bool or = !and && request.Query.ContainsKey("OR");
 
-                return _parser.Parse(collections, naturalLanguage, fields.ToArray(), select, and, or);
+                return _parser.Parse(collections, naturalLanguage, fields.ToArray(), select, and, or, false);
             }
             else
             {
                 var jsonQueryDocument = await DeserializeFromStream(request.Body);
 
-                var query = _parser.Parse(jsonQueryDocument, select);
+                var query = _parser.Parse(jsonQueryDocument, select, false);
 
                 return query;
             }
@@ -70,7 +70,7 @@ namespace Sir.HttpServer
 
         public IQuery ParseDictionary(IDictionary<string, object> document, string[] select)
         {
-            return _parser.Parse(document, select);
+            return _parser.Parse(document, select, false);
         }
 
         private void DoParseQuery(IQuery query, IDictionary<string, object> result)

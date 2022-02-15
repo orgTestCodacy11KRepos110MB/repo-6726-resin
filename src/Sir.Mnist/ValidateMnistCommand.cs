@@ -31,7 +31,7 @@ namespace Sir.Mnist
 
                 foreach (var image in images)
                 {
-                    var query = queryParser.Parse(collection, image, field: "image", select: "label", and: true, or: false);
+                    var query = queryParser.Parse(collection, image, field: "image", select: "label", and: true, or: false, true);
                     var result = querySession.Search(query, 0, 1);
 
                     count++;

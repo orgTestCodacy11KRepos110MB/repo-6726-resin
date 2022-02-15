@@ -27,7 +27,7 @@ namespace Sir.Search
         {
             foreach (var field in doc.Fields)
             {
-                var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false);
+                var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
                 var result = _readSession.SearchScalar(query);
 
                 if (doc.Id != result.Id)

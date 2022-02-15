@@ -19,9 +19,9 @@ namespace Sir.Search
             _index = new Dictionary<long, VectorNode>();
         }
 
-        public void Put(long docId, long keyId, T value)
+        public void Put(long docId, long keyId, T value, bool label)
         {
-            var tokens = _model.CreateEmbedding(value);
+            var tokens = _model.CreateEmbedding(value, label);
 
             Put(docId, keyId, tokens);
         }
@@ -92,9 +92,9 @@ namespace Sir.Search
             _index = new Dictionary<long, VectorNode>();
         }
 
-        public void Put(long docId, long keyId, T value)
+        public void Put(long docId, long keyId, T value, bool label)
         {
-            var vectors = _model.CreateEmbedding(value);
+            var vectors = _model.CreateEmbedding(value, label);
             VectorNode column;
 
             if (!_index.TryGetValue(keyId, out column))

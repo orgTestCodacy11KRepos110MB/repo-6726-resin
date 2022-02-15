@@ -43,7 +43,7 @@ namespace Sir.Tests
                             var doc = new Document(new Field[] { new Field(fieldName, data) });
 
                             writeSession.Put(doc);
-                            indexSession.Put(doc.Id, keyId, data);
+                            indexSession.Put(doc.Id, keyId, data, true);
                             index.CreatePage(indexSession.GetInMemoryIndices());
                         }
                     }
@@ -57,7 +57,7 @@ namespace Sir.Tests
                     {
                         foreach (var word in _data)
                         {
-                            var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false);
+                            var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false, label: true);
                             var result = searchSession.Search(query, 0, 1);
                             var document = result.Documents.FirstOrDefault();
 
@@ -94,7 +94,7 @@ namespace Sir.Tests
                                 continue;
                             }
 
-                            var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false);
+                            var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false, label:true);
                             var result = searchSession.Search(query, 0, 1);
                             var document = result.Documents.FirstOrDefault();
 
@@ -111,7 +111,7 @@ namespace Sir.Tests
                             Debug.WriteLine($"{word} matched with {document.Score * 100}% certainty.");
                         }
                     });
-                    var r = searchSession.Search(queryParser.Parse(collection, _data[documentIdToUpdate], fieldName, fieldName, and: true, or: false), 0, 1);
+                    var r = searchSession.Search(queryParser.Parse(collection, _data[documentIdToUpdate], fieldName, fieldName, and: true, or: false, label: true), 0, 1);
                     Assert.IsTrue(updatedWord == r.Documents.First().Fields.First().Value.ToString());
                 }
             }

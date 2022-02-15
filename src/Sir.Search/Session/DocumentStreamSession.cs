@@ -55,6 +55,7 @@ namespace Sir.Search
             ulong collectionId,
             HashSet<string> select,
             IModel<T> model,
+            bool label,
             int skip = 0,
             int take = 0)
         {
@@ -75,7 +76,7 @@ namespace Sir.Search
             {
                 var columns = new List<VectorNode>();
 
-                foreach (var node in ReadDocumentVectors((collectionId, docId), select, documentReader, model))
+                foreach (var node in ReadDocumentVectors((collectionId, docId), select, documentReader, model, label))
                 {
                     columns.Add(node);
                 }
@@ -167,7 +168,8 @@ namespace Sir.Search
             (ulong collectionId, long docId) doc,
             HashSet<string> select,
             DocumentReader streamReader,
-            IModel<T> model)
+            IModel<T> model,
+            bool label)
         {
             var docInfo = streamReader.GetDocumentAddress(doc.docId);
             var docMap = streamReader.GetDocumentMap(docInfo.offset, docInfo.length);
@@ -184,7 +186,7 @@ namespace Sir.Search
                 {
                     var vInfo = streamReader.GetAddressOfValue(kvp.valId);
 
-                    foreach (var vector in streamReader.GetVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value)))
+                    foreach (var vector in streamReader.GetVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value, label)))
                     {
                         tree.AddIfUnique(new VectorNode(vector, docId:doc.docId, keyId:kvp.keyId), model);
                     }

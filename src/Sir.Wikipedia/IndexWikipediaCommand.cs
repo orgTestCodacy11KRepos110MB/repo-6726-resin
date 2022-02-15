@@ -55,7 +55,7 @@ namespace Sir.Wikipedia
 
                                 foreach (var field in document.Fields)
                                 {
-                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value);
+                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, false);
                                 }
 
                                 debugger.Step(indexSession);

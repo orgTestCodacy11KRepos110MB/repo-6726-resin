@@ -27,7 +27,7 @@ namespace Sir.Tests
             {
                 for (long i = 0; i < _data.Length; i++)
                 {
-                    indexSession.Put(i, 0, _data[i]);
+                    indexSession.Put(i, 0, _data[i], true);
                 }
 
                 tree = indexSession.GetInMemoryIndices()[0];
@@ -39,7 +39,7 @@ namespace Sir.Tests
             {
                 foreach (var word in _data)
                 {
-                    foreach (var queryVector in model.CreateEmbedding(word))
+                    foreach (var queryVector in model.CreateEmbedding(word, true))
                     {
                         var hit = PathFinder.ClosestMatch(tree, queryVector, model);
 
@@ -83,7 +83,7 @@ namespace Sir.Tests
                         var doc = new Document(new Field[] { new Field(fieldName, data) });
                         
                         writeSession.Put(doc);
-                        indexSession.Put(doc.Id, keyId, data);
+                        indexSession.Put(doc.Id, keyId, data, true);
                         stream.CreatePage(indexSession.GetInMemoryIndices());
                     }
                 }
@@ -97,7 +97,7 @@ namespace Sir.Tests
                 {
                     foreach (var word in _data)
                     {
-                        var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false);
+                        var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false, true);
                         var result = searchSession.Search(query, 0, 1);
                         var document = result.Documents.FirstOrDefault();
 
@@ -139,7 +139,7 @@ namespace Sir.Tests
                     var doc = new Document(new Field[] { new Field(fieldName, data) });
 
                     writeSession.Put(doc);
-                    indexSession.Put(doc.Id, keyId, data);
+                    indexSession.Put(doc.Id, keyId, data, true);
                 }
 
                 var indices = indexSession.GetInMemoryIndices();
@@ -162,7 +162,7 @@ namespace Sir.Tests
                 {
                     foreach (var word in _data)
                     {
-                        var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false);
+                        var query = queryParser.Parse(collection, word, fieldName, fieldName, and: true, or: false, true);
                         var result = searchSession.Search(query, 0, 1);
                         var document = result.Documents.FirstOrDefault();
 

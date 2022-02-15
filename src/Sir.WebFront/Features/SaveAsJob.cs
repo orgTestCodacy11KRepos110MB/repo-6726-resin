@@ -62,7 +62,8 @@ namespace Sir.HttpServer.Features
                     fields: Fields, 
                     select: _select,
                     and: And, 
-                    or: Or);
+                    or: Or,
+                    label: false);
 
                 var targetCollectionId = _target.ToHash();
                 IEnumerable<IDocument> documents;

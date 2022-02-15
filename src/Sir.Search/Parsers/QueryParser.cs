@@ -26,7 +26,8 @@ namespace Sir.Search
             string field,
             string select,
             bool and,
-            bool or)
+            bool or,
+            bool label)
         {
             var terms = CreateTerms(
                 collectionId,
@@ -34,7 +35,8 @@ namespace Sir.Search
                 query,
                 and,
                 or,
-                !and && !or);
+                !and && !or,
+                label);
 
             return new Query(terms, new string[] { select }, and, or, !and && !or);
         }
@@ -45,7 +47,8 @@ namespace Sir.Search
             string field,
             string select,
             bool and,
-            bool or)
+            bool or,
+            bool label)
         {
             var terms = CreateTerms(
                 collection,
@@ -53,7 +56,8 @@ namespace Sir.Search
                 query,
                 and,
                 or,
-                !and && !or);
+                !and && !or,
+                label);
 
             return new Query(terms, new string[] { select }, and, or, !and && !or);
         }
@@ -64,7 +68,8 @@ namespace Sir.Search
             string[] fields, 
             IEnumerable<string> select, 
             bool and, 
-            bool or)
+            bool or,
+            bool label)
         {
             var root = new Dictionary<string, object>();
             var cursor = root;
@@ -133,10 +138,10 @@ namespace Sir.Search
                 _logger.LogDebug($"incoming query: {queryLog}");
             }
 
-            return Parse(root, select);
+            return Parse(root, select, label);
         }
 
-        public IQuery Parse(dynamic document, IEnumerable<string> select)
+        public IQuery Parse(dynamic document, IEnumerable<string> select, bool label)
         {
             Query root = null;
             Query cursor = null;
@@ -198,7 +203,7 @@ namespace Sir.Search
                     {
                         foreach (var kvp in kvps)
                         {
-                            var terms = CreateTerms(collection, kvp.key, kvp.value, and, or, not);
+                            var terms = CreateTerms(collection, kvp.key, kvp.value, and, or, not, label);
 
                             if (terms.Count == 0)
                             {
@@ -225,20 +230,20 @@ namespace Sir.Search
             return root;
         }
 
-        private IList<ITerm> CreateTerms(string collectionName, string key, T value, bool and, bool or, bool not)
+        private IList<ITerm> CreateTerms(string collectionName, string key, T value, bool and, bool or, bool not, bool label)
         {
             var collectionId = collectionName.ToHash();
-            return CreateTerms(collectionId, key, value, and, or, not);
+            return CreateTerms(collectionId, key, value, and, or, not, label);
         }
 
-        private IList<ITerm> CreateTerms(ulong collectionId, string key, T value, bool and, bool or, bool not)
+        private IList<ITerm> CreateTerms(ulong collectionId, string key, T value, bool and, bool or, bool not, bool label)
         {
             long keyId;
             var terms = new List<ITerm>();
 
             if (_sessionFactory.TryGetKeyId(_directory, collectionId, key.ToHash(), out keyId))
             {
-                var tokens = _model.CreateEmbedding(value);
+                var tokens = _model.CreateEmbedding(value, label);
 
                 foreach (var term in tokens)
                 {

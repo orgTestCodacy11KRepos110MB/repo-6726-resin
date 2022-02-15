@@ -32,7 +32,7 @@ namespace Sir.Tests
 
                 foreach (var image in trainingData)
                 {
-                    foreach (var queryVector in model.CreateEmbedding(image))
+                    foreach (var queryVector in model.CreateEmbedding(image, true))
                     {
                         var hit = PathFinder.ClosestMatch(index, queryVector, model);
 

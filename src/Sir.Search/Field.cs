@@ -34,9 +34,9 @@ namespace Sir.Search
                 yield return node.Vector;
         }
 
-        public void Analyze<T>(IModel<T> model)
+        public void Analyze<T>(IModel<T> model, bool label)
         {
-            var tokens = model.CreateEmbedding((T)Value);
+            var tokens = model.CreateEmbedding((T)Value, label);
 
             Tree = new VectorNode();
 

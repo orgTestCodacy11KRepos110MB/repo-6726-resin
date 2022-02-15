@@ -30,7 +30,7 @@ namespace Sir.Cmd
             {
                 foreach (var document in documents)
                 {
-                    model.CreateEmbedding((string)document.Fields[0].Value);
+                    model.CreateEmbedding((string)document.Fields[0].Value, false);
                 }
             }
 

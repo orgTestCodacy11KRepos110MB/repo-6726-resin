@@ -44,7 +44,7 @@ namespace Sir.Mnist
                         var document = new Document(new Field[] { imageField, labelField });
 
                         writeSession.Put(document);
-                        indexSession.Put(document.Id, imageField.KeyId, image);
+                        indexSession.Put(document.Id, imageField.KeyId, image, true);
 
                         debugger.Step(indexSession);
                     }

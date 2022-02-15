@@ -171,6 +171,7 @@ namespace Sir.Search
                             collectionId,
                             selectFields,
                             model,
+                            false,
                             skip,
                             pageSize);
 
@@ -205,7 +206,7 @@ namespace Sir.Search
             LogDebug($"optimized collection {collection}");
         }
 
-        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<IDocument> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000)
+        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<IDocument> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000, bool label = true)
         {
             var debugger = new IndexDebugger(_logger, reportSize);
 
@@ -217,7 +218,7 @@ namespace Sir.Search
                 {
                     if (field.Value != null)
                     {
-                        indexSession.Put(document.Id, field.KeyId, (T)field.Value);
+                        indexSession.Put(document.Id, field.KeyId, (T)field.Value, label);
                     }
                 }
 
@@ -228,7 +229,8 @@ namespace Sir.Search
         public void StoreDataAndBuildInMemoryIndex<T>(
             Document document, 
             WriteSession writeSession, 
-            IndexSession<T> indexSession)
+            IndexSession<T> indexSession, 
+            bool label = true)
         {
             writeSession.Put(document);
 
@@ -236,12 +238,12 @@ namespace Sir.Search
             {
                 if (field.Value != null && field.Value is T typedValue)
                 {
-                    indexSession.Put(document.Id, field.KeyId, typedValue);
+                    indexSession.Put(document.Id, field.KeyId, typedValue, label);
                 }
             }
         }
 
-        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IndexSession<T> indexSession)
+        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IndexSession<T> indexSession, bool label = true)
         {
             LogDebug($"building index for collection {collectionId}");
 
@@ -264,7 +266,7 @@ namespace Sir.Search
                     {
                         if (field.Value != null)
                         {
-                            field.Analyze(model);
+                            field.Analyze(model, label);
                         }
                     }
 
@@ -328,10 +330,10 @@ namespace Sir.Search
             }
         }
 
-        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model)
+        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, bool label = true)
         {
             var query = new QueryParser<T>(directory, this, model, _logger)
-                .Parse(collection, value, key, key, and: true, or: false);
+                .Parse(collection, value, key, key, and: true, or: false, label);
 
             if (query != null)
             {
@@ -350,10 +352,10 @@ namespace Sir.Search
             return false;
         }
 
-        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, SearchSession searchSession)
+        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, SearchSession searchSession, bool label = true)
         {
             var query = new QueryParser<T>(directory, this, model, _logger)
-                .Parse(collection, value, key, key, and: true, or: false);
+                .Parse(collection, value, key, key, and: true, or: false, label);
 
             if (query != null)
             {

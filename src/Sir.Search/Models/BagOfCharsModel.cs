@@ -14,7 +14,7 @@ namespace Sir.Search
             column.AddOrAppend(node, this);
         }
 
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
         {
             var source = data.ToCharArray();
 
@@ -41,7 +41,7 @@ namespace Sir.Search
                             var vector = new SerializableVector(
                                 embedding,
                                 NumOfDimensions,
-                                new string(source, offset, len));
+                                label ? new string(source, offset, len) : null);
 
                             embedding.Clear();
                             yield return vector;
@@ -58,7 +58,7 @@ namespace Sir.Search
                     var vector = new SerializableVector(
                                 embedding,
                                 NumOfDimensions,
-                                new string(source, offset, len));
+                                label ? new string(source, offset, len) : null);
 
                     yield return vector;
                 }
@@ -102,9 +102,9 @@ namespace Sir.Search
             column.Build(node, this);
         }
 
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
         {
-            return _wordTokenizer.CreateEmbedding(data);
+            return _wordTokenizer.CreateEmbedding(data, label);
         }
 
         public class ContinuousBagOfWordsModel : DistanceCalculator, IModel<string>
@@ -126,9 +126,9 @@ namespace Sir.Search
                 column.AddOrAppend(node, this);
             }
 
-            public IEnumerable<ISerializableVector> CreateEmbedding(string data)
+            public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
             {
-                var tokens = (IList<ISerializableVector>)_wordTokenizer.CreateEmbedding(data);
+                var tokens = (IList<ISerializableVector>)_wordTokenizer.CreateEmbedding(data, label);
 
                 for (int i = 0; i < tokens.Count; i++)
                 {

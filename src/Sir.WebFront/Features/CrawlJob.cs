@@ -77,7 +77,8 @@ namespace Sir.HttpServer.Features
                 Fields, 
                 select: new string[] {"url", "title", "filename"},
                 and: And, 
-                or: Or);
+                or: Or,
+                label: false);
 
             using (var readSession = new SearchSession(_directory, _sessionFactory, _model, _logger))
             {
@@ -107,7 +108,8 @@ namespace Sir.HttpServer.Features
                         fields: new string[] { "filename" },
                         select: new string[] { "filename" },
                         and: true,
-                        or: false);
+                        or: false,
+                        label: false);
 
                     if (wetQuery != null)
                     {

@@ -14,7 +14,7 @@ namespace Sir.VectorSpace
 
             foreach (var item in data)
             {
-                foreach (var vector in model.CreateEmbedding(item))
+                foreach (var vector in model.CreateEmbedding(item, true))
                 {
                     indexingStrategy.ExecutePut<T>(root, new VectorNode(vector));
                 }
