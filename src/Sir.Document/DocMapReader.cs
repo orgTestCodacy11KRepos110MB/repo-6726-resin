@@ -27,7 +27,7 @@ namespace Sir.Documents
         {
             _stream.Seek(offset, SeekOrigin.Begin);
 
-            Span<byte> buf = ArrayPool<byte>.Shared.Rent(length);
+            var buf = ArrayPool<byte>.Shared.Rent(length);
             int read = _stream.Read(buf);
 
             if (read != length)
@@ -42,11 +42,13 @@ namespace Sir.Documents
             for (int i = 0; i < blockCount; i++)
             {
                 var offs = i * blockSize;
-                var key = BitConverter.ToInt64(buf.Slice(offs));
-                var val = BitConverter.ToInt64(buf.Slice(offs + sizeof(long)));
+                var key = BitConverter.ToInt64(buf, offs);
+                var val = BitConverter.ToInt64(buf, offs + sizeof(long));
 
                 docMapping[i] = (key, val);
             }
+
+            ArrayPool<byte>.Shared.Return(buf);
 
             return docMapping;
         }

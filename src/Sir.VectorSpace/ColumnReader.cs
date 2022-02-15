@@ -161,6 +161,8 @@ namespace Sir.VectorSpace
                 }
             }
 
+            ArrayPool<byte>.Shared.Return(block);
+
             return new Hit(bestNode, bestScore);
         }
 
@@ -170,6 +172,8 @@ namespace Sir.VectorSpace
             _ixFile.Read(buf, 0, VectorNode.BlockSize);
             var sizeOfTree = BitConverter.ToInt64(buf, sizeof(long) * 3);
             var distance = sizeOfTree * VectorNode.BlockSize;
+
+            ArrayPool<byte>.Shared.Return(buf);
 
             if (distance > 0)
             {

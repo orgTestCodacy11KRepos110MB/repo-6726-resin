@@ -29,10 +29,15 @@ namespace Sir.KeyValue
 
             _stream.Seek(offset, SeekOrigin.Begin);
 
-            Span<byte> buf = ArrayPool<byte>.Shared.Rent(BlockSize);
+            var buf = ArrayPool<byte>.Shared.Rent(BlockSize);
+
              _stream.Read(buf);
 
-            return (BitConverter.ToInt64(buf.Slice(0)), BitConverter.ToInt32(buf.Slice(sizeof(long))), buf[BlockSize - 1]);
+            var addr = (BitConverter.ToInt64(buf), BitConverter.ToInt32(buf, sizeof(long)), buf[BlockSize - 1]);
+
+            ArrayPool<byte>.Shared.Return(buf);
+
+            return addr;
         }
     }
 }

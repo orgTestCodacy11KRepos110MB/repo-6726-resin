@@ -46,6 +46,9 @@ namespace Sir.VectorSpace
             stream.Read(headerBuf, 0, sizeof(long));
 
             var numOfPostings = BitConverter.ToInt64(headerBuf);
+
+            ArrayPool<byte>.Shared.Return(headerBuf);
+
             var len = sizeof(long) * numOfPostings;
             Span<byte> listBuf = new byte[len];
             var read = stream.Read(listBuf);
@@ -57,6 +60,8 @@ namespace Sir.VectorSpace
             {
                 documents.Add((collectionId, docId));
             }
+
+            
         }
 
         private Stream GetOrCreateStream(ulong collectionId, long keyId)

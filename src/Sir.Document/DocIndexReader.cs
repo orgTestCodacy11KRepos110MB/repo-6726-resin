@@ -35,7 +35,7 @@ namespace Sir.Documents
 
             _stream.Seek(offs, SeekOrigin.Begin);
 
-            Span<byte> buf = ArrayPool<byte>.Shared.Rent(DocIndexWriter.BlockSize);
+            var buf = ArrayPool<byte>.Shared.Rent(DocIndexWriter.BlockSize);
 
             var read = _stream.Read(buf);
 
@@ -44,7 +44,11 @@ namespace Sir.Documents
                 throw new ArgumentException(nameof(docId));
             }
 
-            return (BitConverter.ToInt64(buf.Slice(0, sizeof(long))), BitConverter.ToInt32(buf.Slice(sizeof(long))));
+            var address = (BitConverter.ToInt64(buf), BitConverter.ToInt32(buf, sizeof(long)));
+
+            ArrayPool<byte>.Shared.Return(buf);
+
+            return address;
         }
 
         public void Dispose()
