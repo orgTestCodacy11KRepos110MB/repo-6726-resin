@@ -42,11 +42,7 @@ namespace Sir.Cmd
 
         public void RunIndexBenchmark(IDictionary<string, string> args, ILogger logger)
         {
-            const int numOfDocs = 10000;
             const int numOfRuns = 1;
-
-            args.Add("skip", "0");
-            args.Add("take", numOfDocs.ToString());
 
             var timer = Stopwatch.StartNew();
 
@@ -55,7 +51,8 @@ namespace Sir.Cmd
                 new Database(logger).Truncate(args["directory"], "wikipedia".ToHash());
                 new IndexWikipediaCommand().Run(args, logger);
             }
-                
+
+            var numOfDocs = int.Parse(args["take"]);
             var totalTime = timer.Elapsed;
             var avgPerRun = totalTime.TotalMilliseconds / numOfRuns;
             var avgPerDoc = totalTime.TotalMilliseconds / numOfDocs;
