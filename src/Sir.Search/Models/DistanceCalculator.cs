@@ -1,5 +1,4 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using Sir.VectorSpace;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -12,11 +11,17 @@ namespace Sir.Search
 
         public double CosAngle(ISerializableVector vec1, ISerializableVector vec2)
         {
-            var dotSelf1 = vec1.Value.Norm(2);
-            var dotSelf2 = vec2.Value.Norm(2);
             var dotProduct = vec1.Value.DotProduct(vec2.Value);
 
-            return dotProduct / (dotSelf1 * dotSelf2);
+            if (dotProduct == 0)
+                return 0;
+
+            var dotSelf1 = vec1.Value.Norm(2);
+            var dotSelf2 = vec2.Value.Norm(2);
+
+            var cosineDistance = dotProduct / (dotSelf1 * dotSelf2);
+
+            return cosineDistance;
         }
 
         public double CosAngle(ISerializableVector vector, long vectorOffset, int componentCount, Stream vectorStream)
@@ -37,9 +42,13 @@ namespace Sir.Search
 
             var vectorOnFile = CreateVector.SparseOfIndexed(NumOfDimensions, tuples);
 
+            var dotProduct = vector.Value.DotProduct(vectorOnFile);
+
+            if (dotProduct == 0)
+                return 0;
+
             var dotSelf1 = vector.Value.Norm(2);
             var dotSelf2 = vectorOnFile.Norm(2);
-            var dotProduct = vector.Value.DotProduct(vectorOnFile);
 
             return dotProduct / (dotSelf1 * dotSelf2);
         }
