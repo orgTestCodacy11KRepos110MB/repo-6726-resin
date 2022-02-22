@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Sir.VectorSpace
 {
@@ -39,7 +37,7 @@ namespace Sir.VectorSpace
                     if (!cursor.Vector.Label.Equals(node.Vector.Label))
                         throw new InvalidOperationException($"IdenticalAngle {model.IdenticalAngle} is too low. Angle was {angle}");
 
-                    MergeDocIds(cursor, node);
+                    AppendDocIds(cursor, node);
                     break;
                 }
                 else if (angle > model.FoldAngle)
@@ -82,7 +80,7 @@ namespace Sir.VectorSpace
 
                 if (angle >= model.IdenticalAngle)
                 {
-                    MergeDocIds(cursor, node);
+                    AppendDocIds(cursor, node);
 
                     break;
                 }
@@ -241,8 +239,11 @@ namespace Sir.VectorSpace
             }
         }
 
-        public static void MergeDocIds(this VectorNode target, VectorNode source)
+        public static void AppendDocIds(this VectorNode target, VectorNode source)
         {
+            if (target.DocIds == null || source.DocIds == null)
+                return;
+
             target.DocIds.AddRange(source.DocIds);
         }
 

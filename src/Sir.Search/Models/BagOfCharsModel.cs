@@ -30,7 +30,7 @@ namespace Sir.Search
 
                     if (char.IsLetterOrDigit(c))
                     {
-                        embedding.AddOrAppendToComponent(c);
+                        embedding.AddOrAppendToComponent(c, 1);
                     }
                     else
                     {
@@ -68,17 +68,17 @@ namespace Sir.Search
 
     public static class TokenizeOperations
     {
-        public static void AddOrAppendToComponent(this SortedList<int, float> vec, int key)
+        public static void AddOrAppendToComponent(this SortedList<int, float> vec, int key, float value)
         {
             float v;
 
             if (vec.TryGetValue(key, out v))
             {
-                vec[key] = v + 1;
+                vec[key] = v + value;
             }
             else
             {
-                vec.Add(key, 1);
+                vec.Add(key, value);
             }
         }
     }

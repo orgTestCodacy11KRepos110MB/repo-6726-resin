@@ -19,12 +19,12 @@ namespace Sir.Cmd
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
                     .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("Sir", LogLevel.Information)
+                    .AddFilter("Sir", LogLevel.Debug)
                     .AddConsole()
                     .AddEventLog(new Microsoft.Extensions.Logging.EventLog.EventLogSettings 
                     { 
                         SourceName = "Sir.Cmd", 
-                        Filter = (source, level) => level >= LogLevel.Information
+                        Filter = (source, level) => level >= LogLevel.Debug
                     });
             });
 
