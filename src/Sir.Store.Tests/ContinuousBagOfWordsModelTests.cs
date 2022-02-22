@@ -9,40 +9,40 @@ using System.Linq;
 
 namespace Sir.Tests
 {
-    public class TextModelTests
+    public class ContinuousBagOfWordsModelTests
     {
         private ILoggerFactory _loggerFactory;
         private Database _sessionFactory;
 
-        private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
+        private readonly string[] _data = new string[] { "I would like an apple.", "apples are sour", "that's an apricote", "apricots are sweet", "a green avocado", "there are many avocados", "here's a banana", "I like bananas because they are yellow", "one blueberry fell on the floor", "blueberries all over the kitcheh", "cantalope" };
 
         [Test]
         public void Can_traverse_index_in_memory()
         {
-            var model = new BagOfCharsModel();
+            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
             var index = model.CreateTree(model, _data);
 
             Debug.WriteLine(PathFinder.Visualize(index));
 
             Assert.DoesNotThrow(() => 
             {
-                foreach (var word in _data)
+                foreach (var phrase in _data)
                 {
-                    foreach (var queryVector in model.CreateEmbedding(word, true))
+                    foreach (var queryVector in model.CreateEmbedding(phrase, true))
                     {
                         var hit = PathFinder.ClosestMatch(index, queryVector, model);
 
                         if (hit == null)
                         {
-                            throw new Exception($"unable to find {word} in index.");
+                            throw new Exception($"unable to find {phrase} in index.");
                         }
 
                         if (hit.Score < model.IdenticalAngle)
                         {
-                            throw new Exception($"unable to score {word}.");
+                            throw new Exception($"unable to score {phrase}.");
                         }
 
-                        Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                        Debug.WriteLine($"{phrase} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
                     }
                 }
             });
@@ -51,7 +51,7 @@ namespace Sir.Tests
         [Test]
         public void Can_traverse_streamed()
         {
-            var model = new BagOfCharsModel();
+            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
             var index = model.CreateTree(model, _data);
 
             using (var indexStream = new MemoryStream())
@@ -78,15 +78,15 @@ namespace Sir.Tests
 
                                 if (hit == null)
                                 {
-                                    throw new Exception($"unable to find {word} in tree.");
+                                    throw new Exception($"unable to find \"{word}\" in tree.");
                                 }
 
                                 if (hit.Score < model.IdenticalAngle)
                                 {
-                                    throw new Exception($"unable to score {word}.");
+                                    throw new Exception($"unable to score \"{word}\".");
                                 }
 
-                                Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
+                                Debug.WriteLine($"\"{word}\" matched vector in disk with {hit.Score * 100}% certainty.");
                             }
                         }
                     }
@@ -97,18 +97,19 @@ namespace Sir.Tests
         [Test]
         public void Can_tokenize()
         {
-            const string data = "Ferriman–Gallwey score"; // NOTE: string contains "En dash" character: https://unicode-table.com/en/#2013
-            var model = new BagOfCharsModel();
-            var tokens = model.CreateEmbedding(data, true);
-            var labels = tokens.Select(x => x.Label.ToString()).ToList();
+            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
 
-            var t0 = data.Substring(0, 8);
-            var t1 = data.Substring(9, 7);
-            var t2 = data.Substring(17, 5);
+            foreach (var data in _data)
+            {
+                var tokens = model.CreateEmbedding(data, true).ToList();
+                var labels = tokens.Select(x => x.Label.ToString()).ToList();
 
-            Assert.IsTrue(labels.Contains(t0));
-            Assert.IsTrue(labels.Contains(t1));
-            Assert.IsTrue(labels.Contains(t2));
+                foreach (var token in tokens)
+                {
+                    Assert.IsTrue(labels.Contains(token.Label));
+                }
+            }
+
         }
 
         [SetUp]
