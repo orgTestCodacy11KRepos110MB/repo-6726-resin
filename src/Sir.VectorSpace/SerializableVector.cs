@@ -11,7 +11,7 @@ namespace Sir.VectorSpace
     [System.Diagnostics.DebuggerDisplay("{Label}")]
     public class SerializableVector : ISerializableVector
     {
-        public object Label { get; }
+        public object Label { get; private set; }
         public Vector<float> Value { get; private set; }
         public int ComponentCount => ((SparseVectorStorage<float>)Value.Storage).ValueCount;
         public int[] Indices { get { return ((SparseVectorStorage<float>)Value.Storage).Indices; } }
@@ -79,6 +79,7 @@ namespace Sir.VectorSpace
         public void AddInPlace(ISerializableVector vector)
         {
             Value = Value.Add(vector.Value);
+            Label = $"{Label} {vector.Label}";
         }
 
         public ISerializableVector Add(ISerializableVector vector)
