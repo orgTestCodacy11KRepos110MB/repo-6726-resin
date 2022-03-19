@@ -19,18 +19,19 @@ namespace Sir.Cmd
 
         public void RunTokenizeBenchmark(IDictionary<string, string> args, ILogger logger)
         {
-            const int numOfDocs = 10000;
             const int numOfRuns = 10;
+            int skip = int.Parse(args["skip"]);
+            int take = int.Parse(args["take"]);
             var fileName = args["file"];
             var model = new BagOfCharsModel();
-            var documents = new List<Document>(WikipediaHelper.Read(fileName, 0, numOfDocs, new HashSet<string> { "text" }));
+            var documents = new List<Document>(WikipediaHelper.Read(fileName, skip, take, new HashSet<string> { "text" }));
             var timer = Stopwatch.StartNew();
 
             for (int i = 0; i < numOfRuns; i++)
             {
                 foreach (var document in documents)
                 {
-                    model.CreateEmbedding((string)document.Fields[0].Value, false);
+                    var embeddings = new List<ISerializableVector>(model.CreateEmbedding((string)document.Fields[0].Value, false));
                 }
             }
 
@@ -40,6 +41,9 @@ namespace Sir.Cmd
             Console.WriteLine($"tokenized {documents.Count * numOfRuns} documents in a total of {timer.Elapsed}. Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
         }
 
+        /// <summary>
+        /// E.g. benchmark --index --file d:\enwiki-20211122-cirrussearch-content.json.gz --directory C:\projects\resin\src\Sir.HttpServer\AppData\database --skip 0 --take 10000 --collection wikipedia
+        /// </summary>
         public void RunIndexBenchmark(IDictionary<string, string> args, ILogger logger)
         {
             const int numOfRuns = 1;
