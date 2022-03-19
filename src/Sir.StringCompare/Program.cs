@@ -31,9 +31,9 @@ namespace Sir.StringCompare
                 baseVectorStorage[i] = (float)i + 1;
             }
 
-            var baseVector = new IndexedVector(baseVectorStorage);
-            var firstVector = model.Tokenize(first).First();
-            var secondVector = model.Tokenize(second).First();
+            var baseVector = new SerializableVector(baseVectorStorage);
+            var firstVector = model.CreateEmbedding(first, false).First();
+            var secondVector = model.CreateEmbedding(second, false).First();
             var angle1 = model.CosAngle(baseVector, firstVector);
             var angle2 = model.CosAngle(baseVector, secondVector);
 
@@ -44,8 +44,8 @@ namespace Sir.StringCompare
 
         private static void Similarity(string first, string second, IModel<string> model)
         {
-            var vec1 = model.Tokenize(first).First();
-            var vec2 = model.Tokenize(second).First();
+            var vec1 = model.CreateEmbedding(first, false).First();
+            var vec2 = model.CreateEmbedding(second, false).First();
             var angle = model.CosAngle(vec1, vec2);
 
             Console.WriteLine($"similarity: {angle}");
@@ -66,9 +66,9 @@ namespace Sir.StringCompare
                     break;
                 }
 
-                var node = new VectorNode(model.Tokenize(command).First());
+                var node = new VectorNode(model.CreateEmbedding(command, false).First());
 
-                root.MergeOrAdd(node, model);
+                root.AddOrAppend(node, model);
             }
 
             Console.WriteLine(PathFinder.Visualize(root));
@@ -84,7 +84,7 @@ namespace Sir.StringCompare
                     break;
                 }
 
-                var hit = PathFinder.ClosestMatch(root, model.Tokenize(command).First(), model);
+                var hit = PathFinder.ClosestMatch(root, model.CreateEmbedding(command, false).First(), model);
 
                 Console.WriteLine($"{hit.Score} {hit.Node}");
             }
