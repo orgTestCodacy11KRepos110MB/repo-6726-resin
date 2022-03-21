@@ -38,7 +38,7 @@ namespace Sir.Cmd
             var totalTime = timer.Elapsed;
             var avgPerRun = totalTime.TotalMilliseconds / numOfRuns;
             var avgPerDoc = totalTime.TotalMilliseconds / documents.Count;
-            Console.WriteLine($"tokenized {documents.Count * numOfRuns} documents in a total of {timer.Elapsed}. Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
+            Console.WriteLine($"Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Sir.Cmd
             var totalTime = timer.Elapsed;
             var avgPerRun = totalTime.TotalMilliseconds / numOfRuns;
             var avgPerDoc = totalTime.TotalMilliseconds / numOfDocs;
-            Console.WriteLine($"indexed {numOfDocs * numOfRuns} documents in a total of {timer.Elapsed}. Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
+            Console.WriteLine($"Average {avgPerRun} ms/run. Average {avgPerDoc} ms/document.");
         }
     }
 }
