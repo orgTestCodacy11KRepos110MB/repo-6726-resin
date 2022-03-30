@@ -54,11 +54,11 @@ namespace Sir.Cmd
             }
             else if (command == "truncate")
             {
-                Truncate(flags["dataDirectory"], flags["collection"], logger);
+                Truncate(flags["directory"], flags["collection"], logger);
             }
             else if (command == "truncate-index")
             {
-                TruncateIndex(flags["dataDirectory"], flags["collection"], logger);
+                TruncateIndex(flags["directory"], flags["collection"], logger);
             }
             else if (command == "optimize")
             {
@@ -66,7 +66,7 @@ namespace Sir.Cmd
             }
             else if (command == "rename")
             {
-                Rename(flags["dataDirectory"], flags["collection"], flags["newCollection"], logger);
+                Rename(flags["directory"], flags["collection"], flags["newCollection"], logger);
             }
             else
             {
@@ -114,7 +114,7 @@ namespace Sir.Cmd
 
         private static void Optimize(IDictionary<string, string> args, ILogger logger)
         {
-            var dataDirectory = args["dataDirectory"];
+            var dataDirectory = args["directory"];
             var collection = args["collection"];
             var skip = int.Parse(args["skip"]);
             var take = int.Parse(args["take"]);
@@ -196,7 +196,7 @@ namespace Sir.Cmd
     {
         public void Run(IDictionary<string, string> args, ILogger logger)
         {
-            var dataDirectory = args["dataDirectory"];
+            var dataDirectory = args["directory"];
             var collection = args["collection"];
             var documentId = long.Parse(args["documentId"]);
             var select = new HashSet<string>(args["select"].Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries));

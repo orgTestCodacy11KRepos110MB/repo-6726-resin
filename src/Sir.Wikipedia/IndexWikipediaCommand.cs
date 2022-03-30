@@ -12,7 +12,7 @@ namespace Sir.Wikipedia
     /// https://dumps.wikimedia.org/other/cirrussearch/current/enwiki-20201026-cirrussearch-content.json.gz
     /// </summary>
     /// <example>
-    /// indexwikipedia --dataDirectory c:\data\resin --file d:\enwiki-20201026-cirrussearch-content.json.gz --collection wikipedia
+    /// indexwikipedia --directory C:\projects\resin\src\Sir.HttpServer\AppData\database --file d:\enwiki-20211122-cirrussearch-content.json.gz --collection wikipedia --skip 0 --take 1000
     /// </example>
     public class IndexWikipediaCommand : ICommand
     {
@@ -35,7 +35,7 @@ namespace Sir.Wikipedia
             if (take == 0)
                 take = int.MaxValue;
 
-            var model = new BagOfCharsModel();
+            var model = new NGramModel(new BagOfCharsModel());
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
             using (var sessionFactory = new Database(logger))

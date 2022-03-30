@@ -6,7 +6,7 @@ namespace Sir.Search
     public class NGramModel : DistanceCalculator, IModel<string>
     {
         public double IdenticalAngle => 0.95d;
-        public double FoldAngle => 0.75d;
+        public double FoldAngle => 0.45d;
         public override int NumOfDimensions { get; }
 
         private readonly BagOfCharsModel _wordTokenizer;
