@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Sir.Tests
 {
-    public class ContinuousBagOfWordsModelTests
+    public class NGramModelTests
     {
         private ILoggerFactory _loggerFactory;
         private Database _sessionFactory;
@@ -19,7 +19,7 @@ namespace Sir.Tests
         [Test]
         public void Can_traverse_index_in_memory()
         {
-            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
+            var model = new NGramModel(new BagOfCharsModel());
             var index = model.CreateTree(model, _data);
 
             Debug.WriteLine(PathFinder.Visualize(index));
@@ -51,7 +51,7 @@ namespace Sir.Tests
         [Test]
         public void Can_traverse_streamed()
         {
-            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
+            var model = new NGramModel(new BagOfCharsModel());
             var index = model.CreateTree(model, _data);
 
             using (var indexStream = new MemoryStream())
@@ -97,7 +97,7 @@ namespace Sir.Tests
         [Test]
         public void Can_tokenize()
         {
-            var model = new ContinuousBagOfWordsModel(new BagOfCharsModel());
+            var model = new NGramModel(new BagOfCharsModel());
 
             foreach (var data in _data)
             {

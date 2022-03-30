@@ -133,7 +133,7 @@ namespace Sir.VectorSpace
                 .Add(new SerializableVector(indices, storage.Values, numOfDims, Label));
         }
 
-        public ISerializableVector Shift(int numOfPositionsToShift, int numOfDimensions, string label = null)
+        public ISerializableVector Shift(int numOfPositionsToShift, int numOfDimensions)
         {
             var storage = (SparseVectorStorage<float>)Value.Storage;
             var indices = (int[])storage.Indices.Clone();
@@ -146,7 +146,7 @@ namespace Sir.VectorSpace
                 }
             }
 
-            return new SerializableVector(indices, (float[])Values.Clone(), numOfDimensions, label??Label);
+            return new SerializableVector(indices, (float[])Values.Clone(), numOfDimensions, Label);
         }
 
         public static ISerializableVector Deserialize(long vectorOffset, int componentCount, int vectorWidth, MemoryMappedViewAccessor vectorView)
@@ -194,11 +194,22 @@ namespace Sir.VectorSpace
         public void Serialize(Stream stream)
         {
             var storage = (SparseVectorStorage<float>)Value.Storage;
-            var indices = MemoryMarshal.Cast<int, byte>(storage.Indices);
-            var values = MemoryMarshal.Cast<float, byte>(storage.Values);
 
-            stream.Write(indices);
-            stream.Write(values);
+            foreach (var index in storage.Indices)
+            {
+                if (index > 0)
+                    stream.Write(BitConverter.GetBytes(index));
+                else
+                    break;
+            }
+
+            foreach (var value in storage.Values)
+            {
+                if (value > 0)
+                    stream.Write(BitConverter.GetBytes(value));
+                else
+                    break;
+            }
         }
 
         public static long Serialize(ISerializableVector vector, Stream vectorStream)

@@ -19,6 +19,6 @@ namespace Sir
         ISerializableVector Divide(float scalar);
         void AverageInPlace(ISerializableVector vector);
         ISerializableVector Append(ISerializableVector vector);
-        ISerializableVector Shift(int numOfPositionsToShift, int numOfDimensions, string label = null);
+        ISerializableVector Shift(int numOfPositionsToShift, int numOfDimensions);
     }
 }

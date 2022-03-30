@@ -66,61 +66,6 @@ namespace Sir.Search
         }
     }
 
-    public class ContinuousBagOfWordsModel : DistanceCalculator, IModel<string>
-    {
-        public double IdenticalAngle => 0.95d;
-        public double FoldAngle => 0.75d;
-        public override int NumOfDimensions { get; }
-
-        private readonly BagOfCharsModel _wordTokenizer;
-
-        public ContinuousBagOfWordsModel(BagOfCharsModel wordTokenizer)
-        {
-            _wordTokenizer = wordTokenizer;
-            NumOfDimensions = wordTokenizer.NumOfDimensions * 3;
-        }
-
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
-        {
-            column.AddOrAppend(node, this);
-        }
-
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
-        {
-            var tokens = new List<ISerializableVector>();
-
-            foreach (var token in _wordTokenizer.CreateEmbedding(data, label))
-                tokens.Add(token);
-
-            for (int i = 0; i < tokens.Count; i++)
-            {
-                var context0 = i - 1;
-                var context1 = i + 1;
-                var token = tokens[i];
-                var vector = new SerializableVector(NumOfDimensions, token.Label);
-
-                if (context0 >= 0)
-                {
-                    vector.AddInPlace(tokens[context0].Shift(0, NumOfDimensions));
-                }
-
-                if (context1 < tokens.Count)
-                {
-                    vector.AddInPlace(tokens[context1].Shift(_wordTokenizer.NumOfDimensions * 2, NumOfDimensions));
-                }
-
-                if (vector.ComponentCount == 0)
-                {
-                    yield return token.Shift(_wordTokenizer.NumOfDimensions, NumOfDimensions);
-                }
-                else
-                {
-                    yield return vector;
-                }
-            }
-        }
-    }
-
     public static class TokenizeOperations
     {
         public static void AddOrAppendToComponent(this SortedList<int, float> vec, int key, float value)
@@ -135,31 +80,6 @@ namespace Sir.Search
             {
                 vec.Add(key, value);
             }
-        }
-    }
-
-    public class BocEmbeddingsModel : DistanceCalculator, IModel<string>
-    {
-        public double IdenticalAngle => 0.95d;
-        public double FoldAngle => 0.75d;
-        public override int NumOfDimensions { get; }
-
-        private readonly BagOfCharsModel _wordTokenizer;
-
-        public BocEmbeddingsModel(BagOfCharsModel wordTokenizer)
-        {
-            _wordTokenizer = wordTokenizer;
-            NumOfDimensions = wordTokenizer.NumOfDimensions;
-        }
-
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
-        {
-            column.Build(node, this);
-        }
-
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
-        {
-            return _wordTokenizer.CreateEmbedding(data, label);
         }
     }
 }

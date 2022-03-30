@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Sir.Tests
 {
-    public class BackOfCharsModelTests
+    public class BagOfCharsModelTests
     {
         private ILoggerFactory _loggerFactory;
         private Database _sessionFactory;
