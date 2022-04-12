@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Sir.Search;
-using Sir.VectorSpace;
 
 namespace Sir.HttpServer
 {

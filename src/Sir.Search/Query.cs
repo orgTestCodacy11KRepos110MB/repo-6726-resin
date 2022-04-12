@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     /// <summary>
     /// A boolean query.

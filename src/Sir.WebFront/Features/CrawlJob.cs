@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Sir.Search;
-using Sir.VectorSpace;
 
 namespace Sir.HttpServer.Features
 {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     [DebuggerDisplay("{Score} {Node}")]
     public class Hit

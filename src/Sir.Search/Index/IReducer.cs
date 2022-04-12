@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     public interface IReducer
     {

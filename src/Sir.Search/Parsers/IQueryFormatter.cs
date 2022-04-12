@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Sir.VectorSpace;
 using System.Threading.Tasks;
 
 namespace Sir.Search

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Sir.Search;
-using Sir.VectorSpace;
 using System.Threading.Tasks;
 
 namespace Sir.HttpServer

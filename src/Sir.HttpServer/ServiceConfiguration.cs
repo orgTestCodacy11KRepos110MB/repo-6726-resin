@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sir.Search;
-using Sir.VectorSpace;
 using System;
 using System.IO;
 

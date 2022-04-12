@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     public static class GraphBuilder
     {

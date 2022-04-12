@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.WebFront", "Sir.WebFron
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Search", "Sir.Search\Sir.Search.csproj", "{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.VectorSpace", "Sir.VectorSpace\Sir.VectorSpace.csproj", "{9791D56B-F5A5-448D-A615-612585CA6C37}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.StringCompare", "Sir.StringCompare\Sir.StringCompare.csproj", "{C6050E65-9411-41E3-A6EE-0A45E6FFB4FC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Cmd", "Sir.Cmd\Sir.Cmd.csproj", "{CEDD3CA9-D38D-43BF-9013-212AE6332CE0}"
@@ -97,10 +95,6 @@ Global
 		{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9791D56B-F5A5-448D-A615-612585CA6C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9791D56B-F5A5-448D-A615-612585CA6C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9791D56B-F5A5-448D-A615-612585CA6C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9791D56B-F5A5-448D-A615-612585CA6C37}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6050E65-9411-41E3-A6EE-0A45E6FFB4FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6050E65-9411-41E3-A6EE-0A45E6FFB4FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6050E65-9411-41E3-A6EE-0A45E6FFB4FC}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     public class Scorer
     {

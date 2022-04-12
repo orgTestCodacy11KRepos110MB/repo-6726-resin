@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     public static class PathFinder
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     /// <summary>
     /// Index bitmap reader. Each block is a <see cref="Sir.Search.VectorNode"/>.

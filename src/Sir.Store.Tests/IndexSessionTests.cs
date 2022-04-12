@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Documents;
 using Sir.Search;
-using Sir.VectorSpace;
 using System;
 using System.Diagnostics;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿namespace Sir.VectorSpace
+﻿namespace Sir.Search
 {
     public class PostingsResolver
     {

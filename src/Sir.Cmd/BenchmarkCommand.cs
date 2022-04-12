@@ -17,13 +17,16 @@ namespace Sir.Cmd
                 RunIndexBenchmark(args, logger);
         }
 
+        /// <summary>
+        /// E.g. benchmark --tokenize --file d:\enwiki-20211122-cirrussearch-content.json.gz --directory C:\projects\resin\src\Sir.HttpServer\AppData\database --skip 0 --take 10000
+        /// </summary>
         public void RunTokenizeBenchmark(IDictionary<string, string> args, ILogger logger)
         {
             const int numOfRuns = 10;
             int skip = int.Parse(args["skip"]);
             int take = int.Parse(args["take"]);
             var fileName = args["file"];
-            var model = new BagOfCharsModel();
+            var model = new NGramModel(new BagOfCharsModel());
             var documents = new List<Document>(WikipediaHelper.Read(fileName, skip, take, new HashSet<string> { "text" }));
             var timer = Stopwatch.StartNew();
 

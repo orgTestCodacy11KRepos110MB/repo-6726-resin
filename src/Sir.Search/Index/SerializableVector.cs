@@ -6,9 +6,8 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
-    [System.Diagnostics.DebuggerDisplay("{Label}")]
     public class SerializableVector : ISerializableVector
     {
         public object Label { get; private set; }
@@ -223,7 +222,7 @@ namespace Sir.VectorSpace
 
         public override string ToString()
         {
-            return Value.ToString();
+            return Value==null?base.ToString() : Value.ToString();
         }
     }
 }

@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using Sir.Mnist;
 using Sir.Search;
-using Sir.VectorSpace;
 using System;
 using System.Diagnostics;
 using System.IO;

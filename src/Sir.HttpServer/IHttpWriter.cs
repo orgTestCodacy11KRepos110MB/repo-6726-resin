@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Sir.VectorSpace;
 
 namespace Sir.HttpServer
 {

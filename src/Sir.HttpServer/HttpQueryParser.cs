@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Sir.Search;
-using Sir.VectorSpace;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;

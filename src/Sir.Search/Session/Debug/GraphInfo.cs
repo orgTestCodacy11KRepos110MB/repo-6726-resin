@@ -1,6 +1,4 @@
-﻿using Sir.VectorSpace;
-
-namespace Sir.Search
+﻿namespace Sir.Search
 {
     public class GraphInfo
     {

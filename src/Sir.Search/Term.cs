@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     [System.Diagnostics.DebuggerDisplay("{Key}:{Label}")]
     public class Term : BooleanStatement, ITerm

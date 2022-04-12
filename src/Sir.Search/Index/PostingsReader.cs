@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     /// <summary>
     /// Allocate postings in memory.

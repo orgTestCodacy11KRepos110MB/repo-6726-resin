@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sir.VectorSpace
+namespace Sir.Search
 {
     public interface IColumnReader : IDisposable
     {
