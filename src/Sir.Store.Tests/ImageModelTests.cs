@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Mnist;
 using Sir.Search;
@@ -10,8 +11,11 @@ namespace Sir.Tests
 {
     public class ImageModelTests
     {
+        private ILoggerFactory _loggerFactory;
+        private Database _sessionFactory;
+
         [Test]
-        public void Can_create_in_memory_linear_classifier()
+        public void Can_traverse_index_in_memory()
         {
             // Use the same set of images to both create and validate a linear classifier.
 
@@ -62,11 +66,98 @@ namespace Sir.Tests
             });
         }
 
+        [Test]
+        public void Can_traverse_streamed()
+        {
+            // Use the same set of images to both create and validate a linear classifier.
+
+            var trainingData = new MnistReader(
+                @"resources\t10k-images.idx3-ubyte",
+                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
+
+            var model = new LinearClassifierImageModel();
+            var index = model.CreateTree(model, trainingData);
+
+            using (var indexStream = new MemoryStream())
+            using (var vectorStream = new MemoryStream())
+            using (var pageStream = new MemoryStream())
+            {
+                using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
+                {
+                    writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
+                }
+
+                pageStream.Position = 0;
+
+                Assert.DoesNotThrow(() =>
+                {
+                    using (var pageIndexReader = new PageIndexReader(pageStream))
+                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _sessionFactory, _loggerFactory.CreateLogger<ColumnReader>()))
+                    {
+                        foreach (var word in trainingData)
+                        {
+                            foreach (var queryVector in model.CreateEmbedding(word, true))
+                            {
+                                var hit = reader.ClosestMatch(queryVector, model);
+
+                                if (hit == null)
+                                {
+                                    throw new Exception($"unable to find {word} in tree.");
+                                }
+
+                                if (hit.Score < model.IdenticalAngle)
+                                {
+                                    throw new Exception($"unable to score {word}.");
+                                }
+
+                                Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        [Test]
+        public void Can_tokenize()
+        {
+            var trainingData = new MnistReader(
+                @"resources\t10k-images.idx3-ubyte",
+                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
+
+            var model = new LinearClassifierImageModel();
+
+            foreach (var data in trainingData)
+            {
+                var tokens = model.CreateEmbedding(data, true).ToList();
+                var labels = tokens.Select(x => x.Label.ToString()).ToList();
+
+                foreach (var token in tokens)
+                {
+                    Assert.IsTrue(labels.Contains(token.Label));
+                }
+            }
+        }
+
         private static void Print(VectorNode tree)
         {
             var diagram = PathFinder.Visualize(tree);
             File.WriteAllText("imagemodeltesttree.txt", diagram);
             Debug.WriteLine(diagram);
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            _loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddDebug();
+            });
+
+            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
         }
     }
 }
