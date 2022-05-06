@@ -249,7 +249,7 @@ namespace Sir.Search
 
 
 
-        public static void Serialize(this VectorNode node, Stream stream)
+        public static void SerializeNode(this VectorNode node, Stream stream)
         {
             long terminator;
 
@@ -282,10 +282,10 @@ namespace Sir.Search
         /// </summary>
         /// <param name="node">Tree to persist.</param>
         /// <param name="indexStream">stream to persist tree into</param>
-        /// <param name="vectorStream">stream to persist vectors in</param>
-        /// <param name="postingsStream">optional stream to persist any posting references into</param>
+        /// <param name="vectorStream">stream to persist vectors into</param>
+        /// <param name="postingsStream">stream to persist postings into</param>
         /// <returns></returns>
-        public static (long offset, long length) SerializeTree(this VectorNode node, Stream indexStream, Stream vectorStream, Stream postingsStream = null)
+        public static (long offset, long length) SerializeTree(this VectorNode node, Stream indexStream = null, Stream vectorStream = null, Stream postingsStream = null)
         {
             var stack = new Stack<VectorNode>();
             var offset = indexStream.Position;
@@ -298,14 +298,26 @@ namespace Sir.Search
 
             while (node != null)
             {
-                if (node.PostingsOffset == -1 && postingsStream != null)
-                    SerializePostings(node, postingsStream);
+                if (node.PostingsOffset > -1 && postingsStream != null)
+                {
+                    AppendPostings(node, postingsStream);
+                }
+                else if (node.PostingsOffset == -1 && postingsStream != null)
+                {
+                    node.PostingsOffset = SerializeHeaderAndPostingsPayload(node.DocIds, postingsStream);
+                }
 
-                node.VectorOffset = SerializableVector.Serialize(node.Vector, vectorStream);
+                if (vectorStream != null)
+                {
+                    node.VectorOffset = SerializableVector.Serialize(node.Vector, vectorStream);
+                }
 
-                Serialize(node, indexStream);
+                if (indexStream != null)
+                {
+                    SerializeNode(node, indexStream);
 
-                length += VectorNode.BlockSize;
+                    length += VectorNode.BlockSize;
+                }
 
                 if (node.Right != null)
                 {
@@ -323,23 +335,38 @@ namespace Sir.Search
             return (offset, length);
         }
 
-        public static void SerializePostings(this VectorNode node, Stream postingsStream)
+        public static void AppendPostings(this VectorNode node, Stream postingsStream)
         {
-            node.PostingsOffset = postingsStream.Position;
+            var addressOfNextPage = postingsStream.Position;
 
-            SerializeHeaderAndPostingsPayload(node.DocIds, node.DocIds.Count, postingsStream);
+            postingsStream.Seek(node.PostingsOffset + sizeof(long), SeekOrigin.Begin);
+
+            postingsStream.Write(BitConverter.GetBytes(addressOfNextPage));
+
+            postingsStream.Seek(addressOfNextPage, SeekOrigin.Begin);
+
+            SerializeHeaderAndPostingsPayload(node.DocIds, postingsStream);
+
         }
 
-        public static void SerializeHeaderAndPostingsPayload(IList<long> items, int itemCount, Stream stream)
+        public static long SerializeHeaderAndPostingsPayload(IList<long> items, Stream postingsStream)
         {
             if (items.Count == 0) throw new ArgumentException("can't be empty", nameof(items));
 
-            stream.Write(BitConverter.GetBytes((long)itemCount));
+            var offset = postingsStream.Position;
+
+            // serialize item count
+            postingsStream.Write(BitConverter.GetBytes(items.Count));
+
+            // serialize address of next page (unknown at this time)
+            postingsStream.Write(BitConverter.GetBytes(0));
 
             foreach (var item in items)
             {
-                stream.Write(BitConverter.GetBytes(item));
+                postingsStream.Write(BitConverter.GetBytes(item));
             }
+
+            return offset;
         }
     }
 }

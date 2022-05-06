@@ -60,8 +60,6 @@ namespace Sir.Search
             {
                 documents.Add((collectionId, docId));
             }
-
-            
         }
 
         private Stream GetOrCreateStream(ulong collectionId, long keyId)
