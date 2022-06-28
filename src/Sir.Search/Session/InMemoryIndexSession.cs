@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Sir.Search
 {
-    public class IndexSession<T> : IIndexSession, IDisposable
+    public class InMemoryIndexSession<T> : IIndexSession, IDisposable
     {
         private readonly IModel<T> _model;
         private readonly IIndexingStrategy _indexingStrategy;
         private readonly IDictionary<long, VectorNode> _index;
 
-        public IndexSession(
+        public InMemoryIndexSession(
             IModel<T> model,
             IIndexingStrategy indexingStrategy)
         {
@@ -76,7 +76,31 @@ namespace Sir.Search
         }
     }
 
-    public class EmbeddSession<T> : IIndexSession, IDisposable
+    public class OptimizedPagingIndexingStrategy : IIndexingStrategy
+    {
+        private readonly ColumnReader _columnReader;
+        private readonly IModel _model;
+
+        public OptimizedPagingIndexingStrategy(ColumnReader columnReader, IModel model)
+        {
+            _columnReader = columnReader;
+            _model = model;
+        }
+
+        public void ExecutePut<T>(VectorNode column, VectorNode node)
+        {
+            var existing = _columnReader.ClosestMatchOrNull(node.Vector, _model);
+
+            if (existing != null && existing.Score >= _model.IdenticalAngle)
+            {
+                node.PostingsOffset = existing.Node.PostingsOffset;
+            }
+
+            column.AddOrAppend(node, _model);
+        }
+    }
+
+    public class EmbeddSession<T> : IDisposable
     {
         private readonly IModel<T> _model;
         private readonly IIndexingStrategy _indexingStrategy;

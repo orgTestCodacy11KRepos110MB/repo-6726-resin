@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Sir.Search
 {
-    public class IndexWriter : IDisposable
+    public class IndexStreamWriter : IDisposable
     {
         private readonly string _directory;
         private readonly ulong _collectionId;
@@ -14,7 +14,7 @@ namespace Sir.Search
         private readonly ILogger _logger;
         private readonly IDictionary<(long keyId, string fileExtension), Stream> _streams;
 
-        public IndexWriter(
+        public IndexStreamWriter(
             string directory,
             ulong collectionId, 
             Database sessionFactory, 

@@ -4,6 +4,6 @@ namespace Sir.Search
 {
     public interface IColumnReader : IDisposable
     {
-        Hit ClosestMatch(ISerializableVector vector, IModel model);
+        Hit ClosestMatchOrNull(ISerializableVector vector, IModel model);
     }
 }

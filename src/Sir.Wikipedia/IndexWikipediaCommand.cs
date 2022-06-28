@@ -45,8 +45,8 @@ namespace Sir.Wikipedia
                 {
                     foreach (var page in payload.Batch(pageSize))
                     {
-                        using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
-                        using (var indexSession = new IndexSession<string>(model, model))
+                        using (var indexStream = new IndexStreamWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
+                        using (var indexSession = new InMemoryIndexSession<string>(model, model))
                         {
                             foreach (var document in page)
                             {

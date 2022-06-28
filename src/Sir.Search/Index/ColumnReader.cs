@@ -8,11 +8,10 @@ using System.IO;
 namespace Sir.Search
 {
     /// <summary>
-    /// Index bitmap reader. Each block is a <see cref="Sir.Search.VectorNode"/>.
+    /// Index bitmap reader. Each word is a <see cref="Sir.Search.VectorNode"/>.
     /// </summary>
     public class ColumnReader : IColumnReader
     {
-        private readonly IStreamDispatcher _sessionFactory;
         private readonly ILogger _logger;
         private readonly Stream _vectorFile;
         private readonly Stream _ixFile;
@@ -22,17 +21,15 @@ namespace Sir.Search
             IList<(long offset, long length)> pages,
             Stream indexStream,
             Stream vectorStream,
-            IStreamDispatcher sessionFactory,
             ILogger logger = null)
         {
-            _sessionFactory = sessionFactory;
             _logger = logger;
             _vectorFile = vectorStream;
             _ixFile = indexStream;
             _pages = pages;
         }
 
-        public Hit ClosestMatch(ISerializableVector vector, IModel model)
+        public Hit ClosestMatchOrNull(ISerializableVector vector, IModel model)
         {
             var time = Stopwatch.StartNew();
             var hits = new List<Hit>();

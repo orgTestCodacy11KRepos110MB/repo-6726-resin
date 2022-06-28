@@ -22,7 +22,7 @@ namespace Sir.Tests
             var model = new BagOfCharsModel();
             VectorNode tree;
 
-            using (var indexSession = new IndexSession<string>(model, model))
+            using (var indexSession = new InMemoryIndexSession<string>(model, model))
             {
                 for (long i = 0; i < _data.Length; i++)
                 {
@@ -68,7 +68,7 @@ namespace Sir.Tests
 
             _database.Truncate(_directory, collectionId);
 
-            using (var stream = new IndexWriter(_directory, collectionId, _database))
+            using (var stream = new IndexStreamWriter(_directory, collectionId, _database))
             using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -77,7 +77,7 @@ namespace Sir.Tests
                 {
                     var data = _data[i];
 
-                    using (var indexSession = new IndexSession<string>(model, model))
+                    using (var indexSession = new InMemoryIndexSession<string>(model, model))
                     {
                         var doc = new Document(new Field[] { new Field(fieldName, data) });
                         
@@ -128,7 +128,7 @@ namespace Sir.Tests
             _database.Truncate(_directory, collectionId);
 
             using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
-            using (var indexSession = new IndexSession<string>(model, model))
+            using (var indexSession = new InMemoryIndexSession<string>(model, model))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
 
@@ -145,7 +145,7 @@ namespace Sir.Tests
 
                 index = indices[keyId];
 
-                using (var stream = new IndexWriter(_directory, collectionId, _database))
+                using (var stream = new IndexStreamWriter(_directory, collectionId, _database))
                 {
                     stream.CreatePage(indices);
                 }

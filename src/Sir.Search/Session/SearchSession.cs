@@ -120,7 +120,7 @@ namespace Sir.Search
 
                     if (reader != null)
                     {
-                        var hit = reader.ClosestMatch(term.Vector, _model);
+                        var hit = reader.ClosestMatchOrNull(term.Vector, _model);
 
                         if (hit != null)
                         {
@@ -206,7 +206,6 @@ namespace Sir.Search
                     pageIndexReader.ReadAll(),
                     _sessionFactory.CreateReadStream(ixFileName),
                     _sessionFactory.CreateReadStream(vectorFileName),
-                    _sessionFactory,
                     _logger);
             }
         }

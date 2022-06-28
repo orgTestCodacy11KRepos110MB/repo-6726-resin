@@ -92,13 +92,13 @@ namespace Sir.Tests
                 Assert.DoesNotThrow(() =>
                 {
                     using (var pageIndexReader = new PageIndexReader(pageStream))
-                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _sessionFactory, _loggerFactory.CreateLogger<ColumnReader>()))
+                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
                     {
                         foreach (var word in trainingData)
                         {
                             foreach (var queryVector in model.CreateEmbedding(word, true))
                             {
-                                var hit = reader.ClosestMatch(queryVector, model);
+                                var hit = reader.ClosestMatchOrNull(queryVector, model);
 
                                 if (hit == null)
                                 {

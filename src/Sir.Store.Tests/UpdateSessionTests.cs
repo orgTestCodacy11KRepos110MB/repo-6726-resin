@@ -29,7 +29,7 @@ namespace Sir.Tests
             {
                 _database.Truncate(_directory, collectionId);
 
-                using (var index = new IndexWriter(_directory, collectionId, _database))
+                using (var index = new IndexStreamWriter(_directory, collectionId, _database))
                 using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
                 {
                     var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -38,7 +38,7 @@ namespace Sir.Tests
                     {
                         var data = _data[i];
 
-                        using (var indexSession = new IndexSession<string>(model, model))
+                        using (var indexSession = new InMemoryIndexSession<string>(model, model))
                         {
                             var doc = new Document(new Field[] { new Field(fieldName, data) });
 
