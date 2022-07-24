@@ -37,7 +37,7 @@ namespace Sir.Wikipedia
             var model = new NGramModel(new BagOfCharsModel());
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
-            using (var sessionFactory = new Database(logger))
+            using (var sessionFactory = new SessionFactory(logger))
             {
                 var debugger = new IndexDebugger(logger, sampleSize);
 
@@ -45,7 +45,7 @@ namespace Sir.Wikipedia
                 {
                     foreach (var page in payload.Batch(pageSize))
                     {
-                        using (var indexStream = new IndexStreamWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
+                        using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                         using (var indexSession = new InMemoryIndexSession<string>(model, model))
                         {
                             foreach (var document in page)
@@ -60,7 +60,7 @@ namespace Sir.Wikipedia
                                 debugger.Step(indexSession);
                             }
 
-                            indexStream.CreatePage(indexSession.GetInMemoryIndices());
+                            indexStream.Write(indexSession.GetInMemoryIndices());
 
                             //foreach (var column in indexSession.InMemoryIndex)
                             //{

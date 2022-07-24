@@ -11,15 +11,19 @@ namespace Sir.Search
     public class PageIndexReader : IDisposable
     {
         private readonly Stream _stream;
+        private readonly bool _keepStreamOpen;
 
-        public PageIndexReader(Stream stream)
+        public PageIndexReader(Stream stream, bool keepStreamOpen = false)
         {
             _stream = stream;
+            _keepStreamOpen = keepStreamOpen;
         }
 
         public void Dispose()
         {
-            _stream.Dispose();
+            if (!_keepStreamOpen)
+
+                _stream.Dispose();
         }
 
         public (long offset, long length) ReadAt(long offset)

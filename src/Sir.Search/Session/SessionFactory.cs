@@ -12,18 +12,38 @@ namespace Sir.Search
     /// <summary>
     /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating document collections.
     /// </summary>
-    public class Database : IDisposable, IStreamDispatcher
+    public class SessionFactory : IDisposable, IStreamDispatcher
     {
         private IDictionary<ulong, IDictionary<ulong, long>> _keys;
         private ILogger _logger;
         private readonly object _syncKeys = new object();
 
-        public Database(ILogger logger = null)
+        public SessionFactory(ILogger logger = null)
         {
             _logger = logger;
             _keys = new Dictionary<ulong, IDictionary<ulong, long>>();
 
             LogInformation($"database initiated");
+        }
+
+        public IColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId)
+        {
+            var ixFileName = Path.Combine(directory, string.Format("{0}.{1}.ix", collectionId, keyId));
+
+            if (!File.Exists(ixFileName))
+                return null;
+
+            var vectorFileName = Path.Combine(directory, $"{collectionId}.{keyId}.vec");
+            var pageIndexFileName = Path.Combine(directory, $"{collectionId}.{keyId}.ixtp");
+
+            using (var pageIndexReader = new PageIndexReader(CreateReadStream(pageIndexFileName)))
+            {
+                return new ColumnReader(
+                    pageIndexReader.ReadAll(),
+                    CreateReadStream(ixFileName),
+                    CreateReadStream(vectorFileName),
+                    _logger);
+            }
         }
 
         public IEnumerable<Document> Select(string directory, ulong collectionId, HashSet<string> select, int skip = 0, int take = 0)
@@ -156,9 +176,9 @@ namespace Sir.Search
             {
                 using (var writeQueue = new ProducerConsumerQueue<InMemoryIndexSession<T>>(indexSession =>
                 {
-                    using (var index = new IndexStreamWriter(directory, collectionId, this, logger: _logger))
+                    using (var index = new IndexWriter(directory, collectionId, this, logger: _logger))
                     {
-                        index.CreatePage(indexSession.GetInMemoryIndices());
+                        index.Write(indexSession.GetInMemoryIndices());
                     }
                 }))
                 {
@@ -284,9 +304,9 @@ namespace Sir.Search
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
-                using (var stream = new IndexStreamWriter(directory, collectionId, this, logger: _logger))
+                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.CreatePage(indexSession.GetInMemoryIndices());
+                    stream.Write(indexSession.GetInMemoryIndices());
                 }
             }
         }
@@ -298,9 +318,9 @@ namespace Sir.Search
             {
                 StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 
-                using (var stream = new IndexStreamWriter(directory, collectionId, this, logger: _logger))
+                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.CreatePage(indexSession.GetInMemoryIndices());
+                    stream.Write(indexSession.GetInMemoryIndices());
                 }
             }
         }

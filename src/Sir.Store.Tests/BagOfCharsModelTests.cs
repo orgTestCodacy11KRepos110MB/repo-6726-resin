@@ -11,7 +11,7 @@ namespace Sir.Tests
     public class BagOfCharsModelTests
     {
         private ILoggerFactory _loggerFactory;
-        private Database _sessionFactory;
+        private SessionFactory _sessionFactory;
 
         private readonly string[] _data = new string[] { "Ferriman–Gallwey score", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
 
@@ -121,7 +121,7 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
+            _sessionFactory = new SessionFactory(logger: _loggerFactory.CreateLogger<SessionFactory>());
         }
 
         [TearDown]

@@ -346,24 +346,23 @@ namespace Sir.Search
             postingsStream.Seek(addressOfNextPage, SeekOrigin.Begin);
 
             SerializeHeaderAndPostingsPayload(node.DocIds, postingsStream);
-
         }
 
-        public static long SerializeHeaderAndPostingsPayload(IList<long> items, Stream postingsStream)
+        public static long SerializeHeaderAndPostingsPayload(IList<long> documentIds, Stream postingsStream)
         {
-            if (items.Count == 0) throw new ArgumentException("can't be empty", nameof(items));
+            if (documentIds.Count == 0) throw new ArgumentException("can't be empty", nameof(documentIds));
 
             var offset = postingsStream.Position;
 
             // serialize item count
-            postingsStream.Write(BitConverter.GetBytes(items.Count));
+            postingsStream.Write(BitConverter.GetBytes((long)documentIds.Count));
 
             // serialize address of next page (unknown at this time)
-            postingsStream.Write(BitConverter.GetBytes(0));
+            postingsStream.Write(BitConverter.GetBytes((long)0));
 
-            foreach (var item in items)
+            foreach (var docId in documentIds)
             {
-                postingsStream.Write(BitConverter.GetBytes(item));
+                postingsStream.Write(BitConverter.GetBytes(docId));
             }
 
             return offset;

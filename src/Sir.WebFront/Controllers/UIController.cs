@@ -9,9 +9,9 @@ namespace Sir.HttpServer.Controllers
         private IConfigurationProvider config;
 
         protected IConfigurationProvider Config { get; }
-        protected Database Database { get; }
+        protected SessionFactory Database { get; }
 
-        public UIController(IConfigurationProvider config, Database database)
+        public UIController(IConfigurationProvider config, SessionFactory database)
         {
             Config = config;
             Database = database;

@@ -27,27 +27,27 @@ namespace Sir.Search
 
         public void Put(long docId, long keyId, IEnumerable<ISerializableVector> tokens)
         {
-            var tree = new VectorNode(keyId: keyId);
+            var documentTree = new VectorNode(keyId: keyId);
 
             foreach (var token in tokens)
             {
-                tree.AddIfUnique(new VectorNode(token, docId: docId, keyId: keyId), _model);
+                documentTree.AddIfUnique(new VectorNode(token, docId: docId, keyId: keyId), _model);
             }
 
-            Put(tree);
+            Put(documentTree);
         }
 
-        public void Put(VectorNode tree)
+        public void Put(VectorNode documentTree)
         {
             VectorNode column;
 
-            if (!_index.TryGetValue(tree.KeyId.Value, out column))
+            if (!_index.TryGetValue(documentTree.KeyId.Value, out column))
             {
                 column = new VectorNode();
-                _index.Add(tree.KeyId.Value, column);
+                _index.Add(documentTree.KeyId.Value, column);
             }
 
-            foreach (var node in PathFinder.All(tree))
+            foreach (var node in PathFinder.All(documentTree))
             {
                 _indexingStrategy.ExecutePut<T>(column, new VectorNode(node.Vector, docIds: node.DocIds));
             }
@@ -73,30 +73,6 @@ namespace Sir.Search
 
         public void Dispose()
         {
-        }
-    }
-
-    public class OptimizedPagingIndexingStrategy : IIndexingStrategy
-    {
-        private readonly ColumnReader _columnReader;
-        private readonly IModel _model;
-
-        public OptimizedPagingIndexingStrategy(ColumnReader columnReader, IModel model)
-        {
-            _columnReader = columnReader;
-            _model = model;
-        }
-
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
-        {
-            var existing = _columnReader.ClosestMatchOrNull(node.Vector, _model);
-
-            if (existing != null && existing.Score >= _model.IdenticalAngle)
-            {
-                node.PostingsOffset = existing.Node.PostingsOffset;
-            }
-
-            column.AddOrAppend(node, _model);
         }
     }
 

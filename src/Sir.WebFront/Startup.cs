@@ -69,7 +69,7 @@ namespace Sir.HttpServer
 
         private void OnShutdown()
         {
-            ((Database)ServiceProvider.GetService(typeof(Database))).Dispose();
+            ((SessionFactory)ServiceProvider.GetService(typeof(SessionFactory))).Dispose();
         }
     }
 }

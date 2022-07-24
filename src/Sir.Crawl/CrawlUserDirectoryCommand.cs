@@ -36,7 +36,7 @@ namespace Sir.Crawl
 #if DEBUG
             htmlClient.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36";
 #endif
-            using (var database = new Database(logger))
+            using (var database = new SessionFactory(logger))
             using (var dataSearchSession = new SearchSession(dataDirectory, database, model, logger))
             {
                 foreach (var userDirectory in Directory.EnumerateDirectories(rootUserDirectory))

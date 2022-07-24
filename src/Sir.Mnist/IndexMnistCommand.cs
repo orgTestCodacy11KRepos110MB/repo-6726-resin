@@ -27,7 +27,7 @@ namespace Sir.Mnist
             VectorNode tree;
             var debugger = new IndexDebugger(logger);
             var model = new LinearClassifierImageModel();
-            using (var sessionFactory = new Database(logger))
+            using (var sessionFactory = new SessionFactory(logger))
             {
                 sessionFactory.Truncate(dataDirectory, collectionId);
 
@@ -52,9 +52,9 @@ namespace Sir.Mnist
 
                     tree = indices[imageIndexId];
 
-                    using (var stream = new IndexStreamWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
+                    using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                     {
-                        stream.CreatePage(indices);
+                        stream.Write(indices);
                     }
                 }
             }

@@ -35,7 +35,7 @@ namespace Sir.CommonCrawl
                 "title","description", "url"
             };
 
-            using (var database = new Database(logger))
+            using (var database = new SessionFactory(logger))
             using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, database)))
             using (var indexSession = new InMemoryIndexSession<string>(model, model))
             {
@@ -54,9 +54,9 @@ namespace Sir.CommonCrawl
                     }
                 }
 
-                using (var stream = new IndexStreamWriter(dataDirectory, collectionId, database, logger: logger))
+                using (var stream = new IndexWriter(dataDirectory, collectionId, database, logger: logger))
                 {
-                    stream.CreatePage(indexSession.GetInMemoryIndices());
+                    stream.Write(indexSession.GetInMemoryIndices());
                 }
             }
 

@@ -17,7 +17,7 @@ namespace Sir.HttpServer.Controllers
             SearchClient reader, 
             IConfigurationProvider config,
             IModel<string> model,
-            Database sessionFactory) : base(config, sessionFactory)
+            SessionFactory sessionFactory) : base(config, sessionFactory)
         {
             _reader = reader;
             _model = model;

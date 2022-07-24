@@ -41,11 +41,12 @@ namespace Sir.Search
 
             stream.Seek(postingsOffset, SeekOrigin.Begin);
 
-            var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long));
+            var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long) * 2);
 
-            stream.Read(headerBuf, 0, sizeof(long));
+            stream.Read(headerBuf, 0, sizeof(long) * 2);
 
             var numOfPostings = BitConverter.ToInt64(headerBuf);
+            var addressOfNextPage = BitConverter.ToInt64(headerBuf, sizeof(long));
 
             ArrayPool<byte>.Shared.Return(headerBuf);
 
@@ -59,6 +60,11 @@ namespace Sir.Search
             foreach (var docId in MemoryMarshal.Cast<byte, long>(listBuf))
             {
                 documents.Add((collectionId, docId));
+            }
+
+            if (addressOfNextPage > 0)
+            {
+                GetPostingsFromStream(collectionId, keyId, addressOfNextPage, documents);
             }
         }
 

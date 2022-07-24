@@ -16,14 +16,14 @@ namespace Sir.HttpServer
     public class SearchClient
     {
         private readonly ILogger<SearchClient> _logger;
-        private readonly Database _sessionFactory;
+        private readonly SessionFactory _sessionFactory;
         private readonly HttpQueryParser _httpQueryParser;
         private readonly IConfigurationProvider _config;
         private readonly string[] _fields;
         private readonly string[] _select;
 
         public SearchClient(
-            Database sessionFactory,
+            SessionFactory sessionFactory,
             HttpQueryParser httpQueryParser,
             IConfigurationProvider config,
             ILogger<SearchClient> logger)

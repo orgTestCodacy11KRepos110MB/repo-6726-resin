@@ -12,10 +12,10 @@ namespace Sir.HttpServer
     /// </summary>
     public class HttpWriter : IHttpWriter
     {
-        private readonly Database _sessionFactory;
+        private readonly SessionFactory _sessionFactory;
         private readonly IConfigurationProvider _config;
 
-        public HttpWriter(Database sessionFactory, IConfigurationProvider config)
+        public HttpWriter(SessionFactory sessionFactory, IConfigurationProvider config)
         {
             _sessionFactory = sessionFactory;
             _config = config;

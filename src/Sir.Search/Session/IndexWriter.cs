@@ -6,18 +6,18 @@ using System.IO;
 
 namespace Sir.Search
 {
-    public class IndexStreamWriter : IDisposable
+    public class IndexWriter : IDisposable
     {
         private readonly string _directory;
         private readonly ulong _collectionId;
-        private readonly Database _sessionFactory;
+        private readonly SessionFactory _sessionFactory;
         private readonly ILogger _logger;
         private readonly IDictionary<(long keyId, string fileExtension), Stream> _streams;
 
-        public IndexStreamWriter(
+        public IndexWriter(
             string directory,
             ulong collectionId, 
-            Database sessionFactory, 
+            SessionFactory sessionFactory, 
             ILogger logger = null)
         {
             _directory = directory;
@@ -35,7 +35,7 @@ namespace Sir.Search
             }
         }
 
-        public void CreatePage(IDictionary<long, VectorNode> index)
+        public void Write(IDictionary<long, VectorNode> index)
         {
             foreach (var column in index)
             {

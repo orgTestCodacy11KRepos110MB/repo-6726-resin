@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace Sir.Search
 {
@@ -11,7 +10,7 @@ namespace Sir.Search
     /// </summary>
     public class SearchSession : DocumentStreamSession, IDisposable, ISearchSession
     {
-        private readonly Database _sessionFactory;
+        private readonly SessionFactory _sessionFactory;
         private readonly IModel _model;
         private readonly PostingsResolver _postingsResolver;
         private readonly Scorer _scorer;
@@ -19,7 +18,7 @@ namespace Sir.Search
 
         public SearchSession(
             string directory, 
-            Database sessionFactory,
+            SessionFactory sessionFactory,
             IModel model,
             ILogger logger = null,
             PostingsResolver postingsResolver = null,
@@ -110,7 +109,7 @@ namespace Sir.Search
 
                     if (!readers.TryGetValue(key, out reader))
                     {
-                        reader = GetColumnReader(term.Directory, term.CollectionId, term.KeyId);
+                        reader = _sessionFactory.CreateColumnReader(term.Directory, term.CollectionId, term.KeyId);
 
                         if (reader != null)
                         {
@@ -188,26 +187,6 @@ namespace Sir.Search
             LogDebug($"reading documents took {timer.Elapsed}");
 
             return result;
-        }
-
-        private IColumnReader GetColumnReader(string directory, ulong collectionId, long keyId)
-        {
-            var ixFileName = Path.Combine(directory, string.Format("{0}.{1}.ix", collectionId, keyId));
-
-            if (!File.Exists(ixFileName))
-                return null;
-
-            var vectorFileName = Path.Combine(directory, $"{collectionId}.{keyId}.vec");
-            var pageIndexFileName = Path.Combine(directory, $"{collectionId}.{keyId}.ixtp");
-
-            using (var pageIndexReader = new PageIndexReader(_sessionFactory.CreateReadStream(pageIndexFileName)))
-            {
-                return new ColumnReader(
-                    pageIndexReader.ReadAll(),
-                    _sessionFactory.CreateReadStream(ixFileName),
-                    _sessionFactory.CreateReadStream(vectorFileName),
-                    _logger);
-            }
         }
 
         private void LogInformation(string message)

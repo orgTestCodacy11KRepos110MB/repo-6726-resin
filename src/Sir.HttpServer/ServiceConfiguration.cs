@@ -18,14 +18,14 @@ namespace Sir.HttpServer
             var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger("Sir");
             var model = new BagOfCharsModel();
-            var sessionFactory = new Database(logger);
+            var sessionFactory = new SessionFactory(logger);
             var directory = config.Get("data_dir");
             var qp = new QueryParser<string>(directory, sessionFactory, model, logger);
             var httpParser = new HttpQueryParser(qp);
 
             services.AddSingleton(typeof(IModel<string>), model);
             services.AddSingleton(typeof(IStreamDispatcher), sessionFactory);
-            services.AddSingleton(typeof(Database), sessionFactory);
+            services.AddSingleton(typeof(SessionFactory), sessionFactory);
             services.AddSingleton(typeof(QueryParser<string>), qp);
             services.AddSingleton(typeof(HttpQueryParser), httpParser);
             services.AddSingleton(typeof(IHttpWriter), new HttpWriter(sessionFactory, config));

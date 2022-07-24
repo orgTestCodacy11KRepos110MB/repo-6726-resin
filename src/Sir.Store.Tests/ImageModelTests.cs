@@ -12,7 +12,7 @@ namespace Sir.Tests
     public class ImageModelTests
     {
         private ILoggerFactory _loggerFactory;
-        private Database _sessionFactory;
+        private SessionFactory _sessionFactory;
 
         [Test]
         public void Can_traverse_index_in_memory()
@@ -157,7 +157,7 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _sessionFactory = new Database(logger: _loggerFactory.CreateLogger<Database>());
+            _sessionFactory = new SessionFactory(logger: _loggerFactory.CreateLogger<SessionFactory>());
         }
     }
 }

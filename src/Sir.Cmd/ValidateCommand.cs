@@ -22,7 +22,7 @@ namespace Sir.Cmd
             var selectFields = new HashSet<string> { "title" };
             var time = Stopwatch.StartNew();
 
-            using (var sessionFactory = new Database(logger))
+            using (var sessionFactory = new SessionFactory(logger))
             {
                 using (var validateSession = new ValidateSession<string>(
                     collectionId, 

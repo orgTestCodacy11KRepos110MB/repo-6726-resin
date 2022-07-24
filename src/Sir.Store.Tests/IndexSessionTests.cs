@@ -11,7 +11,7 @@ namespace Sir.Tests
     public class IndexSessionTests
     {
         private ILoggerFactory _loggerFactory;
-        private Database _database;
+        private SessionFactory _database;
         private string _directory = @"c:\temp\sir_tests";
 
         private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
@@ -68,7 +68,7 @@ namespace Sir.Tests
 
             _database.Truncate(_directory, collectionId);
 
-            using (var stream = new IndexStreamWriter(_directory, collectionId, _database))
+            using (var stream = new IndexWriter(_directory, collectionId, _database))
             using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
             {
                 var keyId = writeSession.EnsureKeyExists(fieldName);
@@ -83,7 +83,7 @@ namespace Sir.Tests
                         
                         writeSession.Put(doc);
                         indexSession.Put(doc.Id, keyId, data, true);
-                        stream.CreatePage(indexSession.GetInMemoryIndices());
+                        stream.Write(indexSession.GetInMemoryIndices());
                     }
                 }
             }
@@ -145,9 +145,9 @@ namespace Sir.Tests
 
                 index = indices[keyId];
 
-                using (var stream = new IndexStreamWriter(_directory, collectionId, _database))
+                using (var stream = new IndexWriter(_directory, collectionId, _database))
                 {
-                    stream.CreatePage(indices);
+                    stream.Write(indices);
                 }
             }
 
@@ -192,7 +192,7 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _database = new Database(logger: _loggerFactory.CreateLogger<Database>());
+            _database = new SessionFactory(logger: _loggerFactory.CreateLogger<SessionFactory>());
         }
 
         [TearDown]

@@ -55,7 +55,7 @@ namespace Sir.Cmd
 
             for (int i = 0; i < numOfRuns; i++)
             {
-                new Database(logger).Truncate(args["directory"], "wikipedia".ToHash());
+                new SessionFactory(logger).Truncate(args["directory"], "wikipedia".ToHash());
                 new IndexWikipediaCommand().Run(args, logger);
             }
 

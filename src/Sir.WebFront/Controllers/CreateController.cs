@@ -9,7 +9,7 @@ namespace Sir.HttpServer.Controllers
 {
     public class CreateController : UIController
     {
-        public CreateController(IConfigurationProvider config, Database database) : base(config, database)
+        public CreateController(IConfigurationProvider config, SessionFactory database) : base(config, database)
         {
         }
 

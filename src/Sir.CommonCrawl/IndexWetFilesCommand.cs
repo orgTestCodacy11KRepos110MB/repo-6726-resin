@@ -19,7 +19,7 @@ namespace Sir.CommonCrawl
             var storeFields = new HashSet<string> { "url" };
             var indexFields = new HashSet<string> { "description" };
 
-            using (var sessionFactory = new Database(logger))
+            using (var sessionFactory = new SessionFactory(logger))
             {
                 sessionFactory.Truncate(dataDirectory, collectionId);
 
