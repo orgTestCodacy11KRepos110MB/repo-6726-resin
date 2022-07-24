@@ -16,7 +16,7 @@ namespace Sir.Search
             NumOfDimensions = wordTokenizer.NumOfDimensions * 2;
         }
 
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
+        public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
             column.AddOrAppend(node, this);
         }

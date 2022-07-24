@@ -18,7 +18,7 @@ namespace Sir.Cmd
             var skip = int.Parse(args["skip"]);
             var take = int.Parse(args["take"]);
             var collectionId = collection.ToHash();
-            var model = new NGramModel(new BagOfCharsModel());
+            var model = new BagOfCharsModel();
             var selectFields = new HashSet<string> { "title" };
             var time = Stopwatch.StartNew();
 

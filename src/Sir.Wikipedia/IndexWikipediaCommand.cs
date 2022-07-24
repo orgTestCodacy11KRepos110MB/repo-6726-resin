@@ -34,7 +34,7 @@ namespace Sir.Wikipedia
             if (take == 0)
                 take = int.MaxValue;
 
-            var model = new NGramModel(new BagOfCharsModel());
+            var model = new BagOfCharsModel();
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
             using (var sessionFactory = new SessionFactory(logger))
@@ -46,7 +46,7 @@ namespace Sir.Wikipedia
                     foreach (var page in payload.Batch(pageSize))
                     {
                         using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
-                        using (var indexSession = new InMemoryIndexSession<string>(model, model))
+                        using (var indexSession = new InMemoryIndexSession<string>(model, new OptimizedPageIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
                         {
                             foreach (var document in page)
                             {

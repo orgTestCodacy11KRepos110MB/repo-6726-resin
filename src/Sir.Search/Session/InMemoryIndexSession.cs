@@ -8,14 +8,25 @@ namespace Sir.Search
         private readonly IModel<T> _model;
         private readonly IIndexingStrategy _indexingStrategy;
         private readonly IDictionary<long, VectorNode> _index;
+        private readonly IDictionary<long, IColumnReader> _readers;
+        private readonly SessionFactory _sessionFactory;
+        private readonly string _directory;
+        private readonly ulong _collectionId;
 
         public InMemoryIndexSession(
             IModel<T> model,
-            IIndexingStrategy indexingStrategy)
+            IIndexingStrategy indexingStrategy,
+            SessionFactory sessionFactory, 
+            string directory,
+            ulong collectionId)
         {
             _model = model;
             _indexingStrategy = indexingStrategy;
             _index = new Dictionary<long, VectorNode>();
+            _readers = new Dictionary<long, IColumnReader>();
+            _sessionFactory = sessionFactory;
+            _directory = directory;
+            _collectionId = collectionId;
         }
 
         public void Put(long docId, long keyId, T value, bool label)
@@ -49,7 +60,10 @@ namespace Sir.Search
 
             foreach (var node in PathFinder.All(documentTree))
             {
-                _indexingStrategy.ExecutePut<T>(column, new VectorNode(node.Vector, docIds: node.DocIds));
+                _indexingStrategy.ExecutePut<T>(
+                    column, 
+                    new VectorNode(node.Vector, docIds: node.DocIds), 
+                    GetReader(documentTree.KeyId.Value));
             }
         }
 
@@ -63,63 +77,17 @@ namespace Sir.Search
             return _index;
         }
 
-        private IEnumerable<GraphInfo> GetGraphInfo()
+        private IColumnReader GetReader(long keyId)
         {
-            foreach (var ix in _index)
+            IColumnReader reader;
+
+            if (!_readers.TryGetValue(keyId, out reader))
             {
-                yield return new GraphInfo(ix.Key, ix.Value);
-            }
-        }
-
-        public void Dispose()
-        {
-        }
-    }
-
-    public class EmbeddSession<T> : IDisposable
-    {
-        private readonly IModel<T> _model;
-        private readonly IIndexingStrategy _indexingStrategy;
-        private readonly IDictionary<long, VectorNode> _index;
-
-        public EmbeddSession(
-            IModel<T> model,
-            IIndexingStrategy indexingStrategy)
-        {
-            _model = model;
-            _indexingStrategy = indexingStrategy;
-            _index = new Dictionary<long, VectorNode>();
-        }
-
-        public void Put(long docId, long keyId, T value, bool label)
-        {
-            var vectors = _model.CreateEmbedding(value, label);
-            VectorNode column;
-
-            if (!_index.TryGetValue(keyId, out column))
-            {
-                column = new VectorNode();
-                _index.Add(keyId, column);
+                reader = _sessionFactory.CreateColumnReader(_directory, _collectionId, keyId);
+                _readers.Add(keyId, reader);
             }
 
-            foreach (var vector in vectors)
-            {
-                _indexingStrategy.ExecutePut<T>(column, new VectorNode(vector, docId));
-            }
-
-            var size = PathFinder.Size(column);
-
-
-        }
-
-        public IndexInfo GetIndexInfo()
-        {
-            return new IndexInfo(GetGraphInfo());
-        }
-
-        public IDictionary<long, VectorNode> GetInMemoryIndex()
-        {
-            return _index;
+            return reader;
         }
 
         private IEnumerable<GraphInfo> GetGraphInfo()
@@ -132,6 +100,8 @@ namespace Sir.Search
 
         public void Dispose()
         {
+            foreach (var reader in _readers.Values)
+                reader.Dispose();
         }
     }
 }

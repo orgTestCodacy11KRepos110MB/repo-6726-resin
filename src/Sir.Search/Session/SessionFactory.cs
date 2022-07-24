@@ -31,7 +31,7 @@ namespace Sir.Search
             var ixFileName = Path.Combine(directory, string.Format("{0}.{1}.ix", collectionId, keyId));
 
             if (!File.Exists(ixFileName))
-                return null;
+                return new ColumnReader(null, null, null);
 
             var vectorFileName = Path.Combine(directory, $"{collectionId}.{keyId}.vec");
             var pageIndexFileName = Path.Combine(directory, $"{collectionId}.{keyId}.ixtp");
@@ -197,7 +197,7 @@ namespace Sir.Search
 
                         var count = 0;
 
-                        using (var indexSession = new InMemoryIndexSession<T>(model, model))
+                        using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
                         {
                             foreach (var document in payload)
                             {
@@ -286,7 +286,7 @@ namespace Sir.Search
                     {
                         if (field.Value != null)
                         {
-                            field.Analyze(model, label);
+                            field.Analyze(model, label, this);
                         }
                     }
 
@@ -300,7 +300,7 @@ namespace Sir.Search
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, model))
+            using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
@@ -314,7 +314,7 @@ namespace Sir.Search
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, model))
+            using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 

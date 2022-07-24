@@ -19,32 +19,37 @@ namespace Sir.Tests
         public void Can_traverse_index_in_memory()
         {
             var model = new BagOfCharsModel();
-            var index = model.CreateTree(model, _data);
 
-            Debug.WriteLine(PathFinder.Visualize(index));
-
-            Assert.DoesNotThrow(() => 
+            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                foreach (var word in _data)
+                var index = model.CreateTree(model, reader, _data);
+
+                Debug.WriteLine(PathFinder.Visualize(index));
+
+                Assert.DoesNotThrow(() =>
                 {
-                    foreach (var queryVector in model.CreateEmbedding(word, true))
+                    foreach (var word in _data)
                     {
-                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
-
-                        if (hit == null)
+                        foreach (var queryVector in model.CreateEmbedding(word, true))
                         {
-                            throw new Exception($"unable to find {word} in index.");
-                        }
+                            var hit = PathFinder.ClosestMatch(index, queryVector, model);
 
-                        if (hit.Score < model.IdenticalAngle)
-                        {
-                            throw new Exception($"unable to score {word}.");
-                        }
+                            if (hit == null)
+                            {
+                                throw new Exception($"unable to find {word} in index.");
+                            }
 
-                        Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                            if (hit.Score < model.IdenticalAngle)
+                            {
+                                throw new Exception($"unable to score {word}.");
+                            }
+
+                            Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                        }
                     }
-                }
-            });
+                });
+            }
+            
         }
 
         [Test]
@@ -83,7 +88,7 @@ namespace Sir.Tests
                     using (var pageIndexReader = new PageIndexReader(pageIndexReadStream, keepStreamOpen:true))
                     using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexReadStream, vectorReadStream, _loggerFactory.CreateLogger<ColumnReader>()))
                     {
-                        var tree = model.CreateTree(new OptimizedPageIndexingStrategy(reader, model), data);
+                        var tree = model.CreateTree(new OptimizedPageIndexingStrategy(model), reader, data);
 
                         using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
                         {

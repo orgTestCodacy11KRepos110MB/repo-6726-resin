@@ -30,9 +30,13 @@ namespace Sir.Search
                 var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
                 var result = _readSession.SearchScalar(query);
 
-                if (doc.Id != result.Id)
+                if (result == null)
                 {
-                    throw new Exception($"unable to validate doc.Id {doc.Id}");
+                    throw new Exception($"unable to validate doc.Id {doc.Id} because no matching document was found. Term value: {field.Value}");
+                }
+                else if (doc.Id != result.Id)
+                {
+                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found. Term value: {field.Value}. Document value: {result.Get(field.Name)}");
                 }
             }
         }

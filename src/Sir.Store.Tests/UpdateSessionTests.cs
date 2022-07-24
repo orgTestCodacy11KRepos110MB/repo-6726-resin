@@ -11,7 +11,7 @@ namespace Sir.Tests
     public class UpdateSessionTests
     {
         private ILoggerFactory _loggerFactory;
-        private SessionFactory _database;
+        private SessionFactory _sessionFactory;
         private string _directory = @"c:\temp\sir_tests";
 
         private readonly string[] _data = new string[] { "apple", "apples", "apricote", "apricots", "avocado", "avocados", "banana", "bananas", "blueberry", "blueberries", "cantalope" };
@@ -27,10 +27,10 @@ namespace Sir.Tests
 
             for (int documentIdToUpdate = 0; documentIdToUpdate < _data.Length; documentIdToUpdate++)
             {
-                _database.Truncate(_directory, collectionId);
+                _sessionFactory.Truncate(_directory, collectionId);
 
-                using (var index = new IndexWriter(_directory, collectionId, _database))
-                using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _database)))
+                using (var index = new IndexWriter(_directory, collectionId, _sessionFactory))
+                using (var writeSession = new WriteSession(new DocumentWriter(_directory, collectionId, _sessionFactory)))
                 {
                     var keyId = writeSession.EnsureKeyExists(fieldName);
 
@@ -38,7 +38,7 @@ namespace Sir.Tests
                     {
                         var data = _data[i];
 
-                        using (var indexSession = new InMemoryIndexSession<string>(model, model))
+                        using (var indexSession = new InMemoryIndexSession<string>(model, model, _sessionFactory, _directory, collectionId))
                         {
                             var doc = new Document(new Field[] { new Field(fieldName, data) });
 
@@ -49,9 +49,9 @@ namespace Sir.Tests
                     }
                 }
 
-                var queryParser = new QueryParser<string>(_directory, _database, model);
+                var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
 
-                using (var searchSession = new SearchSession(_directory, _database, model, _loggerFactory.CreateLogger<SearchSession>()))
+                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
                 {
                     Assert.DoesNotThrow(() =>
                     {
@@ -76,12 +76,12 @@ namespace Sir.Tests
                     });
                 }
 
-                using (var updateSession = new UpdateSession(_directory, collectionId, _database))
+                using (var updateSession = new UpdateSession(_directory, collectionId, _sessionFactory))
                 {
                     updateSession.Update(documentIdToUpdate, 0, updatedWord);
                 }
 
-                using (var searchSession = new SearchSession(_directory, _database, model, _loggerFactory.CreateLogger<SearchSession>()))
+                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
                 {
                     Assert.DoesNotThrow(() =>
                     {
@@ -129,13 +129,13 @@ namespace Sir.Tests
                     .AddDebug();
             });
 
-            _database = new SessionFactory(logger: _loggerFactory.CreateLogger<SessionFactory>());
+            _sessionFactory = new SessionFactory(logger: _loggerFactory.CreateLogger<SessionFactory>());
         }
 
         [TearDown]
         public void TearDown()
         {
-            _database.Dispose();
+            _sessionFactory.Dispose();
         }
     }
 }

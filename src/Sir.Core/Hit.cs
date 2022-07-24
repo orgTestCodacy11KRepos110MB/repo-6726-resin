@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Sir.Search
+namespace Sir
 {
     [DebuggerDisplay("{Score} {Node}")]
     public class Hit

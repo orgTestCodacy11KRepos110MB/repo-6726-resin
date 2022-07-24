@@ -6,7 +6,7 @@ namespace Sir.Search
 {
     public static class GraphBuilder
     {
-        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexingStrategy indexingStrategy, params T[] data)
+        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexingStrategy indexingStrategy, IColumnReader reader, params T[] data)
         {
             var root = new VectorNode();
 
@@ -14,7 +14,7 @@ namespace Sir.Search
             {
                 foreach (var vector in model.CreateEmbedding(item, true))
                 {
-                    indexingStrategy.ExecutePut<T>(root, new VectorNode(vector));
+                    indexingStrategy.ExecutePut<T>(root, new VectorNode(vector), reader);
                 }
             }
 

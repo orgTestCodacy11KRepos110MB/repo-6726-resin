@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sir.Search
+namespace Sir
 {
     public interface IColumnReader : IDisposable
     {

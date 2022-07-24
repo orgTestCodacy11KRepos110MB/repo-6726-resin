@@ -33,18 +33,22 @@ namespace Sir.Search
                 yield return node.Vector;
         }
 
-        public void Analyze<T>(IModel<T> model, bool label)
+        public void Analyze<T>(IModel<T> model, bool label, IStreamDispatcher streamDispatcher)
         {
             var tokens = model.CreateEmbedding((T)Value, label);
 
             Tree = new VectorNode();
 
-            foreach (var token in tokens)
+            using (var reader = streamDispatcher.CreateColumnReader("", 0, 0))
             {
-                model.ExecutePut<string>(Tree, new VectorNode(token, keyId: KeyId));
-            }
+                foreach (var token in tokens)
+                {
+                    model.ExecutePut<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
+                }
 
-            _tokens = GetTokens();
+                _tokens = GetTokens();
+            }
+                
         }
     }
 }

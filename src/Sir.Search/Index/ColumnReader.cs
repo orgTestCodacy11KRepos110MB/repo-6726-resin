@@ -31,6 +31,9 @@ namespace Sir.Search
 
         public Hit ClosestMatchOrNull(ISerializableVector vector, IModel model)
         {
+            if (_ixFile == null || _vectorFile == null)
+                return null;
+
             var time = Stopwatch.StartNew();
             var hits = new List<Hit>();
 
@@ -46,8 +49,6 @@ namespace Sir.Search
                 //if (hit.Score >= model.IdenticalAngle)
                 //    break;
             }
-
-            LogDebug($"scanned {_pages.Count} segments in {time.Elapsed}");
 
             Hit best = null;
 
@@ -198,8 +199,11 @@ namespace Sir.Search
 
         public void Dispose()
         {
-            _vectorFile.Dispose();
-            _ixFile.Dispose();
+            if (_vectorFile != null)
+                _vectorFile.Dispose();
+
+            if (_ixFile != null)
+                _ixFile.Dispose();
         }
     }
 }

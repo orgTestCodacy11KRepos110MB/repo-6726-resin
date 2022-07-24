@@ -24,46 +24,50 @@ namespace Sir.Tests
                 @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
 
             var model = new LinearClassifierImageModel();
-            var index = model.CreateTree(model, trainingData);
 
-            Print(index);
-
-            Assert.DoesNotThrow(() =>
+            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                var count = 0;
-                var errors = 0;
+                var index = model.CreateTree(model, reader, trainingData);
 
-                foreach (var image in trainingData)
+                Print(index);
+
+                Assert.DoesNotThrow(() =>
                 {
-                    foreach (var queryVector in model.CreateEmbedding(image, true))
+                    var count = 0;
+                    var errors = 0;
+
+                    foreach (var image in trainingData)
                     {
-                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
-
-                        if (hit == null)
+                        foreach (var queryVector in model.CreateEmbedding(image, true))
                         {
-                            throw new Exception($"unable to find {image} in index.");
+                            var hit = PathFinder.ClosestMatch(index, queryVector, model);
+
+                            if (hit == null)
+                            {
+                                throw new Exception($"unable to find {image} in index.");
+                            }
+
+                            if (!hit.Node.Vector.Label.Equals(image.Label))
+                            {
+                                errors++;
+                            }
+
+                            Debug.WriteLine($"{image} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+
+                            count++;
                         }
-
-                        if (!hit.Node.Vector.Label.Equals(image.Label))
-                        {
-                            errors++;
-                        }
-
-                        Debug.WriteLine($"{image} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
-
-                        count++;
                     }
-                }
 
-                var errorRate = (float)errors / count;
+                    var errorRate = (float)errors / count;
 
-                if (errorRate > 0)
-                {
-                    throw new Exception($"error rate: {errorRate * 100}%. too many errors.");
-                }
+                    if (errorRate > 0)
+                    {
+                        throw new Exception($"error rate: {errorRate * 100}%. too many errors.");
+                    }
 
-                Debug.WriteLine($"error rate: {errorRate}");
-            });
+                    Debug.WriteLine($"error rate: {errorRate}");
+                });
+            }
         }
 
         [Test]
@@ -76,45 +80,49 @@ namespace Sir.Tests
                 @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
 
             var model = new LinearClassifierImageModel();
-            var index = model.CreateTree(model, trainingData);
 
-            using (var indexStream = new MemoryStream())
-            using (var vectorStream = new MemoryStream())
-            using (var pageStream = new MemoryStream())
+            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
-                {
-                    writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
-                }
+                var index = model.CreateTree(model, reader, trainingData);
 
-                pageStream.Position = 0;
-
-                Assert.DoesNotThrow(() =>
+                using (var indexStream = new MemoryStream())
+                using (var vectorStream = new MemoryStream())
+                using (var pageStream = new MemoryStream())
                 {
-                    using (var pageIndexReader = new PageIndexReader(pageStream))
-                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
+                    using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
                     {
-                        foreach (var word in trainingData)
+                        writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
+                    }
+
+                    pageStream.Position = 0;
+
+                    Assert.DoesNotThrow(() =>
+                    {
+                        using (var pageIndexReader = new PageIndexReader(pageStream))
+                        using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
                         {
-                            foreach (var queryVector in model.CreateEmbedding(word, true))
+                            foreach (var word in trainingData)
                             {
-                                var hit = reader.ClosestMatchOrNull(queryVector, model);
-
-                                if (hit == null)
+                                foreach (var queryVector in model.CreateEmbedding(word, true))
                                 {
-                                    throw new Exception($"unable to find {word} in tree.");
-                                }
+                                    var hit = reader.ClosestMatchOrNull(queryVector, model);
 
-                                if (hit.Score < model.IdenticalAngle)
-                                {
-                                    throw new Exception($"unable to score {word}.");
-                                }
+                                    if (hit == null)
+                                    {
+                                        throw new Exception($"unable to find {word} in tree.");
+                                    }
 
-                                Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
+                                    if (hit.Score < model.IdenticalAngle)
+                                    {
+                                        throw new Exception($"unable to score {word}.");
+                                    }
+
+                                    Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 

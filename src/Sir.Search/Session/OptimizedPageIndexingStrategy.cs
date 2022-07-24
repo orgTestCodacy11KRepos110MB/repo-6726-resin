@@ -2,18 +2,16 @@
 {
     public class OptimizedPageIndexingStrategy : IIndexingStrategy
     {
-        private readonly ColumnReader _columnReader;
         private readonly IModel _model;
 
-        public OptimizedPageIndexingStrategy(ColumnReader columnReader, IModel model)
+        public OptimizedPageIndexingStrategy(IModel model)
         {
-            _columnReader = columnReader;
             _model = model;
         }
 
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
+        public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
-            var existing = _columnReader.ClosestMatchOrNull(node.Vector, _model);
+            var existing = reader.ClosestMatchOrNull(node.Vector, _model);
 
             if (existing == null || existing.Score < _model.IdenticalAngle)
             {

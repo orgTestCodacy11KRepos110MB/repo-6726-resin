@@ -10,7 +10,7 @@ namespace Sir.Search
         public double FoldAngle => 0.75d;
         public override int NumOfDimensions => 784; 
 
-        public void ExecutePut<T>(VectorNode column, VectorNode node)
+        public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
             column.AddOrAppendSupervised(node, this);
         }

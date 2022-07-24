@@ -19,77 +19,85 @@ namespace Sir.Tests
         public void Can_traverse_index_in_memory()
         {
             var model = new NGramModel(new BagOfCharsModel());
-            var index = model.CreateTree(model, _data);
 
-            Debug.WriteLine(PathFinder.Visualize(index));
-
-            Assert.DoesNotThrow(() => 
+            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                foreach (var phrase in _data)
+                var index = model.CreateTree(model, reader, _data);
+
+                Debug.WriteLine(PathFinder.Visualize(index));
+
+                Assert.DoesNotThrow(() =>
                 {
-                    foreach (var queryVector in model.CreateEmbedding(phrase, true))
+                    foreach (var phrase in _data)
                     {
-                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
-
-                        if (hit == null)
+                        foreach (var queryVector in model.CreateEmbedding(phrase, true))
                         {
-                            throw new Exception($"unable to find {phrase} in index.");
-                        }
+                            var hit = PathFinder.ClosestMatch(index, queryVector, model);
 
-                        if (hit.Score < model.IdenticalAngle)
-                        {
-                            throw new Exception($"unable to score {phrase}.");
-                        }
+                            if (hit == null)
+                            {
+                                throw new Exception($"unable to find {phrase} in index.");
+                            }
 
-                        Debug.WriteLine($"{phrase} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                            if (hit.Score < model.IdenticalAngle)
+                            {
+                                throw new Exception($"unable to score {phrase}.");
+                            }
+
+                            Debug.WriteLine($"{phrase} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         [Test]
         public void Can_traverse_streamed()
         {
             var model = new NGramModel(new BagOfCharsModel());
-            var index = model.CreateTree(model, _data);
 
-            using (var indexStream = new MemoryStream())
-            using (var vectorStream = new MemoryStream())
-            using (var pageStream = new MemoryStream())
+            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                using (var writer = new ColumnWriter(indexStream, keepStreamOpen:true))
-                {
-                    writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen:true));
-                }
+                var index = model.CreateTree(model, reader, _data);
 
-                pageStream.Position = 0;
-
-                Assert.DoesNotThrow(() =>
+                using (var indexStream = new MemoryStream())
+                using (var vectorStream = new MemoryStream())
+                using (var pageStream = new MemoryStream())
                 {
-                    using (var pageIndexReader = new PageIndexReader(pageStream))
-                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
+                    using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
                     {
-                        foreach (var word in _data)
+                        writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
+                    }
+
+                    pageStream.Position = 0;
+
+                    Assert.DoesNotThrow(() =>
+                    {
+                        using (var pageIndexReader = new PageIndexReader(pageStream))
+                        using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
                         {
-                            foreach (var queryVector in model.CreateEmbedding(word, true))
+                            foreach (var word in _data)
                             {
-                                var hit = reader.ClosestMatchOrNull(queryVector, model);
-
-                                if (hit == null)
+                                foreach (var queryVector in model.CreateEmbedding(word, true))
                                 {
-                                    throw new Exception($"unable to find \"{word}\" in tree.");
-                                }
+                                    var hit = reader.ClosestMatchOrNull(queryVector, model);
 
-                                if (hit.Score < model.IdenticalAngle)
-                                {
-                                    throw new Exception($"unable to score \"{word}\".");
-                                }
+                                    if (hit == null)
+                                    {
+                                        throw new Exception($"unable to find \"{word}\" in tree.");
+                                    }
 
-                                Debug.WriteLine($"\"{word}\" matched vector in disk with {hit.Score * 100}% certainty.");
+                                    if (hit.Score < model.IdenticalAngle)
+                                    {
+                                        throw new Exception($"unable to score \"{word}\".");
+                                    }
+
+                                    Debug.WriteLine($"\"{word}\" matched vector in disk with {hit.Score * 100}% certainty.");
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 

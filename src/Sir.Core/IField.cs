@@ -10,6 +10,6 @@ namespace Sir
         IEnumerable<ISerializableVector> Tokens { get; }
         VectorNode Tree { get; }
         object Value { get; set; }
-        void Analyze<T>(IModel<T> model, bool label);
+        void Analyze<T>(IModel<T> model, bool label, IStreamDispatcher streamDispatcher);
     }
 }

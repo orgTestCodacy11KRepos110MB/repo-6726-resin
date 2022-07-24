@@ -32,7 +32,7 @@ namespace Sir.Mnist
                 sessionFactory.Truncate(dataDirectory, collectionId);
 
                 using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))
-                using (var indexSession = new InMemoryIndexSession<IImage>(model, model))
+                using (var indexSession = new InMemoryIndexSession<IImage>(model, model, sessionFactory, dataDirectory, collectionId))
                 {
                     var imageIndexId = writeSession.EnsureKeyExists("image");
 
