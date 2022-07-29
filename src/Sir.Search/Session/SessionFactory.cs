@@ -178,7 +178,7 @@ namespace Sir.Search
                 {
                     using (var index = new IndexWriter(directory, collectionId, this, logger: _logger))
                     {
-                        index.Write(indexSession.GetInMemoryIndices());
+                        indexSession.Commit(index);
                     }
                 }))
                 {
@@ -306,7 +306,7 @@ namespace Sir.Search
 
                 using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndices());
+                    indexSession.Commit(stream);
                 }
             }
         }
@@ -320,7 +320,7 @@ namespace Sir.Search
 
                 using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndices());
+                    indexSession.Commit(stream);
                 }
             }
         }

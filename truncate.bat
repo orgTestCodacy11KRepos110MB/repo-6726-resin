@@ -1,0 +1,1 @@
+sir.bat truncate --collection wikipedia --directory C:\projects\resin\src\Sir.HttpServer\AppData\database

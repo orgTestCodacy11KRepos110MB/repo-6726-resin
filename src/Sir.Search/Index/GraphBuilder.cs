@@ -301,10 +301,11 @@ namespace Sir.Search
                 if (node.PostingsOffset > -1 && postingsStream != null)
                 {
                     AppendPostings(node, postingsStream);
+                    node.PostingsOffset = -1;
                 }
                 else if (node.PostingsOffset == -1 && postingsStream != null)
                 {
-                    node.PostingsOffset = SerializeHeaderAndPostingsPayload(node.DocIds, postingsStream);
+                    node.PostingsOffset = SerializePostings(node, postingsStream);
                 }
 
                 if (vectorStream != null)
@@ -335,32 +336,32 @@ namespace Sir.Search
             return (offset, length);
         }
 
-        public static void AppendPostings(this VectorNode node, Stream postingsStream)
+        public static void AppendPostings(VectorNode node, Stream postingsStream)
         {
-            var addressOfNextPage = postingsStream.Position;
+            long addressOfNextPage = postingsStream.Length - 1;
 
             postingsStream.Seek(node.PostingsOffset + sizeof(long), SeekOrigin.Begin);
 
             postingsStream.Write(BitConverter.GetBytes(addressOfNextPage));
 
-            postingsStream.Seek(addressOfNextPage, SeekOrigin.Begin);
-
-            SerializeHeaderAndPostingsPayload(node.DocIds, postingsStream);
+            postingsStream.Seek(0, SeekOrigin.End);
         }
 
-        public static long SerializeHeaderAndPostingsPayload(IList<long> documentIds, Stream postingsStream)
+        public static long SerializePostings(VectorNode node, Stream postingsStream)
         {
-            if (documentIds.Count == 0) throw new ArgumentException("can't be empty", nameof(documentIds));
+            if (node.DocIds.Count == 0) throw new ArgumentException("can't be empty", nameof(node.DocIds));
+
+            postingsStream.Seek(0, SeekOrigin.End);
 
             var offset = postingsStream.Position;
 
             // serialize item count
-            postingsStream.Write(BitConverter.GetBytes((long)documentIds.Count));
+            postingsStream.Write(BitConverter.GetBytes((long)node.DocIds.Count));
 
             // serialize address of next page (unknown at this time)
             postingsStream.Write(BitConverter.GetBytes((long)0));
 
-            foreach (var docId in documentIds)
+            foreach (var docId in node.DocIds)
             {
                 postingsStream.Write(BitConverter.GetBytes(docId));
             }

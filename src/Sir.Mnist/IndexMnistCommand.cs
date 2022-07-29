@@ -54,7 +54,7 @@ namespace Sir.Mnist
 
                     using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                     {
-                        stream.Write(indices);
+                        indexSession.Commit(stream);
                     }
                 }
             }

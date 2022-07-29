@@ -44,7 +44,7 @@ namespace Sir.Tests
 
                             writeSession.Put(doc);
                             indexSession.Put(doc.Id, keyId, data, true);
-                            index.Write(indexSession.GetInMemoryIndices());
+                            indexSession.Commit(index);
                         }
                     }
                 }

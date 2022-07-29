@@ -60,7 +60,7 @@ namespace Sir.Wikipedia
                                 debugger.Step(indexSession);
                             }
 
-                            indexStream.Write(indexSession.GetInMemoryIndices());
+                            indexSession.Commit(indexStream);
 
                             //foreach (var column in indexSession.InMemoryIndex)
                             //{

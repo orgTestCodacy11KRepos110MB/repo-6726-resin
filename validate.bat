@@ -1,0 +1,1 @@
+sir.bat validate --directory C:\projects\resin\src\Sir.HttpServer\AppData\database --collection wikipedia --skip 0 --take 1000

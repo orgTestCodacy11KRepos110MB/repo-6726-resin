@@ -56,7 +56,7 @@ namespace Sir.CommonCrawl
 
                 using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                 {
-                    stream.Write(indexSession.GetInMemoryIndices());
+                    indexSession.Commit(stream);
                 }
             }
 

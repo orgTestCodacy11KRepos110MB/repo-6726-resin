@@ -41,17 +41,18 @@ namespace Sir.Search
 
             stream.Seek(postingsOffset, SeekOrigin.Begin);
 
-            var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long) * 2);
+            //var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long) * 2);
+            var headerBuf = new byte[sizeof(long) * 2];
 
-            stream.Read(headerBuf, 0, sizeof(long) * 2);
+            stream.Read(headerBuf, 0, headerBuf.Length);
 
             var numOfPostings = BitConverter.ToInt64(headerBuf);
             var addressOfNextPage = BitConverter.ToInt64(headerBuf, sizeof(long));
 
-            ArrayPool<byte>.Shared.Return(headerBuf);
+            //ArrayPool<byte>.Shared.Return(headerBuf);
 
             var len = sizeof(long) * numOfPostings;
-            Span<byte> listBuf = new byte[len];
+            var listBuf = new byte[len];
             var read = stream.Read(listBuf);
 
             if (read != len)

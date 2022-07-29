@@ -13,14 +13,12 @@
         {
             var existing = reader.ClosestMatchOrNull(node.Vector, _model);
 
-            if (existing == null || existing.Score < _model.IdenticalAngle)
-            {
-                column.AddOrAppend(node, _model);
-            }
-            else
+            if (existing != null && existing.Score >= _model.IdenticalAngle)
             {
                 node.PostingsOffset = existing.Node.PostingsOffset;
             }
+
+            column.AddOrAppend(node, _model);
         }
     }
 }

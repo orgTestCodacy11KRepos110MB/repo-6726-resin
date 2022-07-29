@@ -41,7 +41,7 @@ namespace Sir.Search
             {
                 var time = Stopwatch.StartNew();
                 var vectorStream = GetOrCreateAppendStream(column.Key, "vec");
-                var postingsStream = GetOrCreateAppendStream(column.Key, "pos");
+                var postingsStream = GetOrCreateSeekableWritableStream(column.Key, "pos");
 
                 using (var columnWriter = new ColumnWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
                 using (var pageIndexWriter = new PageIndexWriter(GetOrCreateAppendStream(column.Key, "ixtp"), keepStreamOpen: true))
@@ -62,6 +62,20 @@ namespace Sir.Search
             if (!_streams.TryGetValue(key, out stream))
             {
                stream = _sessionFactory.CreateAppendStream(_directory, _collectionId, keyId, fileExtension);
+                _streams.Add(key, stream);
+            }
+
+            return stream;
+        }
+
+        private Stream GetOrCreateSeekableWritableStream(long keyId, string fileExtension)
+        {
+            Stream stream;
+            var key = (keyId, fileExtension);
+
+            if (!_streams.TryGetValue(key, out stream))
+            {
+                stream = _sessionFactory.CreateSeekableWritableStream(_directory, _collectionId, keyId, fileExtension);
                 _streams.Add(key, stream);
             }
 

@@ -83,7 +83,7 @@ namespace Sir.Tests
                         
                         writeSession.Put(doc);
                         indexSession.Put(doc.Id, keyId, data, true);
-                        stream.Write(indexSession.GetInMemoryIndices());
+                        indexSession.Commit(stream);
                     }
                 }
             }
@@ -147,7 +147,7 @@ namespace Sir.Tests
 
                 using (var stream = new IndexWriter(_directory, collectionId, _sessionFactory))
                 {
-                    stream.Write(indices);
+                    indexSession.Commit(stream);
                 }
             }
 

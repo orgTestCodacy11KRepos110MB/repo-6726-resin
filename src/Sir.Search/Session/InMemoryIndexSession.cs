@@ -72,6 +72,18 @@ namespace Sir.Search
             return new IndexInfo(GetGraphInfo());
         }
 
+        public void Commit(IndexWriter indexWriter)
+        {
+            try
+            {
+                indexWriter.Write(_index);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public IDictionary<long, VectorNode> GetInMemoryIndices()
         {
             return _index;
