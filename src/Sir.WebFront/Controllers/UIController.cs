@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Sir.Search;
+using Sir.Strings;
 
 namespace Sir.HttpServer.Controllers
 {

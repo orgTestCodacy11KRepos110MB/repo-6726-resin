@@ -1,7 +1,7 @@
 ﻿using Sir.Documents;
 using System;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class UpdateSession : IDisposable
     {

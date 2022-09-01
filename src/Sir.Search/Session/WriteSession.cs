@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     /// <summary>
     /// Write session targeting a single collection.

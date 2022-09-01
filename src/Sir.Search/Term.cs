@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     [System.Diagnostics.DebuggerDisplay("{Key}:{Label}")]
     public class Term : BooleanStatement, ITerm

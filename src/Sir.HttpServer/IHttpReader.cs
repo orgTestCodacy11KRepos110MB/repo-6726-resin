@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Sir.Search;
+using Sir.Strings;
 using System.Threading.Tasks;
 
 namespace Sir.HttpServer

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sir.Search;
+using Sir.Strings;
 using Sir.Wikipedia;
 using System;
 using System.Collections.Generic;

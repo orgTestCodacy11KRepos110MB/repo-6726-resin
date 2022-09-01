@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     /// <summary>
     /// A boolean query.

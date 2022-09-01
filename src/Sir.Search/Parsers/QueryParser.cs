@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class QueryParser<T>
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Sir.Search;
+using Sir.Strings;
 
 namespace Sir.HttpServer.Controllers
 {

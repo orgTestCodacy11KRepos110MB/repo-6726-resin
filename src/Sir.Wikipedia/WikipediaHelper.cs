@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Sir.Search;
+using Sir.Strings;
 using System;
 using System.Collections.Generic;
 using System.IO;

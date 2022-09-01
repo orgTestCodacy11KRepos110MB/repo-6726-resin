@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     /// <summary>
     /// Read session targeting multiple collections.

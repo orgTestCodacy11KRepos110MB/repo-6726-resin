@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Documents;
-using Sir.Search;
+using Sir.Strings;
 using System;
 using System.Diagnostics;
 using System.Linq;

@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class SerializableVector : ISerializableVector
     {

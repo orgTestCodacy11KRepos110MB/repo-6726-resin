@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sir.Core\Sir.Core.csproj" />
+    <ProjectReference Include="..\Sir.Images\Sir.Images.csproj" />
     <ProjectReference Include="..\Sir.Mnist\Sir.Mnist.csproj" />
     <ProjectReference Include="..\Sir.Wikipedia\Sir.Wikipedia.csproj" />
   </ItemGroup>

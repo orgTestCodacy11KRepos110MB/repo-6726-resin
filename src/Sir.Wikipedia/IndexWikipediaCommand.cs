@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sir.Documents;
-using Sir.Search;
+using Sir.Strings;
 using System.Collections.Generic;
 using System.IO;
 

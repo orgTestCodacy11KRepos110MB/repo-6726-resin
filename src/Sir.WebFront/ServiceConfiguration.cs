@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Sir.Search;
+using Sir.Strings;
 using System;
 using System.IO;
 

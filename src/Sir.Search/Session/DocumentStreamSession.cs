@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class DocumentStreamSession : IDisposable
     {

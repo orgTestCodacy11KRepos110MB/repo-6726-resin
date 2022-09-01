@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Sir.Strings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sir.Search
+namespace Sir.Images
 {
     public class LinearClassifierImageModel : DistanceCalculator, IModel<IImage>
     {

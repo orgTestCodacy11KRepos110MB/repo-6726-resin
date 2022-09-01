@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     /// <summary>
     /// Allocate postings in memory.

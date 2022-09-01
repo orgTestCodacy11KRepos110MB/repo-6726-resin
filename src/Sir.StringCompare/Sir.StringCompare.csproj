@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sir.Search\Sir.Search.csproj" />
+    <ProjectReference Include="..\Sir.Search\Sir.Strings.csproj" />
   </ItemGroup>
 
 </Project>

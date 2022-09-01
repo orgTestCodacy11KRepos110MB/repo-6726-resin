@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Sir.Search\Sir.Strings.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sir.Search;
+using Sir.Strings;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;

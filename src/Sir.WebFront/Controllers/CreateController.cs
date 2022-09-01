@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Sir.Search;
+using Sir.Strings;
 using System;
 using System.Collections.Generic;
 using System.IO;

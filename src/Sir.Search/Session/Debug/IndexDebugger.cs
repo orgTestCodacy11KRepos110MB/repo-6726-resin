@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class IndexDebugger : IDisposable
     {

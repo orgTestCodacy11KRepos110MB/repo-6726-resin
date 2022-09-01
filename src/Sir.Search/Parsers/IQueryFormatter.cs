@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public interface IQueryFormatter<T>
     {

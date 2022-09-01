@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public abstract class DistanceCalculator : IDistanceCalculator
     {

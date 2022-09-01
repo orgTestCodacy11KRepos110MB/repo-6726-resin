@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     /// <summary>
-    /// Index bitmap reader. Each word is a <see cref="Sir.Search.VectorNode"/>.
+    /// Index bitmap reader. Each word is a <see cref="Sir.Strings.VectorNode"/>.
     /// </summary>
     public class ColumnReader : IColumnReader
     {

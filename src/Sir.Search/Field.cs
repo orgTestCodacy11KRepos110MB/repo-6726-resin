@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     [DebuggerDisplay("{Name}")]
     public class Field : IField

@@ -1,4 +1,4 @@
-﻿using Sir.Search;
+﻿using Sir.Strings;
 using System;
 using System.Linq;
 

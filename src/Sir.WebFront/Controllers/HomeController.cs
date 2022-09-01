@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Sir.Search;
+using Sir.Strings;
 
 namespace Sir.HttpServer.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Sir.Search
+namespace Sir.Strings
 {
     public class ColumnWriter : IDisposable
     {
