@@ -1,4 +1,6 @@
-﻿namespace Sir.Strings
+﻿using Sir.IO;
+
+namespace Sir.Strings
 {
     public class GraphInfo
     {

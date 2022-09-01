@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Documents;
+using Sir.IO;
 using Sir.Strings;
 using System;
 using System.Diagnostics;

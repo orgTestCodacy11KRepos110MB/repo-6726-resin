@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sir.Strings
+namespace Sir
 {
     public class ScoredResult
     {

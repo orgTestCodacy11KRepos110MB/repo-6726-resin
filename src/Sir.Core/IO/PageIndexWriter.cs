@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir.IO
 {
     /// <summary>
     /// Index segment address writer.

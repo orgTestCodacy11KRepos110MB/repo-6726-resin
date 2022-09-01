@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Sir.Strings
+namespace Sir.IO
 {
     public static class PathFinder
     {

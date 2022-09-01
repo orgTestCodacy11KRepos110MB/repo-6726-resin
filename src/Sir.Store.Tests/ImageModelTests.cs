@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Sir.Images;
+using Sir.IO;
 using Sir.Mnist;
 using Sir.Strings;
 using System;

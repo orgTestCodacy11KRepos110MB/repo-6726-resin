@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sir.Documents;
+using Sir.IO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

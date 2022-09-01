@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sir.IO;
+using System;
 using System.Collections.Generic;
 
 namespace Sir.Strings

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Sir.Strings
+namespace Sir.IO
 {
     /// <summary>
     /// Index segment address reader.

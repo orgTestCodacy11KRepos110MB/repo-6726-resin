@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Sir.IO;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Sir.Strings
+namespace Sir
 {
     [DebuggerDisplay("{Name}")]
     public class Field : IField

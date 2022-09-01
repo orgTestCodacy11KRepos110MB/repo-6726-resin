@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir.IO
 {
     /// <summary>
     /// Index bitmap reader. Each word is a <see cref="Sir.Strings.VectorNode"/>.

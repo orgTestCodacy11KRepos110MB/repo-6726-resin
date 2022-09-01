@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir.IO
 {
     public static class GraphBuilder
     {

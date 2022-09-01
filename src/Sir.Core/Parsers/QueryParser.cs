@@ -2,16 +2,16 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Sir.Strings
+namespace Sir
 {
     public class QueryParser<T>
     {
-        private readonly SessionFactory _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly IModel<T> _model;
         private readonly ILogger _logger;
         private readonly string _directory;
 
-        public QueryParser(string directory, SessionFactory sessionFactory, IModel<T> model, ILogger logger = null)
+        public QueryParser(string directory, IStreamDispatcher sessionFactory, IModel<T> model, ILogger logger = null)
         {
             _sessionFactory = sessionFactory;
             _model = model;

@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace Sir.Strings
+namespace Sir
 {
     [JsonConverter(typeof(DocumentJsonConverter))]
     public class Document : IDocument

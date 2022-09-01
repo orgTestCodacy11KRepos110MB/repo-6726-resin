@@ -1,17 +1,18 @@
 ﻿using Sir.Documents;
+using Sir.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir.Documents
 {
     public class DocumentStreamSession : IDisposable
     {
         private readonly string _directory;
-        private readonly SessionFactory _database;
+        private readonly IStreamDispatcher _database;
         private readonly IDictionary<ulong, DocumentReader> _documentReaders;
 
-        public DocumentStreamSession(string directory, SessionFactory database) 
+        public DocumentStreamSession(string directory, IStreamDispatcher database) 
         {
             _directory = directory;
             _database = database;

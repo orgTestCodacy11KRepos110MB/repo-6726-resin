@@ -1,4 +1,4 @@
-﻿namespace Sir.Strings
+﻿namespace Sir
 {
     public static class SystemFields
     {
