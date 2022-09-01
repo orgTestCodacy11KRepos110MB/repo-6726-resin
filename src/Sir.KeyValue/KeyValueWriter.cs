@@ -17,19 +17,24 @@ namespace Sir.KeyValue
         private readonly object _keyLock = new object();
         
         public KeyValueWriter(string directory, ulong collectionId, IStreamDispatcher database, bool append = true)
+            : this(
+            new ValueWriter(append? database.CreateAppendStream(directory, collectionId, "val") : database.CreateSeekableWritableStream(directory, collectionId, "val")),
+            new ValueWriter(database.CreateAppendStream(directory, collectionId, "key")),
+            new ValueIndexWriter(database.CreateAppendStream(directory, collectionId, "vix")),
+            new ValueIndexWriter(database.CreateAppendStream(directory, collectionId, "kix"))
+            )
         {
-            var valueStream = append ? database.CreateAppendStream(directory, collectionId, "val") : database.CreateSeekableWritableStream(directory, collectionId, "val");
-            var keyStream = database.CreateAppendStream(directory, collectionId, "key");
-            var valueIndexStream = database.CreateAppendStream(directory, collectionId, "vix");
-            var keyIndexStream = database.CreateAppendStream(directory, collectionId, "kix");
-
-            _vals = new ValueWriter(valueStream);
-            _keys = new ValueWriter(keyStream);
-            _valIx = new ValueIndexWriter(valueIndexStream);
-            _keyIx = new ValueIndexWriter(keyIndexStream);
             _collectionId = collectionId;
             _database = database;
             _directory = directory;
+        }
+
+        public KeyValueWriter(ValueWriter values, ValueWriter keys, ValueIndexWriter valIx, ValueIndexWriter keyIx)
+        {
+            _vals = values;
+            _keys = keys;
+            _valIx = valIx;
+            _keyIx = keyIx;
         }
 
         public long EnsureKeyExistsSafely(string keyStr)
