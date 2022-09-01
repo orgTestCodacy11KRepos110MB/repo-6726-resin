@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Crawl", "Sir.Crawl\Sir.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.WebFront", "Sir.WebFront\Sir.WebFront.csproj", "{1731E700-FC10-45BB-9F94-E4835A8D64D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Strings", "Sir.Search\Sir.Strings.csproj", "{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.Strings", "Sir.Strings\Sir.Strings.csproj", "{AB275A5B-E72E-475A-8E1A-FFA7A5F9C932}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sir.StringCompare", "Sir.StringCompare\Sir.StringCompare.csproj", "{C6050E65-9411-41E3-A6EE-0A45E6FFB4FC}"
 EndProject
