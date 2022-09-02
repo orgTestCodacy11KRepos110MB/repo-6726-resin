@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sir.Strings
+namespace Sir
 {
     /// <summary>
     /// Write session targeting a single collection.

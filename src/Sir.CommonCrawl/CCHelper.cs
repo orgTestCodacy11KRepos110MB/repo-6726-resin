@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Sir.Core;
 using Sir.Documents;
-using Sir.Strings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

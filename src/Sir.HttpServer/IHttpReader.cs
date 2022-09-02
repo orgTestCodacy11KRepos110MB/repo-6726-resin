@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Sir.Strings;
 using System.Threading.Tasks;
 
 namespace Sir.HttpServer

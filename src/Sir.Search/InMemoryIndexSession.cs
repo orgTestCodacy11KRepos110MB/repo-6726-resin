@@ -2,22 +2,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sir.Strings
+namespace Sir
 {
-    public class InMemoryIndexSession<T> : IIndexSession, IDisposable
+    public class InMemoryIndexSession<T> : IIndexSession<T>, IDisposable
     {
         private readonly IModel<T> _model;
         private readonly IIndexingStrategy _indexingStrategy;
         private readonly IDictionary<long, VectorNode> _index;
         private readonly IDictionary<long, IColumnReader> _readers;
-        private readonly SessionFactory _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly string _directory;
         private readonly ulong _collectionId;
 
         public InMemoryIndexSession(
             IModel<T> model,
             IIndexingStrategy indexingStrategy,
-            SessionFactory sessionFactory, 
+            IStreamDispatcher sessionFactory, 
             string directory,
             ulong collectionId)
         {
@@ -75,14 +75,7 @@ namespace Sir.Strings
 
         public void Commit(IndexWriter indexWriter)
         {
-            try
-            {
-                indexWriter.Write(_index);
-            }
-            catch
-            {
-                throw;
-            }
+            indexWriter.WriteTrees(_index);
         }
 
         public IDictionary<long, VectorNode> GetInMemoryIndices()

@@ -2,7 +2,6 @@
 using Sir.Documents;
 using Sir.Images;
 using Sir.IO;
-using Sir.Strings;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;

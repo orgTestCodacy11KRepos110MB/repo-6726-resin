@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir
 {
     /// <summary>
     /// Stream dispatcher with helper methods for writing, indexing, optimizing, updating and truncating document collections.

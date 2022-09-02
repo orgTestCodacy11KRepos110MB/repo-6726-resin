@@ -1,6 +1,6 @@
 ﻿using Sir.IO;
 
-namespace Sir.Strings
+namespace Sir
 {
     public class OptimizedPageIndexingStrategy : IIndexingStrategy
     {

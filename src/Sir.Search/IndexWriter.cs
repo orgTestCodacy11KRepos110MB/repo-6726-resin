@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Sir.Strings
+namespace Sir
 {
     public class IndexWriter : IDisposable
     {
         private readonly string _directory;
         private readonly ulong _collectionId;
-        private readonly SessionFactory _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly ILogger _logger;
         private readonly IDictionary<(long keyId, string fileExtension), Stream> _streams;
 
         public IndexWriter(
             string directory,
-            ulong collectionId, 
-            SessionFactory sessionFactory, 
+            ulong collectionId,
+            IStreamDispatcher sessionFactory, 
             ILogger logger = null)
         {
             _directory = directory;
@@ -36,22 +36,27 @@ namespace Sir.Strings
             }
         }
 
-        public void Write(IDictionary<long, VectorNode> index)
+        public void WriteTrees(IDictionary<long, VectorNode> index)
         {
             foreach (var column in index)
             {
-                var time = Stopwatch.StartNew();
-                var vectorStream = GetOrCreateAppendStream(column.Key, "vec");
-                var postingsStream = GetOrCreateSeekableWritableStream(column.Key, "pos");
+                WriteTree(column.Key, column.Value);
+            }
+        }
 
-                using (var columnWriter = new ColumnWriter(GetOrCreateAppendStream(column.Key, "ix"), keepStreamOpen: true))
-                using (var pageIndexWriter = new PageIndexWriter(GetOrCreateAppendStream(column.Key, "ixtp"), keepStreamOpen: true))
-                {
-                    var size = columnWriter.CreatePage(column.Value, vectorStream, postingsStream, pageIndexWriter);
+        public void WriteTree(long columnKey, VectorNode tree)
+        {
+            var time = Stopwatch.StartNew();
+            var vectorStream = GetOrCreateAppendStream(columnKey, "vec");
+            var postingsStream = GetOrCreateSeekableWritableStream(columnKey, "pos");
 
-                    if (_logger != null)
-                        _logger.LogDebug($"serialized column {column.Key}, weight {column.Value.Weight} {size} in {time.Elapsed}");
-                }
+            using (var columnWriter = new ColumnWriter(GetOrCreateAppendStream(columnKey, "ix"), keepStreamOpen: true))
+            using (var pageIndexWriter = new PageIndexWriter(GetOrCreateAppendStream(columnKey, "ixtp"), keepStreamOpen: true))
+            {
+                var size = columnWriter.CreatePage(tree, vectorStream, postingsStream, pageIndexWriter);
+
+                if (_logger != null)
+                    _logger.LogDebug($"serialized column {columnKey}, weight {tree.Weight} {size} in {time.Elapsed}");
             }
         }
 

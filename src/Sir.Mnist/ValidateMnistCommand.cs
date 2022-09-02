@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sir.Images;
-using Sir.Strings;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

@@ -1,26 +1,25 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sir.Documents;
 using Sir.IO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Sir.Strings
+namespace Sir
 {
     /// <summary>
     /// Read session targeting multiple collections.
     /// </summary>
     public class SearchSession : DocumentStreamSession, IDisposable, ISearchSession
     {
-        private readonly SessionFactory _sessionFactory;
+        private readonly IStreamDispatcher _sessionFactory;
         private readonly IModel _model;
         private readonly PostingsResolver _postingsResolver;
         private readonly Scorer _scorer;
         private readonly ILogger _logger;
 
         public SearchSession(
-            string directory, 
-            SessionFactory sessionFactory,
+            string directory,
+            IStreamDispatcher sessionFactory,
             IModel model,
             ILogger logger = null,
             PostingsResolver postingsResolver = null,

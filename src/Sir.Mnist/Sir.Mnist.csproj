@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sir.Core\Sir.Core.csproj" />
     <ProjectReference Include="..\Sir.Images\Sir.Images.csproj" />
+    <ProjectReference Include="..\Sir.Search\Sir.Session.csproj" />
   </ItemGroup>
 
 </Project>

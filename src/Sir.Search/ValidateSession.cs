@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sir.Strings
+namespace Sir
 {
     /// <summary>
     /// Validate a collection.

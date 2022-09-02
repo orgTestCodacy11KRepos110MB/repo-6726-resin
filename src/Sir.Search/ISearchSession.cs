@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sir.Strings
+namespace Sir
 {
     public interface ISearchSession : IDisposable
     {

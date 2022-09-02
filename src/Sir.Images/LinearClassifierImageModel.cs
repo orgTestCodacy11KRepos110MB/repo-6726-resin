@@ -1,5 +1,4 @@
 ﻿using Sir.IO;
-using Sir.Strings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

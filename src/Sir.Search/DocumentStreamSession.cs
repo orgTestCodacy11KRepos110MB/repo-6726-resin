@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sir.Documents
+namespace Sir
 {
     public class DocumentStreamSession : IDisposable
     {

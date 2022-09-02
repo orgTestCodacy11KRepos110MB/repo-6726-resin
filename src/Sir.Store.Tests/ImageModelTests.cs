@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Sir.Images;
 using Sir.IO;
 using Sir.Mnist;
-using Sir.Strings;
 using System;
 using System.Diagnostics;
 using System.IO;

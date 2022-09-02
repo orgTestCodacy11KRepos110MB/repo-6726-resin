@@ -1,14 +1,14 @@
 ﻿using Sir.Documents;
 using System;
 
-namespace Sir.Strings
+namespace Sir
 {
     public class UpdateSession : IDisposable
     {
         private readonly DocumentReader _reader;
         private readonly DocumentWriter _writer;
 
-        public UpdateSession(string directory, ulong collectionId, SessionFactory sessionFactory) 
+        public UpdateSession(string directory, ulong collectionId, IStreamDispatcher sessionFactory) 
         {
             _reader = new DocumentReader(directory, collectionId, sessionFactory);
             _writer = new DocumentWriter(directory, collectionId, sessionFactory, append:false);
