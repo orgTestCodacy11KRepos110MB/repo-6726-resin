@@ -20,7 +20,7 @@ namespace Sir.Tests
         public void Can_update_string_field()
         {
             var model = new BagOfCharsModel();
-            const string collection = "Can_update";
+            const string collection = "Can_update_string_field";
             var collectionId = collection.ToHash();
             const string fieldName = "description";
             const string updatedWord = "xylophone";

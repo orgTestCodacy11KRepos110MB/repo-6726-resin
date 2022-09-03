@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sir.Images;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Sir.Mnist

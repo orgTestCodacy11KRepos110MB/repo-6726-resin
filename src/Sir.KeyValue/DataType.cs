@@ -16,5 +16,6 @@
         public static byte STREAM = 9;
         public static byte ULONG = 10;
         public static byte BYTE = 11;
+        public static byte STREAMABLE = 12;
     }
 }

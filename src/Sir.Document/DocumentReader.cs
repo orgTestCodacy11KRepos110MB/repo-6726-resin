@@ -68,9 +68,9 @@ namespace Sir.Documents
             return _vals.Get(offset, len, dataType);
         }
 
-        public IEnumerable<ISerializableVector> GetVectors<T>(long offset, int len, byte dataType, Func<T, IEnumerable<ISerializableVector>> tokenizer)
+        public IEnumerable<ISerializableVector> GetValueConvertedToVectors<T>(long offset, int len, byte dataType, Func<T, IEnumerable<ISerializableVector>> tokenizer)
         {
-            return _vals.GetVectors(offset, len, dataType, tokenizer);
+            return _vals.GetValueConvertedToVectors(offset, len, dataType, tokenizer);
         }
 
         public int DocumentCount()

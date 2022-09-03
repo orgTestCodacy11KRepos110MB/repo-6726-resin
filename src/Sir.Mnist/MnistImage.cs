@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Sir.Images;
+using System;
 using System.Text;
 
 namespace Sir.Mnist
 {
+    /// <summary>
+    /// Pixel values are 0 to 255. 0 means background(white), 255 means foreground(black). 
+    /// </summary>
     public class MnistImage : IImage
     {
-        public byte[] Pixels { get; }
+        public byte[] Pixels { get; private set; }
 
         public string Label { get; }
 
@@ -52,6 +56,11 @@ namespace Sir.Mnist
         public override string ToString()
         {
             return Label?.ToString();
+        }
+
+        public byte[] GetBytes()
+        {
+            return Pixels;
         }
     }
 }

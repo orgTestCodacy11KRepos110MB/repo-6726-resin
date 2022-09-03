@@ -76,7 +76,7 @@ namespace Sir
             {
                 var columns = new List<VectorNode>();
 
-                foreach (var node in ReadDocumentVectors((collectionId, docId), select, documentReader, model, label))
+                foreach (var node in ReadDocumentValuesAsVectors((collectionId, docId), select, documentReader, model, label))
                 {
                     columns.Add(node);
                 }
@@ -164,7 +164,7 @@ namespace Sir
             return value;
         }
 
-        public IEnumerable<VectorNode> ReadDocumentVectors<T>(
+        public IEnumerable<VectorNode> ReadDocumentValuesAsVectors<T>(
             (ulong collectionId, long docId) doc,
             HashSet<string> select,
             DocumentReader streamReader,
@@ -186,7 +186,7 @@ namespace Sir
                 {
                     var vInfo = streamReader.GetAddressOfValue(kvp.valId);
 
-                    foreach (var vector in streamReader.GetVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value, label)))
+                    foreach (var vector in streamReader.GetValueConvertedToVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value, label)))
                     {
                         tree.AddIfUnique(new VectorNode(vector, docId:doc.docId, keyId:kvp.keyId), model);
                     }

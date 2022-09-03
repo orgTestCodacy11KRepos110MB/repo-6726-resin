@@ -87,6 +87,13 @@ namespace Sir.KeyValue
                 dataType = DataType.BYTE;
                 length = sizeof(byte);
             }
+            else if (value is IStreamable streamable)
+            {
+                var buf = streamable.GetBytes();
+                Stream.Write(buf);
+                dataType = DataType.STREAMABLE;
+                length = buf.Length;
+            }
             else
             {
                 var buf = (byte[])value;

@@ -15,20 +15,20 @@ namespace Sir.Tests
         private ILoggerFactory _loggerFactory;
         private SessionFactory _sessionFactory;
 
+        private readonly IImage[] _data = new MnistReader(
+                @"resources\t10k-images.idx3-ubyte",
+                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
+
         [Test]
         public void Can_traverse_index_in_memory()
         {
             // Use the same set of images to both create and validate a linear classifier.
 
-            var trainingData = new MnistReader(
-                @"resources\t10k-images.idx3-ubyte",
-                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
-
             var model = new LinearClassifierImageModel();
 
             using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                var index = model.CreateTree(model, reader, trainingData);
+                var index = model.CreateTree(model, reader, _data);
 
                 Print(index);
 
@@ -37,7 +37,7 @@ namespace Sir.Tests
                     var count = 0;
                     var errors = 0;
 
-                    foreach (var image in trainingData)
+                    foreach (var image in _data)
                     {
                         foreach (var queryVector in model.CreateEmbedding(image, true))
                         {
@@ -76,15 +76,11 @@ namespace Sir.Tests
         {
             // Use the same set of images to both create and validate a linear classifier.
 
-            var trainingData = new MnistReader(
-                @"resources\t10k-images.idx3-ubyte",
-                @"resources\t10k-labels.idx1-ubyte").Read().Take(100).ToArray();
-
             var model = new LinearClassifierImageModel();
 
             using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                var index = model.CreateTree(model, reader, trainingData);
+                var index = model.CreateTree(model, reader, _data);
 
                 using (var indexStream = new MemoryStream())
                 using (var vectorStream = new MemoryStream())
@@ -102,7 +98,7 @@ namespace Sir.Tests
                         using (var pageIndexReader = new PageIndexReader(pageStream))
                         using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
                         {
-                            foreach (var word in trainingData)
+                            foreach (var word in _data)
                             {
                                 foreach (var queryVector in model.CreateEmbedding(word, true))
                                 {
