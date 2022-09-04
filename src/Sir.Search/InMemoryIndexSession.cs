@@ -7,7 +7,7 @@ namespace Sir
     public class InMemoryIndexSession<T> : IIndexSession<T>, IDisposable
     {
         private readonly IModel<T> _model;
-        private readonly IIndexingStrategy _indexingStrategy;
+        private readonly IIndexReadWriteStrategy _indexingStrategy;
         private readonly IDictionary<long, VectorNode> _index;
         private readonly IDictionary<long, IColumnReader> _readers;
         private readonly IStreamDispatcher _sessionFactory;
@@ -16,7 +16,7 @@ namespace Sir
 
         public InMemoryIndexSession(
             IModel<T> model,
-            IIndexingStrategy indexingStrategy,
+            IIndexReadWriteStrategy indexingStrategy,
             IStreamDispatcher sessionFactory, 
             string directory,
             ulong collectionId)

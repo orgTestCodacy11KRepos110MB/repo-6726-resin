@@ -120,7 +120,7 @@ namespace Sir
 
                     if (reader != null)
                     {
-                        var hit = reader.ClosestMatchOrNull(term.Vector, _model);
+                        var hit =_model.ExecuteGetClosestMatchOrNull(term.Vector, _model, reader);
 
                         if (hit != null)
                         {

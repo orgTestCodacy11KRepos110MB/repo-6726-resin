@@ -6,7 +6,7 @@ namespace Sir.IO
 {
     public static class GraphBuilder
     {
-        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexingStrategy indexingStrategy, IColumnReader reader, params T[] data)
+        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexReadWriteStrategy indexingStrategy, IColumnReader reader, params T[] data)
         {
             var root = new VectorNode();
 

@@ -4,6 +4,7 @@ namespace Sir
 {
     public interface IColumnReader : IDisposable
     {
-        Hit ClosestMatchOrNull(ISerializableVector vector, IModel model);
+        Hit ClosestMatchOrNullScanningAllPages(ISerializableVector vector, IModel model);
+        Hit ClosestMatchOrNullStoppingAtBestPage(ISerializableVector vector, IModel model);
     }
 }

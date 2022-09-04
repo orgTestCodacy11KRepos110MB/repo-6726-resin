@@ -29,12 +29,11 @@ namespace Sir.IO
             _pages = pages;
         }
 
-        public Hit ClosestMatchOrNull(ISerializableVector vector, IModel model)
+        public Hit ClosestMatchOrNullScanningAllPages(ISerializableVector vector, IModel model)
         {
             if (_ixFile == null || _vectorFile == null)
                 return null;
 
-            var time = Stopwatch.StartNew();
             var hits = new List<Hit>();
 
             foreach (var page in _pages)
@@ -45,9 +44,6 @@ namespace Sir.IO
                 {
                     hits.Add(hit);
                 }
-
-                //if (hit.Score >= model.IdenticalAngle)
-                //    break;
             }
 
             Hit best = null;
@@ -58,6 +54,32 @@ namespace Sir.IO
                 {
                     best = hit;
                 }
+            }
+
+            return best;
+        }
+
+        public Hit ClosestMatchOrNullStoppingAtBestPage(ISerializableVector vector, IModel model)
+        {
+            if (_ixFile == null || _vectorFile == null)
+                return null;
+
+            Hit best = null;
+
+            foreach (var page in _pages)
+            {
+                var hit = ClosestMatchInPage(vector, model, page.offset);
+
+                if (hit.Score > 0)
+                {
+                    if (best == null || hit.Score > best.Score)
+                    {
+                        best = hit;
+                    }
+                }
+
+                if (hit.Score >= model.IdenticalAngle)
+                    break;
             }
 
             return best;

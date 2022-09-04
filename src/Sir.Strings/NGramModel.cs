@@ -50,5 +50,10 @@ namespace Sir.Strings
                 yield return vec0.Shift(0, NumOfDimensions);
             }
         }
+
+        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        {
+            return reader.ClosestMatchOrNullScanningAllPages(vector, model);
+        }
     }
 }

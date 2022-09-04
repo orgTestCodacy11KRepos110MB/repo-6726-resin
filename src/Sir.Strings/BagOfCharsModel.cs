@@ -64,6 +64,11 @@ namespace Sir.Strings
                 }
             }
         }
+
+        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        {
+            return reader.ClosestMatchOrNullScanningAllPages(vector, model);
+        }
     }
 
     public static class TokenizeOperations

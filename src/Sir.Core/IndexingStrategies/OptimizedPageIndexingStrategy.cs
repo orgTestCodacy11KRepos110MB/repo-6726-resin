@@ -2,7 +2,7 @@
 
 namespace Sir
 {
-    public class OptimizedPageIndexingStrategy : IIndexingStrategy
+    public class OptimizedPageIndexingStrategy : IIndexReadWriteStrategy
     {
         private readonly IModel _model;
 
@@ -11,9 +11,14 @@ namespace Sir
             _model = model;
         }
 
+        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        {
+            return reader.ClosestMatchOrNullStoppingAtBestPage(vector, model);
+        }
+
         public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
-            var existing = reader.ClosestMatchOrNull(node.Vector, _model);
+            var existing = reader.ClosestMatchOrNullScanningAllPages(node.Vector, _model);
 
             if (existing != null && existing.Score >= _model.IdenticalAngle)
             {

@@ -102,7 +102,7 @@ namespace Sir.Tests
                             {
                                 foreach (var queryVector in model.CreateEmbedding(word, true))
                                 {
-                                    var hit = reader.ClosestMatchOrNull(queryVector, model);
+                                    var hit = reader.ClosestMatchOrNullScanningAllPages(queryVector, model);
 
                                     if (hit == null)
                                     {

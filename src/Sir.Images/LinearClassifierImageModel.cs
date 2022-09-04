@@ -22,5 +22,10 @@ namespace Sir.Images
 
             yield return new SerializableVector(pixels, data.Label);
         }
+
+        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        {
+            return reader.ClosestMatchOrNullScanningAllPages(vector, model);
+        }
     }
 }
