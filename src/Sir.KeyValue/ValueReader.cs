@@ -147,7 +147,7 @@ namespace Sir.KeyValue
             {
                 return buf[0];
             }
-            else
+            else // catches both STREAM and STREAMABLE
             {
                 return buf.ToArray();
             }
