@@ -89,17 +89,25 @@ namespace Sir
         public void Truncate(string directory, ulong collectionId)
         {
             var count = 0;
-            var key = Path.Combine(directory, collectionId.ToString()).ToHash();
 
-            foreach (var file in Directory.GetFiles(directory, $"{collectionId}*"))
+            if (Directory.Exists(directory))
             {
-                File.Delete(file);
-                count++;
-            }
+                var path = Path.Combine(directory, collectionId.ToString());
+                var key = path.ToHash();
 
-            lock (_syncKeys)
-            {
-                _keys.Remove(key, out _);
+                if (Directory.Exists(path))
+                {
+                    foreach (var file in Directory.GetFiles(path, $"{collectionId}*"))
+                    {
+                        File.Delete(file);
+                        count++;
+                    }
+
+                    lock (_syncKeys)
+                    {
+                        _keys.Remove(key, out _);
+                    }
+                }
             }
 
             LogInformation($"truncated collection {collectionId} ({count} files affected)");

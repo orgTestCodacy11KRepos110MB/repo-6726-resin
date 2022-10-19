@@ -9,7 +9,7 @@ namespace Sir.Strings
         public double FoldAngle => 0.55d;
         public override int NumOfDimensions => System.Text.Unicode.UnicodeRanges.All.Length;
 
-        public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
+        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
             column.AddOrAppend(node, this);
         }
@@ -65,7 +65,7 @@ namespace Sir.Strings
             }
         }
 
-        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
         {
             return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }

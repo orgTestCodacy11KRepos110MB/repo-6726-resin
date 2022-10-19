@@ -11,14 +11,14 @@ namespace Sir
             _model = model;
         }
 
-        public Hit ExecuteGetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
         {
             return reader.ClosestMatchOrNullStoppingAtBestPage(vector, model);
         }
 
-        public void ExecutePut<T>(VectorNode column, VectorNode node, IColumnReader reader)
+        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
         {
-            var existing = reader.ClosestMatchOrNullScanningAllPages(node.Vector, _model);
+            var existing = reader.ClosestMatchOrNullStoppingAtBestPage(node.Vector, _model);
 
             if (existing != null && existing.Score >= _model.IdenticalAngle)
             {

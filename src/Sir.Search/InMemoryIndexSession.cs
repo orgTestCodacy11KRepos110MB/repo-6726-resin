@@ -61,7 +61,7 @@ namespace Sir
 
             foreach (var node in PathFinder.All(documentTree))
             {
-                _indexingStrategy.ExecutePut<T>(
+                _indexingStrategy.Put<T>(
                     column, 
                     new VectorNode(node.Vector, docIds: node.DocIds), 
                     GetReader(documentTree.KeyId.Value));

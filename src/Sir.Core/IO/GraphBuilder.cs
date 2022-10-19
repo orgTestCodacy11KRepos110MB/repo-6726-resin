@@ -14,7 +14,7 @@ namespace Sir.IO
             {
                 foreach (var vector in model.CreateEmbedding(item, true))
                 {
-                    indexingStrategy.ExecutePut<T>(root, new VectorNode(vector), reader);
+                    indexingStrategy.Put<T>(root, new VectorNode(vector), reader);
                 }
             }
 

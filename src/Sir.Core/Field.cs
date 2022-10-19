@@ -44,7 +44,7 @@ namespace Sir
             {
                 foreach (var token in tokens)
                 {
-                    model.ExecutePut<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
+                    model.Put<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
                 }
 
                 _tokens = GetTokens();
