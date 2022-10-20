@@ -23,7 +23,7 @@ namespace Sir.Tests
 
             using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                var index = model.CreateTree(model, reader, _data);
+                var index = model.CreateTree(new NonOptimizedPageIndexingStrategy(model), reader, _data);
 
                 Debug.WriteLine(PathFinder.Visualize(index));
 
@@ -59,7 +59,7 @@ namespace Sir.Tests
 
             using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
             {
-                var index = model.CreateTree(model, reader, _data);
+                var index = model.CreateTree(new NonOptimizedPageIndexingStrategy(model), reader, _data);
 
                 using (var indexStream = new MemoryStream())
                 using (var vectorStream = new MemoryStream())

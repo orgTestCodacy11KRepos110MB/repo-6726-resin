@@ -25,7 +25,7 @@ namespace Sir.Mnist
             var model = new LinearClassifierImageModel();
 
             using (var sessionFactory = new SessionFactory(logger: logger))
-            using (var querySession = new SearchSession(dataDirectory, sessionFactory, model, logger))
+            using (var querySession = new SearchSession(dataDirectory, sessionFactory, model, new NonOptimizedPageIndexingStrategy(model), logger))
             {
                 var queryParser = new QueryParser<IImage>(dataDirectory, sessionFactory, model, logger);
 

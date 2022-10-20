@@ -18,12 +18,14 @@ namespace Sir.HttpServer.Features
         private readonly int _take;
         private readonly string[] _select;
         private readonly bool _truncate;
+        private readonly IIndexReadWriteStrategy _indexStrategy;
 
         public SaveAsJob(
             string directory,
             SessionFactory sessionFactory,
             QueryParser<string> queryParser,
             IModel<T> model,
+            IIndexReadWriteStrategy indexStrategy,
             ILogger logger,
             string target,
             string[] collections,
@@ -48,6 +50,7 @@ namespace Sir.HttpServer.Features
             _take = take;
             _select = select;
             _truncate = truncate;
+            _indexStrategy = indexStrategy;
         }
 
         public override void Execute()
@@ -66,7 +69,7 @@ namespace Sir.HttpServer.Features
                 var targetCollectionId = _target.ToHash();
                 IEnumerable<IDocument> documents;
 
-                using (var readSession = new SearchSession(_directory, _sessionFactory, _model, _logger))
+                using (var readSession = new SearchSession(_directory, _sessionFactory, _model, new NonOptimizedPageIndexingStrategy(_model), _logger))
                 {
                     documents = readSession.Search(query, _skip, _take).Documents;
                 }
@@ -88,7 +91,8 @@ namespace Sir.HttpServer.Features
                     _directory,
                     targetCollectionId,
                     documents,
-                    _model);
+                    _model,
+                    _indexStrategy);
             }
             catch (Exception ex)
             {

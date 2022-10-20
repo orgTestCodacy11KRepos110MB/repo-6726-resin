@@ -15,6 +15,7 @@ namespace Sir.CommonCrawl
             var dataDirectory = args["dataDirectory"];
             var fileName = args["fileName"];
             var model = new BagOfCharsModel();
+            var indexStrategy = new NonOptimizedPageIndexingStrategy(model);
             var collectionId = "cc_wet".ToHash();
             var storeFields = new HashSet<string> { "url" };
             var indexFields = new HashSet<string> { "description" };
@@ -33,6 +34,7 @@ namespace Sir.CommonCrawl
                                             kvp.Key,
                                             kvp.Value)).ToList())),
                     model,
+                    indexStrategy,
                     reportSize: 1000);
             }
         }

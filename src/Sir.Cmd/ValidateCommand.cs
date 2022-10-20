@@ -26,7 +26,7 @@ namespace Sir.Cmd
             {
                 using (var validateSession = new ValidateSession<string>(
                     collectionId, 
-                    new SearchSession(dir, sessionFactory, model, logger), 
+                    new SearchSession(dir, sessionFactory, model, new NonOptimizedPageIndexingStrategy(model), logger), 
                     new QueryParser<string>(dir, sessionFactory, model, logger)))
                 {
                     using (var documents = new DocumentStreamSession(dir, sessionFactory))

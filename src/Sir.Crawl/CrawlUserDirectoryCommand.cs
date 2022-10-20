@@ -30,6 +30,7 @@ namespace Sir.Crawl
             var urlCollectionId = "url".ToHash();
             var htmlClient = new HtmlWeb();
             var model = new BagOfCharsModel();
+            var indexStrategy = new NonOptimizedPageIndexingStrategy(model);
 
             htmlClient.UserAgent = "Crawlcrawler (+https://crawlcrawler.com)";
 
@@ -37,7 +38,7 @@ namespace Sir.Crawl
             htmlClient.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36";
 #endif
             using (var database = new SessionFactory(logger))
-            using (var dataSearchSession = new SearchSession(dataDirectory, database, model, logger))
+            using (var dataSearchSession = new SearchSession(dataDirectory, database, model, new NonOptimizedPageIndexingStrategy(model), logger))
             {
                 foreach (var userDirectory in Directory.EnumerateDirectories(rootUserDirectory))
                 {
@@ -85,7 +86,7 @@ namespace Sir.Crawl
 
                             if (result != null)
                             {
-                                database.StoreDataAndPersistIndex(dataDirectory, collectionId, result.Document, _model);
+                                database.StoreDataAndPersistIndex(dataDirectory, collectionId, result.Document, _model, indexStrategy);
                                 
                                 int crawlCount = 1;
 
@@ -110,7 +111,7 @@ namespace Sir.Crawl
 
                                     if (r != null)
                                     {
-                                        database.StoreDataAndPersistIndex(dataDirectory, collectionId, r.Document, _model);
+                                        database.StoreDataAndPersistIndex(dataDirectory, collectionId, r.Document, _model, indexStrategy);
                                     }
 
                                     crawlCount++;

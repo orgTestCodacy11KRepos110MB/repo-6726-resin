@@ -13,6 +13,7 @@ namespace Sir
     {
         private readonly IStreamDispatcher _sessionFactory;
         private readonly IModel _model;
+        private readonly IIndexReadWriteStrategy _indexStrategy;
         private readonly PostingsResolver _postingsResolver;
         private readonly Scorer _scorer;
         private readonly ILogger _logger;
@@ -21,12 +22,14 @@ namespace Sir
             string directory,
             IStreamDispatcher sessionFactory,
             IModel model,
+            IIndexReadWriteStrategy indexStrategy,
             ILogger logger = null,
             PostingsResolver postingsResolver = null,
             Scorer scorer = null) : base(directory, sessionFactory)
         {
             _sessionFactory = sessionFactory;
             _model = model;
+            _indexStrategy = indexStrategy;
             _postingsResolver = postingsResolver ?? new PostingsResolver();
             _scorer = scorer ?? new Scorer();
             _logger = logger;
@@ -120,7 +123,7 @@ namespace Sir
 
                     if (reader != null)
                     {
-                        var hit =_model.GetClosestMatchOrNull(term.Vector, _model, reader);
+                        var hit =_indexStrategy.GetClosestMatchOrNull(term.Vector, _model, reader);
 
                         if (hit != null)
                         {

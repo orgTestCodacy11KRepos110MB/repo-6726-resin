@@ -171,6 +171,7 @@ namespace Sir
             string collection,
             HashSet<string> selectFields, 
             IModel<T> model,
+            IIndexReadWriteStrategy indexStrategy,
             int skipDocuments = 0,
             int takeDocuments = 0,
             int reportFrequency = 1000,
@@ -206,7 +207,7 @@ namespace Sir
 
                         var count = 0;
 
-                        using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
+                        using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
                         {
                             foreach (var document in payload)
                             {
@@ -272,7 +273,7 @@ namespace Sir
             }
         }
 
-        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, InMemoryIndexSession<T> indexSession, bool label = true)
+        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, InMemoryIndexSession<T> indexSession, bool label = true)
         {
             LogDebug($"building index for collection {collectionId}");
 
@@ -295,7 +296,7 @@ namespace Sir
                     {
                         if (field.Value != null)
                         {
-                            field.Analyze(model, label, this);
+                            field.Analyze(model, indexStrategy, label, this);
                         }
                     }
 
@@ -306,10 +307,10 @@ namespace Sir
             LogDebug($"built index (collection {collectionId}) in {time.Elapsed}");
         }
 
-        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, int reportSize = 1000)
+        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
+            using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
@@ -320,10 +321,10 @@ namespace Sir
             }
         }
 
-        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model)
+        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model, IIndexReadWriteStrategy indexStrategy)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, model, this, directory, collectionId))
+            using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 
@@ -366,7 +367,7 @@ namespace Sir
 
             if (query != null)
             {
-                using (var searchSession = new SearchSession(directory, this, model, _logger))
+                using (var searchSession = new SearchSession(directory, this, model, new NonOptimizedPageIndexingStrategy(model),  _logger))
                 {
                     var document = searchSession.SearchScalar(query);
 

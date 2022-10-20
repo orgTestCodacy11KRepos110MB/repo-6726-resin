@@ -121,6 +121,7 @@ namespace Sir.Cmd
             var reportFrequency = int.Parse(args["reportFrequency"]);
             var pageSize = int.Parse(args["pageSize"]);
             var fields = new HashSet<string>(args["fields"].Split(','));
+            var model = new BagOfCharsModel();
 
             using (var sessionFactory = new SessionFactory(logger))
             {
@@ -128,7 +129,8 @@ namespace Sir.Cmd
                     dataDirectory,
                     collection, 
                     fields,
-                    new BagOfCharsModel(),
+                    model,
+                    new NonOptimizedPageIndexingStrategy(model),
                     skip,
                     take,
                     reportFrequency,

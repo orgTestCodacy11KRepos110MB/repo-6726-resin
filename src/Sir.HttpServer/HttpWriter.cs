@@ -20,7 +20,7 @@ namespace Sir.HttpServer
             _config = config;
         }
 
-        public void Write(HttpRequest request, IModel<string> model)
+        public void Write(HttpRequest request, IModel<string> model, IIndexReadWriteStrategy indexStrategy)
         {
             var documents = Deserialize<IEnumerable<Document>>(request.Body);
             var collectionId = request.Query["collection"].First().ToHash();
@@ -29,7 +29,8 @@ namespace Sir.HttpServer
                 _config.Get("data_dir"),
                 collectionId,
                 documents,
-                model);
+                model,
+                indexStrategy);
         }
 
         private static T Deserialize<T>(Stream stream)

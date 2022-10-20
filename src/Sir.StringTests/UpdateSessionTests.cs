@@ -38,7 +38,7 @@ namespace Sir.Tests
                     {
                         var data = _data[i];
 
-                        using (var indexSession = new InMemoryIndexSession<string>(model, model, _sessionFactory, _directory, collectionId))
+                        using (var indexSession = new InMemoryIndexSession<string>(model, new NonOptimizedPageIndexingStrategy(model), _sessionFactory, _directory, collectionId))
                         {
                             var doc = new Document(new Field[] { new Field(fieldName, data) });
 
@@ -51,7 +51,7 @@ namespace Sir.Tests
 
                 var queryParser = new QueryParser<string>(_directory, _sessionFactory, model);
 
-                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
+                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, new NonOptimizedPageIndexingStrategy(model), _loggerFactory.CreateLogger<SearchSession>()))
                 {
                     Assert.DoesNotThrow(() =>
                     {
@@ -81,7 +81,7 @@ namespace Sir.Tests
                     updateSession.Update(documentIdToUpdate, 0, updatedWord);
                 }
 
-                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, _loggerFactory.CreateLogger<SearchSession>()))
+                using (var searchSession = new SearchSession(_directory, _sessionFactory, model, new NonOptimizedPageIndexingStrategy(model), _loggerFactory.CreateLogger<SearchSession>()))
                 {
                     Assert.DoesNotThrow(() =>
                     {

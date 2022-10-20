@@ -12,10 +12,12 @@ namespace Sir.HttpServer.Controllers
         private readonly IModel<string> _model;
         private readonly ILogger<WriteController> _logger;
         private readonly IConfigurationProvider _config;
+        private readonly IIndexReadWriteStrategy _indexStrategy;
 
         public WriteController(
             IHttpWriter writer,
-            IModel<string> tokenizer, 
+            IModel<string> tokenizer,
+            IIndexReadWriteStrategy indexStrategy,
             ILogger<WriteController> logger,
             IConfigurationProvider config)
         {
@@ -23,6 +25,7 @@ namespace Sir.HttpServer.Controllers
             _model = tokenizer;
             _logger = logger;
             _config = config;
+            _indexStrategy = indexStrategy;
         }
 
         [HttpPost]
@@ -41,7 +44,7 @@ namespace Sir.HttpServer.Controllers
 
             try
             {
-                _writer.Write(Request, _model);
+                _writer.Write(Request, _model, _indexStrategy);
 
                 return Ok();
             }

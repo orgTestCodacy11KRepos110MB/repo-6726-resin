@@ -20,12 +20,14 @@ namespace Sir.HttpServer.Features
         private readonly IModel<string> _model;
         private readonly int _skip;
         private readonly int _take;
+        private readonly IIndexReadWriteStrategy _indexStrategy;
 
         public CrawlJob(
             string directory,
             SessionFactory sessionFactory,
             QueryParser<string> queryParser,
             IModel<string> model,
+            IIndexReadWriteStrategy indexStrategy,
             ILogger logger,
             string id, 
             string[] collection, 
@@ -45,6 +47,7 @@ namespace Sir.HttpServer.Features
             _model = model;
             _skip = skip;
             _take = take;
+            _indexStrategy = indexStrategy;
 
             Status["download"] = 0;
             Status["index"] = 0;
@@ -78,7 +81,7 @@ namespace Sir.HttpServer.Features
                 or: Or,
                 label: false);
 
-            using (var readSession = new SearchSession(_directory, _sessionFactory, _model, _logger))
+            using (var readSession = new SearchSession(_directory, _sessionFactory, _model, new NonOptimizedPageIndexingStrategy(_model), _logger))
             {
                 var originalResult = readSession.Search(originalQuery, _skip, _take)
                     .Documents
@@ -203,7 +206,7 @@ namespace Sir.HttpServer.Features
                 {
                     var time = Stopwatch.StartNew();
 
-                    _sessionFactory.StoreDataAndPersistIndex(_directory, wetCollectionId, writePayload, _model, reportSize: 1000);
+                    _sessionFactory.StoreDataAndPersistIndex(_directory, wetCollectionId, writePayload, _model, _indexStrategy, reportSize: 1000);
 
                     Status["index"] = 100;
 

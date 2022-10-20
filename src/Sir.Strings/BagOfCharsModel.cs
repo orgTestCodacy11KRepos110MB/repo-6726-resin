@@ -9,11 +9,6 @@ namespace Sir.Strings
         public double FoldAngle => 0.55d;
         public override int NumOfDimensions => System.Text.Unicode.UnicodeRanges.All.Length;
 
-        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
-        {
-            column.AddOrAppend(node, this);
-        }
-
         public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
         {
             var source = data.ToCharArray();
@@ -63,11 +58,6 @@ namespace Sir.Strings
                     yield return vector;
                 }
             }
-        }
-
-        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
-        {
-            return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }
     }
 

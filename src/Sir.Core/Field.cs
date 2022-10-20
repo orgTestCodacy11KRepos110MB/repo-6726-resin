@@ -34,7 +34,7 @@ namespace Sir
                 yield return node.Vector;
         }
 
-        public void Analyze<T>(IModel<T> model, bool label, IStreamDispatcher streamDispatcher)
+        public void Analyze<T>(IModel<T> model, IIndexReadWriteStrategy indexStrategy, bool label, IStreamDispatcher streamDispatcher)
         {
             var tokens = model.CreateEmbedding((T)Value, label);
 
@@ -44,7 +44,7 @@ namespace Sir
             {
                 foreach (var token in tokens)
                 {
-                    model.Put<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
+                    indexStrategy.Put<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
                 }
 
                 _tokens = GetTokens();

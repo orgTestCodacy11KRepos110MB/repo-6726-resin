@@ -7,6 +7,6 @@ namespace Sir.HttpServer
     /// </summary>
     public interface IHttpWriter
     {
-        void Write(HttpRequest request, IModel<string> model);
+        void Write(HttpRequest request, IModel<string> model, IIndexReadWriteStrategy indexStrategy);
     }
 }
