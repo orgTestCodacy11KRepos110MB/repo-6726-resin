@@ -37,13 +37,6 @@ namespace Sir
                 }
             }
 
-            //if (!document.TryGetValue(SystemFields.CollectionId, out _))
-            //{
-            //    Write(SystemFields.CollectionId, _collectionId, docMap);
-            //}
-
-            Write(SystemFields.Created, DateTime.Now.ToBinary(), docMap);
-
             var docMeta = _streamWriter.PutDocumentMap(docMap);
 
             _streamWriter.PutDocumentAddress(document.Id, docMeta.offset, docMeta.length);

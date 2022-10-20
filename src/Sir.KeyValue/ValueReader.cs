@@ -93,8 +93,9 @@ namespace Sir.KeyValue
 
         public object Get(long offset, int len, byte dataType)
         {
+            var typeId = Convert.ToInt32(dataType);
             int read;
-            Span<byte> buf = new byte[len];
+            var buf = new byte[len];
 
             _stream.Seek(offset, SeekOrigin.Begin);
 
@@ -102,10 +103,8 @@ namespace Sir.KeyValue
 
             if (read != len)
             {
-                throw new InvalidDataException();
+                throw new Exception($"offset: {offset} read: {read} should have read: {len} type: {typeId}");
             }
-
-            var typeId = Convert.ToInt32(dataType);
 
             if (DataType.BOOL == typeId)
             {
@@ -141,7 +140,7 @@ namespace Sir.KeyValue
             }
             else if (DataType.STRING == typeId)
             {
-                return new string(System.Text.Encoding.Unicode.GetChars(buf.ToArray()));
+                return new string(System.Text.Encoding.Unicode.GetChars(buf));
             }
             else if (DataType.BYTE == typeId)
             {
@@ -149,7 +148,7 @@ namespace Sir.KeyValue
             }
             else // catches both STREAM and STREAMABLE
             {
-                return buf.ToArray();
+                return buf;
             }
         }
     }

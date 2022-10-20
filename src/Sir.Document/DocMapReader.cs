@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.IO;
 
 namespace Sir.Documents
@@ -27,12 +26,12 @@ namespace Sir.Documents
         {
             _stream.Seek(offset, SeekOrigin.Begin);
 
-            var buf = ArrayPool<byte>.Shared.Rent(length);
+            var buf = new byte[length];
             int read = _stream.Read(buf);
 
             if (read != length)
             {
-                throw new InvalidDataException();
+                throw new Exception($"offset: {offset} read: {read} should have read: {length}");
             }
 
             const int blockSize = sizeof(long) + sizeof(long);
@@ -47,8 +46,6 @@ namespace Sir.Documents
 
                 docMapping[i] = (key, val);
             }
-
-            ArrayPool<byte>.Shared.Return(buf);
 
             return docMapping;
         }

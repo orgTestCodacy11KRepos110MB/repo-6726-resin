@@ -92,21 +92,17 @@ namespace Sir
 
             if (Directory.Exists(directory))
             {
-                var path = Path.Combine(directory, collectionId.ToString());
-                var key = path.ToHash();
-
-                if (Directory.Exists(path))
+                foreach (var file in Directory.GetFiles(directory, $"{collectionId}*"))
                 {
-                    foreach (var file in Directory.GetFiles(path, $"{collectionId}*"))
-                    {
-                        File.Delete(file);
-                        count++;
-                    }
+                    File.Delete(file);
+                    count++;
+                }
 
-                    lock (_syncKeys)
-                    {
-                        _keys.Remove(key, out _);
-                    }
+                lock (_syncKeys)
+                {
+                    var keyStr = Path.Combine(directory, collectionId.ToString());
+                    var key = keyStr.ToHash();
+                    _keys.Remove(key, out _);
                 }
             }
 

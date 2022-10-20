@@ -36,7 +36,7 @@ namespace Sir
                 }
                 else if (doc.Id != result.Id)
                 {
-                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found. Term value: {field.Value}. Document value: {result.Get(field.Name)}");
+                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found. Term value: {field.Value}. Document value: {result.Get(field.Name).Value}");
                 }
             }
         }
