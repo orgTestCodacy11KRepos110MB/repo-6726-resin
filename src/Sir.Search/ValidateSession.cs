@@ -28,15 +28,26 @@ namespace Sir
             foreach (var field in doc.Fields)
             {
                 var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
-                var result = _readSession.SearchScalar(query);
+                var result = _readSession.SearchIdentical(query, 100);
 
                 if (result == null)
                 {
                     throw new Exception($"unable to validate doc.Id {doc.Id} because no matching document was found. Term value: {field.Value}");
                 }
-                else if (doc.Id != result.Id)
+
+                bool isMatch = false;
+
+                foreach (var document in result.Documents)
                 {
-                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found. Term value: {field.Value}. Document value: {result.Get(field.Name).Value}");
+                    if (doc.Id == document.Id)
+                    {
+                        isMatch = true;
+                    }
+                }
+                
+                if (!isMatch)
+                {
+                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found.");
                 }
             }
         }

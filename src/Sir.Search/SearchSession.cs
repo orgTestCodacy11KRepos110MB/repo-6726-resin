@@ -37,7 +37,7 @@ namespace Sir
 
         public SearchResult Search(IQuery query, int skip, int take)
         {
-            var result = Execute(query, skip, take);
+            var result = Execute(query, skip, take, false);
 
             if (result != null)
             {
@@ -48,12 +48,12 @@ namespace Sir
                 return new SearchResult(query, result.Total, docs.Count, docs);
             }
 
-            return new SearchResult(query, 0, 0, new Document[0]);
+            return new SearchResult(query, 0, 0, System.Linq.Enumerable.Empty<Document>());
         }
 
         public Document SearchScalar(IQuery query)
         {
-            var result = Execute(query, 0, 1);
+            var result = Execute(query, 0, 1, true);
 
             if (result != null)
             {
@@ -67,12 +67,28 @@ namespace Sir
             return null;
         }
 
-        private ScoredResult Execute(IQuery query, int skip, int take)
+        public SearchResult SearchIdentical(IQuery query, int take)
+        {
+            var result = Execute(query, 0, take, true);
+
+            if (result != null)
+            {
+                var numOfTerms = query.TotalNumberOfTerms();
+                var scoreMultiplier = (double)1 / numOfTerms;
+                var docs = ReadDocs(result.SortedDocuments, query.Select, scoreMultiplier);
+
+                return new SearchResult(query, result.Total, docs.Count, docs);
+            }
+
+            return new SearchResult(query, 0, 0, System.Linq.Enumerable.Empty<Document>());
+        }
+
+        private ScoredResult Execute(IQuery query, int skip, int take, bool identicalMatchesOnly)
         {
             var timer = Stopwatch.StartNew();
 
             // Scan index
-            Scan(query);
+            Scan(query, identicalMatchesOnly);
             LogDebug($"scanning took {timer.Elapsed}");
             timer.Restart();
 
@@ -97,7 +113,7 @@ namespace Sir
         /// <summary>
         /// Scans the index to find the query's closest matching nodes and records their posting list addresses.
         /// </summary>
-        private void Scan(IQuery query)
+        private void Scan(IQuery query, bool identicalMatchesOnly)
         {
             if (query == null)
                 return;
@@ -127,8 +143,11 @@ namespace Sir
 
                         if (hit != null)
                         {
-                            term.Score = hit.Score;
-                            term.PostingsOffset = hit.Node.PostingsOffset;
+                            if ((identicalMatchesOnly && hit.Score >= _model.IdenticalAngle) || !identicalMatchesOnly)
+                            {
+                                term.Score = hit.Score;
+                                term.PostingsOffset = hit.Node.PostingsOffset;
+                            }
                         }
                     }
                 }
