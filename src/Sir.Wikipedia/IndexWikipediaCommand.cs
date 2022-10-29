@@ -35,6 +35,11 @@ namespace Sir.Wikipedia
             if (take == 0)
                 take = int.MaxValue;
 
+            if (!File.Exists(fileName))
+            {
+                throw new FileNotFoundException($"This file could not be found: {fileName}. Download a wikipedia JSON dump here:  https://dumps.wikimedia.org/other/cirrussearch/current/");
+            }
+
             var model = new BagOfCharsModel();
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 

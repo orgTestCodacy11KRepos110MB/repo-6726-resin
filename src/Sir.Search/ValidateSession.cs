@@ -25,14 +25,22 @@ namespace Sir
 
         public void Validate(Document doc)
         {
+            if(doc.Id == default)
+            {
+
+            }
+
             foreach (var field in doc.Fields)
             {
+                if (string.IsNullOrWhiteSpace(field.Value.ToString()))
+                    throw new ArgumentNullException(nameof(field));
+
                 var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
                 var result = _readSession.SearchIdentical(query, 100);
 
                 if (result == null)
                 {
-                    throw new Exception($"unable to validate doc.Id {doc.Id} because no matching document was found. Term value: {field.Value}");
+                    throw new Exception($"unable to validate doc.Id {doc.Id} because of null result. field value: {field.Value}");
                 }
 
                 bool isMatch = false;
@@ -47,7 +55,14 @@ namespace Sir
                 
                 if (!isMatch)
                 {
-                    throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found.");
+                    if (result.Total == 0)
+                    {
+                        throw new Exception($"unable to validate doc.Id {doc.Id} because no documents were found. field value: {field.Value}");
+                    }
+                    else
+                    {
+                        throw new Exception($"unable to validate doc.Id {doc.Id} because wrong document was found. field value: {field.Value}");
+                    }
                 }
             }
         }
