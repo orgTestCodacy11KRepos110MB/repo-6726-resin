@@ -27,7 +27,7 @@ namespace Sir
         {
             if(doc.Id == default)
             {
-
+                throw new Exception("something is wrong");
             }
 
             foreach (var field in doc.Fields)
@@ -37,12 +37,6 @@ namespace Sir
 
                 var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
                 var result = _readSession.SearchIdentical(query, 100);
-
-                if (result == null)
-                {
-                    throw new Exception($"unable to validate doc.Id {doc.Id} because of null result. field value: {field.Value}");
-                }
-
                 bool isMatch = false;
 
                 foreach (var document in result.Documents)
@@ -50,6 +44,7 @@ namespace Sir
                     if (doc.Id == document.Id)
                     {
                         isMatch = true;
+                        break;
                     }
                 }
                 
