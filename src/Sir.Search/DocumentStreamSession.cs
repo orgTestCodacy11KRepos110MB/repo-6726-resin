@@ -51,7 +51,7 @@ namespace Sir
             }
         }
 
-        public IEnumerable<AnalyzedDocument> ReadDocumentVectors<T>(
+        public IEnumerable<AnalyzedDocument> GetDocumentsAsVectors<T>(
             ulong collectionId,
             HashSet<string> select,
             IModel<T> model,

@@ -79,7 +79,7 @@ namespace Sir.HttpServer.Features
                     _sessionFactory.Truncate(_directory, targetCollectionId);
                 }
                 
-                using (var documentWriter = new DocumentWriter(_directory, targetCollectionId, _sessionFactory))
+                using (var documentWriter = new DocumentWriter(_sessionFactory, _directory, targetCollectionId))
                 {
                     foreach (var field in _indexFieldNames)
                     {

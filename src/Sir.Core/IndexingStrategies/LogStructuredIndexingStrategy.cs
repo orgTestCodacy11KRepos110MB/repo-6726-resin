@@ -18,7 +18,7 @@ namespace Sir
             return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }
 
-        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
+        public void Put<T>(VectorNode column, VectorNode node)
         {
             column.AddOrAppend(node, _model);
         }

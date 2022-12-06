@@ -34,7 +34,7 @@ namespace Sir.Wikipedia
             {
                 var debugger = new BatchDebugger(logger, sampleSize);
 
-                using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))
+                using (var writeSession = new WriteSession(new DocumentWriter(sessionFactory, dataDirectory, collectionId)))
                 {
                     foreach (var document in payload)
                     {

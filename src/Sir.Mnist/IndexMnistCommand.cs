@@ -32,7 +32,7 @@ namespace Sir.Mnist
             {
                 sessionFactory.Truncate(dataDirectory, collectionId);
 
-                using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))
+                using (var writeSession = new WriteSession(new DocumentWriter(sessionFactory, dataDirectory, collectionId)))
                 using (var indexSession = new IndexSession<IImage>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
                 {
                     var imageIndexId = writeSession.EnsureKeyExists("image");
@@ -53,10 +53,7 @@ namespace Sir.Mnist
 
                     tree = indices[imageIndexId];
 
-                    using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
-                    {
-                        indexSession.Commit(stream);
-                    }
+                    indexSession.Commit();
                 }
             }
 

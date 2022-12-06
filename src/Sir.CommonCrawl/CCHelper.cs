@@ -35,8 +35,8 @@ namespace Sir.CommonCrawl
             };
 
             using (var sessionFactory = new SessionFactory(logger))
-            using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))
-            using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
+            using (var writeSession = new WriteSession(new DocumentWriter(sessionFactory, dataDirectory, collectionId)))
+            using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId, logger))
             {
                 using (var queue = new ProducerConsumerQueue<Document>(document =>
                 {
@@ -53,10 +53,7 @@ namespace Sir.CommonCrawl
                     }
                 }
 
-                using (var stream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
-                {
-                    indexSession.Commit(stream);
-                }
+                indexSession.Commit();
             }
 
             logger.LogInformation($"indexed {fileName} in {time.Elapsed}");

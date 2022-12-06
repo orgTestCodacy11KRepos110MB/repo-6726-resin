@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sir.Core;
 using Sir.Documents;
 using Sir.IO;
 using Sir.Strings;
@@ -40,18 +41,68 @@ namespace Sir.Wikipedia
                 throw new FileNotFoundException($"This file could not be found: {fileName}. Download a wikipedia JSON dump here:  https://dumps.wikimedia.org/other/cirrussearch/current/");
             }
 
+            const bool label = false;
             var model = new BagOfCharsModel();
-            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
+            var indexStrategy = new LogStructuredIndexingStrategy(model);
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest).Batch(pageSize);
+
+            //using (var streamDispatcher = new SessionFactory(logger))
+            //using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
+            //using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
+            //{
+            //    var debugger = new IndexDebugger(logger, sampleSize);
+
+            //    using (var commitQueue = new ProducerConsumerQueue<Document>(document =>
+            //    {
+            //        indexSession.Commit();
+            //    }))
+            //    using (var indexQueue = new ProducerConsumerQueue<Document>(document =>
+            //    {
+            //        foreach (var field in document.Fields)
+            //        {
+            //            if (field.Value != null)
+            //            {
+            //                indexSession.Put(field.DocumentId, field.KeyId, field.Tokens);
+            //            }
+            //        }
+
+            //    }))
+            //    {
+            //        foreach (var page in payload)
+            //        {
+            //            foreach (var document in page)
+            //            {
+            //                foreach (var field in document.Fields)
+            //                {
+            //                    if (field.Value != null)
+            //                    {
+            //                        field.Analyze(model, indexStrategy, label);
+            //                    }
+            //                }
+            //            }
+
+            //            indexQueue.Enqueue(document);
+            //        }
+            //    }
+            //}
+
+            
+
+
+
+
+
+
 
             using (var sessionFactory = new SessionFactory(logger))
             {
                 var debugger = new IndexDebugger(logger, sampleSize);
 
-                using (var writeSession = new WriteSession(new DocumentWriter(dataDirectory, collectionId, sessionFactory)))
+                using (var writeSession = new WriteSession(new DocumentWriter(sessionFactory, dataDirectory, collectionId)))
                 {
-                    foreach (var page in payload.Batch(pageSize))
+                    foreach (var page in payload)
                     {
-                        using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
+                        using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId, logger))
                         {
                             foreach (var document in page)
                             {
@@ -65,13 +116,7 @@ namespace Sir.Wikipedia
                                 debugger.Step(indexSession);
                             }
 
-                            using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
-                                indexSession.Commit(indexStream);
-
-                            //foreach (var column in indexSession.InMemoryIndex)
-                            //{
-                            //    Print($"wikipedia.{column.Key}", column.Value);
-                            //}
+                            indexSession.Commit();
                         }
                     }
                 }

@@ -21,35 +21,32 @@ namespace Sir.Tests
         {
             var model = new BagOfCharsModel();
 
-            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
+            var index = model.CreateTree(new LogStructuredIndexingStrategy(model), _data);
+
+            Debug.WriteLine(PathFinder.Visualize(index));
+
+            Assert.DoesNotThrow(() =>
             {
-                var index = model.CreateTree(new LogStructuredIndexingStrategy(model), reader, _data);
-
-                Debug.WriteLine(PathFinder.Visualize(index));
-
-                Assert.DoesNotThrow(() =>
+                foreach (var word in _data)
                 {
-                    foreach (var word in _data)
+                    foreach (var queryVector in model.CreateEmbedding(word, true))
                     {
-                        foreach (var queryVector in model.CreateEmbedding(word, true))
+                        var hit = PathFinder.ClosestMatch(index, queryVector, model);
+
+                        if (hit == null)
                         {
-                            var hit = PathFinder.ClosestMatch(index, queryVector, model);
-
-                            if (hit == null)
-                            {
-                                throw new Exception($"unable to find {word} in index.");
-                            }
-
-                            if (hit.Score < model.IdenticalAngle)
-                            {
-                                throw new Exception($"unable to score {word}.");
-                            }
-
-                            Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
+                            throw new Exception($"unable to find {word} in index.");
                         }
+
+                        if (hit.Score < model.IdenticalAngle)
+                        {
+                            throw new Exception($"unable to score {word}.");
+                        }
+
+                        Debug.WriteLine($"{word} matched with {hit.Node.Vector.Label} with {hit.Score * 100}% certainty.");
                     }
-                });
-            }
+                }
+            });
         }
 
         [Test]
@@ -57,48 +54,45 @@ namespace Sir.Tests
         {
             var model = new BagOfCharsModel();
 
-            using (var reader = _sessionFactory.CreateColumnReader("", 0, 0))
+            var index = model.CreateTree(new LogStructuredIndexingStrategy(model), _data);
+
+            using (var indexStream = new MemoryStream())
+            using (var vectorStream = new MemoryStream())
+            using (var pageStream = new MemoryStream())
             {
-                var index = model.CreateTree(new LogStructuredIndexingStrategy(model), reader, _data);
-
-                using (var indexStream = new MemoryStream())
-                using (var vectorStream = new MemoryStream())
-                using (var pageStream = new MemoryStream())
+                using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
                 {
-                    using (var writer = new ColumnWriter(indexStream, keepStreamOpen: true))
-                    {
-                        writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
-                    }
+                    writer.CreatePage(index, vectorStream, new PageIndexWriter(pageStream, keepStreamOpen: true));
+                }
 
-                    pageStream.Position = 0;
+                pageStream.Position = 0;
 
-                    Assert.DoesNotThrow(() =>
+                Assert.DoesNotThrow(() =>
+                {
+                    using (var pageIndexReader = new PageIndexReader(pageStream))
+                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
                     {
-                        using (var pageIndexReader = new PageIndexReader(pageStream))
-                        using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
+                        foreach (var word in _data)
                         {
-                            foreach (var word in _data)
+                            foreach (var queryVector in model.CreateEmbedding(word, true))
                             {
-                                foreach (var queryVector in model.CreateEmbedding(word, true))
+                                var hit = reader.ClosestMatchOrNullScanningAllPages(queryVector, model);
+
+                                if (hit == null)
                                 {
-                                    var hit = reader.ClosestMatchOrNullScanningAllPages(queryVector, model);
-
-                                    if (hit == null)
-                                    {
-                                        throw new Exception($"unable to find {word} in tree.");
-                                    }
-
-                                    if (hit.Score < model.IdenticalAngle)
-                                    {
-                                        throw new Exception($"unable to score {word}.");
-                                    }
-
-                                    Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
+                                    throw new Exception($"unable to find {word} in tree.");
                                 }
+
+                                if (hit.Score < model.IdenticalAngle)
+                                {
+                                    throw new Exception($"unable to score {word}.");
+                                }
+
+                                Debug.WriteLine($"{word} matched vector in disk with {hit.Score * 100}% certainty.");
                             }
                         }
-                    });
-                }
+                    }
+                });
             }
         }
 

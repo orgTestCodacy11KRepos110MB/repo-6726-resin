@@ -182,10 +182,7 @@ namespace Sir
             {
                 using (var writeQueue = new ProducerConsumerQueue<IndexSession<T>>(indexSession =>
                 {
-                    using (var index = new IndexWriter(directory, collectionId, this, logger: _logger))
-                    {
-                        indexSession.Commit(index);
-                    }
+                    indexSession.Commit();
                 }))
                 {
                     var took = 0;
@@ -193,7 +190,7 @@ namespace Sir
 
                     while (took < takeDocuments)
                     {
-                        var payload = documents.ReadDocumentVectors(
+                        var payload = documents.GetDocumentsAsVectors(
                             collectionId,
                             selectFields,
                             model,
@@ -292,7 +289,7 @@ namespace Sir
                     {
                         if (field.Value != null)
                         {
-                            field.Analyze(model, indexStrategy, label, this);
+                            field.Analyze(model, indexStrategy, label);
                         }
                     }
 
@@ -305,21 +302,18 @@ namespace Sir
 
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
         {
-            using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
+            using (var writeSession = new WriteSession(new DocumentWriter(this, directory, collectionId)))
             using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
-                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
-                {
-                    indexSession.Commit(stream);
-                }
+                indexSession.Commit();
             }
         }
 
         public void Store(string directory, ulong collectionId, IEnumerable<Document> job)
         {
-            using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
+            using (var writeSession = new WriteSession(new DocumentWriter(this, directory, collectionId)))
             {
                 foreach (var document in job)
                     writeSession.Put(document);

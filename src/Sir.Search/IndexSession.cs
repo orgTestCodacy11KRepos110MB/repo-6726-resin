@@ -1,5 +1,7 @@
-﻿using Sir.IO;
+﻿using Microsoft.Extensions.Logging;
+using Sir.IO;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Sir
@@ -9,25 +11,27 @@ namespace Sir
         private readonly IModel<T> _model;
         private readonly IIndexReadWriteStrategy _indexingStrategy;
         private readonly IDictionary<long, VectorNode> _index;
-        private readonly IDictionary<long, IColumnReader> _readers;
         private readonly IStreamDispatcher _sessionFactory;
         private readonly string _directory;
         private readonly ulong _collectionId;
+        private readonly ILogger _logger;
+        private ConcurrentDictionary<long, object> _syncObjects = new ConcurrentDictionary<long, object>();
 
         public IndexSession(
             IModel<T> model,
             IIndexReadWriteStrategy indexingStrategy,
             IStreamDispatcher sessionFactory, 
             string directory,
-            ulong collectionId)
+            ulong collectionId,
+            ILogger logger = null)
         {
             _model = model;
             _indexingStrategy = indexingStrategy;
             _index = new Dictionary<long, VectorNode>();
-            _readers = new Dictionary<long, IColumnReader>();
             _sessionFactory = sessionFactory;
             _directory = directory;
             _collectionId = collectionId;
+            _logger = logger;
         }
 
         public void Put(long docId, long keyId, T value, bool label)
@@ -51,31 +55,43 @@ namespace Sir
 
         public void Put(VectorNode documentTree)
         {
-            VectorNode column;
-
-            if (!_index.TryGetValue(documentTree.KeyId.Value, out column))
+            lock (_syncObjects.GetOrAdd(documentTree.KeyId.Value, new object()))
             {
-                column = new VectorNode();
-                _index.Add(documentTree.KeyId.Value, column);
-            }
+                VectorNode column;
 
-            foreach (var node in PathFinder.All(documentTree))
-            {
-                _indexingStrategy.Put<T>(
-                    column, 
-                    new VectorNode(node.Vector, docIds: node.DocIds), 
-                    GetReader(documentTree.KeyId.Value));
+                if (!_index.TryGetValue(documentTree.KeyId.Value, out column))
+                {
+                    column = new VectorNode();
+                    _index.Add(documentTree.KeyId.Value, column);
+                }
+
+                foreach (var node in PathFinder.All(documentTree))
+                {
+                    _indexingStrategy.Put<T>(
+                        column,
+                        new VectorNode(node.Vector, docIds: node.DocIds));
+                }
             }
         }
 
-        public IndexInfo GetIndexInfo()
+        public void Commit()
         {
-            return new IndexInfo(GetGraphInfo());
+            foreach (var column in _index)
+            {
+                Commit(column.Key);
+            }
         }
 
-        public void Commit(IndexWriter indexWriter)
+        public void Commit(long keyId)
         {
-            indexWriter.Commit(_index, _indexingStrategy);
+            lock (_syncObjects.GetOrAdd(keyId, new object()))
+            {
+                var column = _index[keyId];
+
+                _indexingStrategy.Commit(_directory, _collectionId, keyId, column, _sessionFactory, _logger);
+
+                _index.Remove(keyId);
+            }
         }
 
         public IDictionary<long, VectorNode> GetInMemoryIndices()
@@ -83,18 +99,11 @@ namespace Sir
             return _index;
         }
 
-        private IColumnReader GetReader(long keyId)
+        public IndexInfo GetIndexInfo()
         {
-            IColumnReader reader;
-
-            if (!_readers.TryGetValue(keyId, out reader))
-            {
-                reader = _sessionFactory.CreateColumnReader(_directory, _collectionId, keyId);
-                _readers.Add(keyId, reader);
-            }
-
-            return reader;
+            return new IndexInfo(GetGraphInfo());
         }
+
 
         private IEnumerable<GraphInfo> GetGraphInfo()
         {
@@ -106,8 +115,10 @@ namespace Sir
 
         public void Dispose()
         {
-            foreach (var reader in _readers.Values)
-                reader.Dispose();
+            if(_index.Count > 0)
+            {
+                Commit();
+            }
         }
     }
 }

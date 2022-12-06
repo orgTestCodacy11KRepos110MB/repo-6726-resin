@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sir.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace Sir
 {
@@ -31,7 +34,7 @@ namespace Sir
         {
             foreach (var column in index)
             {
-                indexingStrategy.Commit(_directory, _collectionId, column.Key, column.Value, _sessionFactory, _logger);
+                indexingStrategy.Commit(_directory, _collectionId, column.Key, column.Value, _sessionFactory);
             }
         }
     }

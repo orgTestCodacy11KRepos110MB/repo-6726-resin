@@ -6,7 +6,7 @@ namespace Sir.IO
 {
     public static class GraphBuilder
     {
-        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexReadWriteStrategy indexingStrategy, IColumnReader reader, params T[] data)
+        public static VectorNode CreateTree<T>(this IModel<T> model, IIndexReadWriteStrategy indexingStrategy, params T[] data)
         {
             var root = new VectorNode();
 
@@ -14,7 +14,7 @@ namespace Sir.IO
             {
                 foreach (var vector in model.CreateEmbedding(item, true))
                 {
-                    indexingStrategy.Put<T>(root, new VectorNode(vector), reader);
+                    indexingStrategy.Put<T>(root, new VectorNode(vector));
                 }
             }
 

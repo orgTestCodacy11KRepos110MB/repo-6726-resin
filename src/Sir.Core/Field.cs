@@ -34,22 +34,19 @@ namespace Sir
                 yield return node.Vector;
         }
 
-        public void Analyze<T>(IModel<T> model, IIndexReadWriteStrategy indexStrategy, bool label, IStreamDispatcher streamDispatcher)
+        public void Analyze<T>(IModel<T> model, IIndexReadWriteStrategy indexStrategy, bool label)
         {
             var tokens = model.CreateEmbedding((T)Value, label);
 
             Tree = new VectorNode();
 
-            using (var reader = streamDispatcher.CreateColumnReader("", 0, 0))
+            foreach (var token in tokens)
             {
-                foreach (var token in tokens)
-                {
-                    indexStrategy.Put<string>(Tree, new VectorNode(token, keyId: KeyId), reader);
-                }
-
-                _tokens = GetTokens();
+                indexStrategy.Put<string>(Tree, new VectorNode(token, keyId: KeyId));
             }
-                
+
+            _tokens = GetTokens();
+
         }
     }
 }
