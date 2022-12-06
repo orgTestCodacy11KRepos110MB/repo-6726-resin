@@ -25,11 +25,6 @@ namespace Sir
 
         public void Validate(Document doc)
         {
-            if(doc.Id == default)
-            {
-                throw new Exception("something is wrong");
-            }
-
             foreach (var field in doc.Fields)
             {
                 if (string.IsNullOrWhiteSpace(field.Value.ToString()))

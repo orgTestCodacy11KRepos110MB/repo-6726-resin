@@ -38,7 +38,7 @@ namespace Sir.Tests
                     {
                         var data = _data[i];
 
-                        using (var indexSession = new InMemoryIndexSession<string>(model, new NonOptimizedPageIndexingStrategy(model), _sessionFactory, _directory, collectionId))
+                        using (var indexSession = new IndexSession<string>(model, new NonOptimizedPageIndexingStrategy(model), _sessionFactory, _directory, collectionId))
                         {
                             var doc = new Document(new Field[] { new Field(fieldName, data) });
 

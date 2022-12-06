@@ -180,7 +180,7 @@ namespace Sir
             using (var debugger = new IndexDebugger(_logger, reportFrequency))
             using (var documents = new DocumentStreamSession(directory, this))
             {
-                using (var writeQueue = new ProducerConsumerQueue<InMemoryIndexSession<T>>(indexSession =>
+                using (var writeQueue = new ProducerConsumerQueue<IndexSession<T>>(indexSession =>
                 {
                     using (var index = new IndexWriter(directory, collectionId, this, logger: _logger))
                     {
@@ -203,7 +203,7 @@ namespace Sir
 
                         var count = 0;
 
-                        using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
+                        using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))
                         {
                             foreach (var document in payload)
                             {
@@ -232,7 +232,7 @@ namespace Sir
             LogDebug($"optimized collection {collection}");
         }
 
-        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<IDocument> job, WriteSession writeSession, InMemoryIndexSession<T> indexSession, int reportSize = 1000, bool label = true)
+        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<IDocument> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000, bool label = true)
         {
             var debugger = new IndexDebugger(_logger, reportSize);
 
@@ -255,7 +255,7 @@ namespace Sir
         public void StoreDataAndBuildInMemoryIndex<T>(
             Document document, 
             WriteSession writeSession, 
-            InMemoryIndexSession<T> indexSession, 
+            IndexSession<T> indexSession, 
             bool label = true)
         {
             writeSession.Put(document);
@@ -269,7 +269,7 @@ namespace Sir
             }
         }
 
-        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, InMemoryIndexSession<T> indexSession, bool label = true)
+        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, IndexSession<T> indexSession, bool label = true)
         {
             LogDebug($"building index for collection {collectionId}");
 
@@ -306,7 +306,7 @@ namespace Sir
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
+            using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(job, writeSession, indexSession, reportSize);
 
@@ -320,7 +320,7 @@ namespace Sir
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model, IIndexReadWriteStrategy indexStrategy)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new InMemoryIndexSession<T>(model, indexStrategy, this, directory, collectionId))
+            using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))
             {
                 StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
 

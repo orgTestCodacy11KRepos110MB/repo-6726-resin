@@ -42,7 +42,7 @@ namespace Sir.Tests
                     {
                         var d = data[i];
 
-                        using (var indexSession = new InMemoryIndexSession<IImage>(model, new NonOptimizedPageIndexingStrategy(model), _sessionFactory, _directory, collectionId))
+                        using (var indexSession = new IndexSession<IImage>(model, new NonOptimizedPageIndexingStrategy(model), _sessionFactory, _directory, collectionId))
                         {
                             var doc = new Document(new Field[] { new Field(fieldName, d) });
 

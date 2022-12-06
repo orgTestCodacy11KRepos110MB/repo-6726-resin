@@ -305,7 +305,7 @@ namespace Sir.IO
                 }
                 else if (node.PostingsOffset == -1 && postingsStream != null)
                 {
-                    node.PostingsOffset = SerializePostings(node, postingsStream);
+                    SerializePostings(node, postingsStream);
                 }
 
                 if (vectorStream != null)
@@ -347,13 +347,11 @@ namespace Sir.IO
             postingsStream.Seek(0, SeekOrigin.End);
         }
 
-        public static long SerializePostings(VectorNode node, Stream postingsStream)
+        public static void SerializePostings(VectorNode node, Stream postingsStream)
         {
             if (node.DocIds.Count == 0) throw new ArgumentException("can't be empty", nameof(node.DocIds));
 
-            postingsStream.Seek(0, SeekOrigin.End);
-
-            var offset = postingsStream.Position;
+            node.PostingsOffset = postingsStream.Position;
 
             // serialize item count
             postingsStream.Write(BitConverter.GetBytes((long)node.DocIds.Count));
@@ -365,8 +363,6 @@ namespace Sir.IO
             {
                 postingsStream.Write(BitConverter.GetBytes(docId));
             }
-
-            return offset;
         }
     }
 }

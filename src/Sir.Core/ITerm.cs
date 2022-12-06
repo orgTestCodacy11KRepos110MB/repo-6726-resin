@@ -8,7 +8,7 @@ namespace Sir
         string Directory { get; }
         string Key { get; }
         long KeyId { get; }
-        long PostingsOffset { get; set; }
+        IList<long> PostingsOffsets { get; set; }
         IList<(ulong collectionId, long documentId)> DocumentIds { get; set; }
         double Score { get; set; }
         ISerializableVector Vector { get; }

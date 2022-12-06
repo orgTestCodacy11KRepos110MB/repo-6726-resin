@@ -222,7 +222,7 @@ namespace Sir
 
         public override string ToString()
         {
-            return Value==null?base.ToString() : Value.ToString();
+            return Label == null ? Value?.ToString() : Label.ToString();
         }
     }
 }

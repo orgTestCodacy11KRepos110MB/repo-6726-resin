@@ -146,7 +146,7 @@ namespace Sir
                             if ((identicalMatchesOnly && hit.Score >= _model.IdenticalAngle) || !identicalMatchesOnly)
                             {
                                 term.Score = hit.Score;
-                                term.PostingsOffset = hit.Node.PostingsOffset;
+                                term.PostingsOffsets = hit.PostingsOffsets;
                             }
                         }
                     }

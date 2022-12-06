@@ -53,6 +53,11 @@ namespace Sir.IO
                 if (best == null || hit.Score > best.Score)
                 {
                     best = hit;
+                    best.PostingsOffsets = new List<long> { hit.Node.PostingsOffset };
+                }
+                else if (hit.Score.Approximates(best.Score))
+                {
+                    best.PostingsOffsets.Add(hit.Node.PostingsOffset);
                 }
             }
 
@@ -107,8 +112,7 @@ namespace Sir.IO
                 if (angle >= model.IdenticalAngle)
                 {
                     bestScore = angle;
-                    var n = new VectorNode(postingsOffset);
-                    bestNode = n;
+                    bestNode = new VectorNode(postingsOffset);
 
                     break;
                 }

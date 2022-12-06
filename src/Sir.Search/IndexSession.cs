@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Sir
 {
-    public class InMemoryIndexSession<T> : IIndexSession<T>, IDisposable
+    public class IndexSession<T> : IIndexSession<T>, IDisposable
     {
         private readonly IModel<T> _model;
         private readonly IIndexReadWriteStrategy _indexingStrategy;
@@ -14,7 +14,7 @@ namespace Sir
         private readonly string _directory;
         private readonly ulong _collectionId;
 
-        public InMemoryIndexSession(
+        public IndexSession(
             IModel<T> model,
             IIndexReadWriteStrategy indexingStrategy,
             IStreamDispatcher sessionFactory, 
@@ -75,7 +75,7 @@ namespace Sir
 
         public void Commit(IndexWriter indexWriter)
         {
-            indexWriter.WriteTrees(_index);
+            indexWriter.Commit(_index);
         }
 
         public IDictionary<long, VectorNode> GetInMemoryIndices()

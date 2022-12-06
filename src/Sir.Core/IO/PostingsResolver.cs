@@ -16,10 +16,10 @@
 
         public void Resolve(ITerm term, PostingsReader postingsReader)
         {
-            if (term.PostingsOffset == -1)
+            if (term.PostingsOffsets == null)
                 return;
 
-            term.DocumentIds = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffset);
+            term.DocumentIds = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffsets);
         }
     }
 }

@@ -35,6 +35,19 @@ namespace Sir.IO
             return documents;
         }
 
+        public IList<(ulong, long)> Read(ulong collectionId, long keyId, IList<long> offsets)
+        {
+            var time = Stopwatch.StartNew();
+            var documents = new List<(ulong, long)>();
+
+            foreach (var offset in offsets)
+                GetPostingsFromStream(collectionId, keyId, offset, documents);
+
+            _streamDispatcher.LogDebug($"read {documents.Count} postings into memory in {time.Elapsed}");
+
+            return documents;
+        }
+
         private void GetPostingsFromStream(ulong collectionId, long keyId, long postingsOffset, IList<(ulong collectionId, long docId)> documents)
         {
             var stream = GetOrCreateStream(collectionId, keyId);

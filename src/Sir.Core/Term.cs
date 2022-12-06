@@ -10,7 +10,7 @@ namespace Sir
         public string Key { get; }
         public string Directory { get; }
         public ulong CollectionId { get; }
-        public long PostingsOffset { get; set; }
+        public IList<long> PostingsOffsets { get; set; }
         public double Score { get; set; }
         public IList<(ulong collectionId, long documentId)> DocumentIds { get; set; }
         public object Label => Vector.Label;
@@ -34,7 +34,6 @@ namespace Sir
             IsIntersection = and;
             IsUnion = or;
             IsSubtraction = not;
-            PostingsOffset = -1;
         }
     }
 }

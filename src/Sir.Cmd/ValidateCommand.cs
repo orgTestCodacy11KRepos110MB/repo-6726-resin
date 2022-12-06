@@ -21,6 +21,7 @@ namespace Sir.Cmd
             var model = new BagOfCharsModel();
             var selectFields = new HashSet<string> { "title" };
             var time = Stopwatch.StartNew();
+            var count = 0;
 
             using (var sessionFactory = new SessionFactory(logger))
             {
@@ -36,12 +37,14 @@ namespace Sir.Cmd
                             validateSession.Validate(doc);
 
                             Console.WriteLine(doc.Id);
+
+                            count++;
                         }
                     }
                 }
             }
 
-            Console.WriteLine("validate took {0}", time.Elapsed);
+            Console.WriteLine($"successfully validated {count} docs in {time.Elapsed}");
         }
     }
 }
