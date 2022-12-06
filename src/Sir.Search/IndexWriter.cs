@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sir.IO;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 
 namespace Sir
 {
@@ -30,32 +27,12 @@ namespace Sir
         {
         }
 
-        public void Commit(IDictionary<long, VectorNode> index)
+        public void Commit(IDictionary<long, VectorNode> index, IIndexReadWriteStrategy indexingStrategy)
         {
             foreach (var column in index)
             {
-                Commit(column.Key, column.Value);
+                indexingStrategy.Commit(_directory, _collectionId, column.Key, column.Value, _sessionFactory, _logger);
             }
-        }
-
-        public void Commit(long keyId, VectorNode tree)
-        {
-            var time = Stopwatch.StartNew();
-            using(var vectorStream = CreateAppendStream(keyId, "vec"))
-            using (var postingsStream = CreateAppendStream(keyId, "pos"))
-            using (var columnWriter = new ColumnWriter(CreateAppendStream(keyId, "ix")))
-            using (var pageIndexWriter = new PageIndexWriter(CreateAppendStream(keyId, "ixtp")))
-            {
-                var size = columnWriter.CreatePage(tree, vectorStream, postingsStream, pageIndexWriter);
-
-                if (_logger != null)
-                    _logger.LogDebug($"serialized column {keyId}, weight {tree.Weight} {size} in {time.Elapsed}");
-            }
-        }
-
-        private Stream CreateAppendStream(long keyId, string fileExtension)
-        {
-            return _sessionFactory.CreateAppendStream(_directory, _collectionId, keyId, fileExtension);
         }
     }
 }

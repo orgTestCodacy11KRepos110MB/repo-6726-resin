@@ -75,7 +75,7 @@ namespace Sir
 
         public void Commit(IndexWriter indexWriter)
         {
-            indexWriter.Commit(_index);
+            indexWriter.Commit(_index, _indexingStrategy);
         }
 
         public IDictionary<long, VectorNode> GetInMemoryIndices()

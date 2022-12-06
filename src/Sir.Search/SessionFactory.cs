@@ -348,14 +348,6 @@ namespace Sir
             }
         }
 
-        public void Update(string directory, ulong collectionId, long documentId, long keyId, object value)
-        {
-            using (var updateSession = new UpdateSession(directory, collectionId, this))
-            {
-                updateSession.Update(documentId, keyId, value);
-            }
-        }
-
         public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, bool label = true)
         {
             var query = new QueryParser<T>(directory, this, model, _logger)
@@ -561,40 +553,6 @@ namespace Sir
             }
 
             return new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-        }
-
-        public Stream CreateSeekableWritableStream(string directory, ulong collectionId, long keyId, string fileExtension)
-        {
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var fileName = Path.Combine(directory, $"{collectionId}.{keyId}.{fileExtension}");
-
-            if (!File.Exists(fileName))
-            {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
-            }
-
-            return new FileStream(fileName, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
-        }
-
-        public Stream CreateSeekableWritableStream(string directory, ulong collectionId, string fileExtension)
-        {
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var fileName = Path.Combine(directory, $"{collectionId}.{fileExtension}");
-
-            if (!File.Exists(fileName))
-            {
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
-            }
-
-            return new FileStream(fileName, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
         }
 
         public void Dispose()

@@ -12,10 +12,10 @@ namespace Sir.Documents
         private readonly DocMapWriter _docs;
         private readonly DocIndexWriter _docIx;
         
-        public DocumentWriter(string directory, ulong collectionId, IStreamDispatcher database, bool append = true) : base(directory, collectionId, database, append)
+        public DocumentWriter(string directory, ulong collectionId, IStreamDispatcher streamDispatcher) : base(directory, collectionId, streamDispatcher)
         {
-            var docStream = append ? database.CreateAppendStream(directory, collectionId, "docs") : database.CreateSeekableWritableStream(directory, collectionId, "docs");
-            var docIndexStream = database.CreateAppendStream(directory, collectionId, "dix");
+            var docStream = streamDispatcher.CreateAppendStream(directory, collectionId, "docs");
+            var docIndexStream = streamDispatcher.CreateAppendStream(directory, collectionId, "dix");
 
             _docs = new DocMapWriter(docStream);
             _docIx = new DocIndexWriter(docIndexStream);

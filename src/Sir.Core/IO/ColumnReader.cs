@@ -80,6 +80,11 @@ namespace Sir.IO
                     if (best == null || hit.Score > best.Score)
                     {
                         best = hit;
+                        best.PostingsOffsets = new List<long> { hit.Node.PostingsOffset };
+                    }
+                    else if (hit.Score.Approximates(best.Score))
+                    {
+                        best.PostingsOffsets.Add(hit.Node.PostingsOffset);
                     }
                 }
 

@@ -298,12 +298,7 @@ namespace Sir.IO
 
             while (node != null)
             {
-                if (node.PostingsOffset > -1 && postingsStream != null)
-                {
-                    AppendPostings(node, postingsStream);
-                    node.PostingsOffset = -1;
-                }
-                else if (node.PostingsOffset == -1 && postingsStream != null)
+                if (node.PostingsOffset == -1 && postingsStream != null)
                 {
                     SerializePostings(node, postingsStream);
                 }
@@ -334,17 +329,6 @@ namespace Sir.IO
             }
 
             return (offset, length);
-        }
-
-        public static void AppendPostings(VectorNode node, Stream postingsStream)
-        {
-            long addressOfNextPage = postingsStream.Length - 1;
-
-            postingsStream.Seek(node.PostingsOffset + sizeof(long), SeekOrigin.Begin);
-
-            postingsStream.Write(BitConverter.GetBytes(addressOfNextPage));
-
-            postingsStream.Seek(0, SeekOrigin.End);
         }
 
         public static void SerializePostings(VectorNode node, Stream postingsStream)

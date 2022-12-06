@@ -12,20 +12,20 @@ namespace Sir.KeyValue
         private readonly ValueIndexWriter _valIx;
         private readonly ValueIndexWriter _keyIx;
         private readonly ulong _collectionId;
-        private readonly IStreamDispatcher _database;
+        private readonly IStreamDispatcher _streamDispatcher;
         private readonly string _directory;
         private readonly object _keyLock = new object();
         
-        public KeyValueWriter(string directory, ulong collectionId, IStreamDispatcher database, bool append = true)
+        public KeyValueWriter(string directory, ulong collectionId, IStreamDispatcher streamDispatcher)
             : this(
-            new ValueWriter(append? database.CreateAppendStream(directory, collectionId, "val") : database.CreateSeekableWritableStream(directory, collectionId, "val")),
-            new ValueWriter(database.CreateAppendStream(directory, collectionId, "key")),
-            new ValueIndexWriter(database.CreateAppendStream(directory, collectionId, "vix")),
-            new ValueIndexWriter(database.CreateAppendStream(directory, collectionId, "kix"))
-            )
+                new ValueWriter(streamDispatcher.CreateAppendStream(directory, collectionId, "val")),
+                new ValueWriter(streamDispatcher.CreateAppendStream(directory, collectionId, "key")),
+                new ValueIndexWriter(streamDispatcher.CreateAppendStream(directory, collectionId, "vix")),
+                new ValueIndexWriter(streamDispatcher.CreateAppendStream(directory, collectionId, "kix"))
+                )
         {
             _collectionId = collectionId;
-            _database = database;
+            _streamDispatcher = streamDispatcher;
             _directory = directory;
         }
 
@@ -42,11 +42,11 @@ namespace Sir.KeyValue
             var keyHash = keyStr.ToHash();
             long keyId;
 
-            if (!_database.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
+            if (!_streamDispatcher.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
             {
                 lock (_keyLock)
                 {
-                    if (!_database.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
+                    if (!_streamDispatcher.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
                     {
                         // We have a new key!
 
@@ -56,7 +56,7 @@ namespace Sir.KeyValue
                         keyId = PutKeyInfo(keyInfo.offset, keyInfo.len, keyInfo.dataType);
 
                         // store key mapping
-                        _database.RegisterKeyMapping(_directory, _collectionId, keyHash, keyId);
+                        _streamDispatcher.RegisterKeyMapping(_directory, _collectionId, keyHash, keyId);
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace Sir.KeyValue
             var keyHash = keyStr.ToHash();
             long keyId;
 
-            if (!_database.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
+            if (!_streamDispatcher.TryGetKeyId(_directory, _collectionId, keyHash, out keyId))
             {
                 // We have a new key!
 
@@ -79,7 +79,7 @@ namespace Sir.KeyValue
                 keyId = PutKeyInfo(keyInfo.offset, keyInfo.len, keyInfo.dataType);
 
                 // store key mapping
-                _database.RegisterKeyMapping(_directory, _collectionId, keyHash, keyId);
+                _streamDispatcher.RegisterKeyMapping(_directory, _collectionId, keyHash, keyId);
             }
 
             return keyId;

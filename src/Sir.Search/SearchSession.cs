@@ -139,7 +139,7 @@ namespace Sir
 
                     if (reader != null)
                     {
-                        var hit =_indexStrategy.GetClosestMatchOrNull(term.Vector, _model, reader);
+                        var hit =_indexStrategy.GetMatchOrNull(term.Vector, _model, reader);
 
                         if (hit != null)
                         {

@@ -51,7 +51,6 @@ namespace Sir.Wikipedia
                 {
                     foreach (var page in payload.Batch(pageSize))
                     {
-                        using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
                         using (var indexSession = new IndexSession<string>(model, new NonOptimizedPageIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
                         {
                             foreach (var document in page)
@@ -60,13 +59,14 @@ namespace Sir.Wikipedia
 
                                 foreach (var field in document.Fields)
                                 {
-                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, label:true);
+                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, label:false);
                                 }
 
                                 debugger.Step(indexSession);
                             }
 
-                            indexSession.Commit(indexStream);
+                            using (var indexStream = new IndexWriter(dataDirectory, collectionId, sessionFactory, logger: logger))
+                                indexSession.Commit(indexStream);
 
                             //foreach (var column in indexSession.InMemoryIndex)
                             //{

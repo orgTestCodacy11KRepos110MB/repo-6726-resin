@@ -4,8 +4,6 @@ namespace Sir
 {
     public interface IStreamDispatcher
     {
-        Stream CreateSeekableWritableStream(string directory, ulong collectionId, string fileExtension);
-        Stream CreateSeekableWritableStream(string directory, ulong collectionId, long keyId, string fileExtension);
         Stream CreateAppendStream(string directory, ulong collectionId, string fileExtension);
         Stream CreateAppendStream(string directory, ulong collectionId, long keyId, string fileExtension);
         Stream CreateReadStream(string fileName);
