@@ -81,7 +81,7 @@ namespace Sir.HttpServer.Features
                 or: Or,
                 label: false);
 
-            using (var readSession = new SearchSession(_directory, _sessionFactory, _model, new NonOptimizedPageIndexingStrategy(_model), _logger))
+            using (var readSession = new SearchSession(_directory, _sessionFactory, _model, new LogStructuredIndexingStrategy(_model), _logger))
             {
                 var originalResult = readSession.Search(originalQuery, _skip, _take)
                     .Documents

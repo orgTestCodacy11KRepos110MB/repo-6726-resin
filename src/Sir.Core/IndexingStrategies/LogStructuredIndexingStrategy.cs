@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace Sir
 {
-    public class NonOptimizedPageIndexingStrategy : IIndexReadWriteStrategy
+    public class LogStructuredIndexingStrategy : IIndexReadWriteStrategy
     {
         private readonly IModel _model;
 
-        public NonOptimizedPageIndexingStrategy(IModel model)
+        public LogStructuredIndexingStrategy(IModel model)
         {
             _model = model;
         }

@@ -51,7 +51,7 @@ namespace Sir.Wikipedia
                 {
                     foreach (var page in payload.Batch(pageSize))
                     {
-                        using (var indexSession = new IndexSession<string>(model, new NonOptimizedPageIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
+                        using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId))
                         {
                             foreach (var document in page)
                             {

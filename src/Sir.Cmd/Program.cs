@@ -130,7 +130,7 @@ namespace Sir.Cmd
                     collection, 
                     fields,
                     model,
-                    new NonOptimizedPageIndexingStrategy(model),
+                    new LogStructuredIndexingStrategy(model),
                     skip,
                     take,
                     reportFrequency,

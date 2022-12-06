@@ -355,7 +355,7 @@ namespace Sir
 
             if (query != null)
             {
-                using (var searchSession = new SearchSession(directory, this, model, new NonOptimizedPageIndexingStrategy(model),  _logger))
+                using (var searchSession = new SearchSession(directory, this, model, new LogStructuredIndexingStrategy(model),  _logger))
                 {
                     var document = searchSession.SearchScalar(query);
 
