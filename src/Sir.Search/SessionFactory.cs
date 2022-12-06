@@ -317,34 +317,12 @@ namespace Sir
             }
         }
 
-        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, Document document, IModel<T> model, IIndexReadWriteStrategy indexStrategy)
-        {
-            using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))
-            {
-                StoreDataAndBuildInMemoryIndex(document, writeSession, indexSession);
-
-                using (var stream = new IndexWriter(directory, collectionId, this, logger: _logger))
-                {
-                    indexSession.Commit(stream);
-                }
-            }
-        }
-
         public void Store(string directory, ulong collectionId, IEnumerable<Document> job)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
             {
                 foreach (var document in job)
                     writeSession.Put(document);
-            }
-        }
-
-        public void Store(string directory, ulong collectionId, Document document)
-        {
-            using (var writeSession = new WriteSession(new DocumentWriter(directory, collectionId, this)))
-            {
-                writeSession.Put(document);
             }
         }
 
@@ -364,25 +342,6 @@ namespace Sir
                         if (document.Score >= model.IdenticalAngle)
                             return true;
                     }
-                }
-            }
-
-            return false;
-        }
-
-        public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, SearchSession searchSession, bool label = true)
-        {
-            var query = new QueryParser<T>(directory, this, model, _logger)
-                .Parse(collection, value, key, key, and: true, or: false, label);
-
-            if (query != null)
-            {
-                var document = searchSession.SearchScalar(query);
-
-                if (document != null)
-                {
-                    if (document.Score >= model.IdenticalAngle)
-                        return true;
                 }
             }
 
