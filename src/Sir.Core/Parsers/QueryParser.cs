@@ -131,7 +131,7 @@ namespace Sir
                 cursor = query;
             }
 
-            if (_logger != null)
+            if (_logger != null && _logger.IsEnabled(LogLevel.Debug))
             {
                 var queryLog = JsonConvert.SerializeObject(root);
                 _logger.LogDebug($"incoming query: {queryLog}");

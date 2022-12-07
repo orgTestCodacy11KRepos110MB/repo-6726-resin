@@ -14,26 +14,51 @@ namespace Sir.Cmd
     {
         static void Main(string[] args)
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
+            ILoggerFactory loggerFactory;
+
+            var command = args[0].ToLower();
+            var flags = ParseArgs(args);
+
+            if (flags.ContainsKey("debug"))
+            {
+                loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder
+                        .AddFilter("Microsoft", LogLevel.Warning)
+                        .AddFilter("System", LogLevel.Warning)
+                        .AddFilter("Sir", LogLevel.Debug)
+                        .AddConsole();
+                });
+            }
+            else
+            {
+#if DEBUG
+                loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder
+                        .AddFilter("Microsoft", LogLevel.Warning)
+                        .AddFilter("System", LogLevel.Warning)
+                        .AddFilter("Sir", LogLevel.Debug)
+                        .AddConsole();
+                });
+#else
+
+loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
                     .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("Sir", LogLevel.Debug)
-                    .AddConsole()
-                    .AddEventLog(new Microsoft.Extensions.Logging.EventLog.EventLogSettings 
-                    { 
-                        SourceName = "Sir.Cmd", 
-                        Filter = (source, level) => level >= LogLevel.Warning
-                    });
+                    .AddFilter("Sir", LogLevel.Information)
+                    .AddConsole();
             });
+
+#endif
+            }
 
             var logger = loggerFactory.CreateLogger("Sir");
 
             logger.LogInformation($"processing command: {string.Join(" ", args)}");
 
-            var command = args[0].ToLower();
-            var flags = ParseArgs(args);
             var plugin = ResolvePlugin(command);
             var time = Stopwatch.StartNew();
 
