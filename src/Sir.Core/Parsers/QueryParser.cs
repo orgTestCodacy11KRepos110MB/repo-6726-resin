@@ -229,16 +229,16 @@ namespace Sir
             return root;
         }
 
-        private IList<ITerm> CreateTerms(string collectionName, string key, T value, bool and, bool or, bool not, bool label)
+        private IList<Term> CreateTerms(string collectionName, string key, T value, bool and, bool or, bool not, bool label)
         {
             var collectionId = collectionName.ToHash();
             return CreateTerms(collectionId, key, value, and, or, not, label);
         }
 
-        private IList<ITerm> CreateTerms(ulong collectionId, string key, T value, bool and, bool or, bool not, bool label)
+        private IList<Term> CreateTerms(ulong collectionId, string key, T value, bool and, bool or, bool not, bool label)
         {
             long keyId;
-            var terms = new List<ITerm>();
+            var terms = new List<Term>();
 
             if (_sessionFactory.TryGetKeyId(_directory, collectionId, key.ToHash(), out keyId))
             {

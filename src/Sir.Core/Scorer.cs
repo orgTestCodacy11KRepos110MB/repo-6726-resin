@@ -88,7 +88,7 @@ namespace Sir
             }
         }
 
-        public static void Score(IList<ITerm> terms, ref IDictionary<(ulong CollectionId, long DocumentId), double> result)
+        public static void Score(IList<Term> terms, ref IDictionary<(ulong CollectionId, long DocumentId), double> result)
         {
             foreach (var term in terms)
             {

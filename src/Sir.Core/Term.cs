@@ -3,7 +3,7 @@
 namespace Sir
 {
     [System.Diagnostics.DebuggerDisplay("{Key}:{Label}")]
-    public class Term : BooleanStatement, ITerm
+    public class Term : BooleanStatement
     {
         public ISerializableVector Vector { get; }
         public long KeyId { get; }

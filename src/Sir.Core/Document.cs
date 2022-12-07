@@ -6,34 +6,34 @@ using System.Collections.Generic;
 namespace Sir
 {
     [JsonConverter(typeof(DocumentJsonConverter))]
-    public class Document : IDocument
+    public class Document
     {
         public ulong CollectionId { get; set; }
         public long Id { get; set; }
         public double Score { get; set; }
-        public IList<IField> Fields { get; set; }
+        public IList<Field> Fields { get; set; }
 
         /// <summary>
         /// Empty ctor used for over-the-wire serialization.
         /// </summary>
         public Document()
         {
-            Fields = new List<IField>();
+            Fields = new List<Field>();
         }
 
-        public Document(IEnumerable<IField> fields, ulong collectionId = ulong.MinValue, long documentId = -1, double score = -1)
+        public Document(IEnumerable<Field> fields, ulong collectionId = ulong.MinValue, long documentId = -1, double score = -1)
         {
             Id = documentId;
             Score = score;
             CollectionId = collectionId;
 
-            if (fields is IList<IField>)
+            if (fields is IList<Field>)
             {
-                Fields = (IList<IField>)fields;
+                Fields = (IList<Field>)fields;
             }
             else
             {
-                Fields = new List<IField>();
+                Fields = new List<Field>();
 
                 foreach (var field in fields)
                 {
@@ -44,7 +44,7 @@ namespace Sir
             }
         }
 
-        public IField Get(string key)
+        public Field Get(string key)
         {
             foreach (var field in Fields)
             {
@@ -57,7 +57,7 @@ namespace Sir
             return null;
         }
 
-        public bool TryGetValue(string key, out IField value)
+        public bool TryGetValue(string key, out Field value)
         {
             foreach (var field in Fields)
             {

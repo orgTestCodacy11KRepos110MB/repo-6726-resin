@@ -44,7 +44,7 @@ namespace Sir.HttpServer.Controllers
             }
         }
 
-        private void Serialize(IEnumerable<IDocument> docs, Stream stream)
+        private void Serialize(IEnumerable<Document> docs, Stream stream)
         {
             using (StreamWriter writer = new StreamWriter(stream))
             using (JsonTextWriter jsonWriter = new JsonTextWriter(writer))

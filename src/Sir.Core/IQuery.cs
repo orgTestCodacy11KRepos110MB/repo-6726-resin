@@ -8,12 +8,12 @@ namespace Sir
         IQuery NotQuery { get; set; }
         IQuery OrQuery { get; set; }
         HashSet<string> Select { get; }
-        IList<ITerm> Terms { get; }
+        IList<Term> Terms { get; }
         bool IsUnion { get; set; }
         bool IsIntersection { get; set; }
 
         IEnumerable<IQuery> All();
-        IEnumerable<ITerm> AllTerms();
+        IEnumerable<Term> AllTerms();
         int GetCollectionCount();
         void GetNumOfCollections(HashSet<ulong> dic);
         int TotalNumberOfTerms();

@@ -16,14 +16,14 @@ namespace Sir
     /// </example>
     public class Query : BooleanStatement, IQuery
     {
-        public IList<ITerm> Terms { get; }
+        public IList<Term> Terms { get; }
         public HashSet<string> Select { get; }
         public IQuery AndQuery { get; set; }
         public IQuery OrQuery { get; set; }
         public IQuery NotQuery { get; set; }
 
         public Query(
-            IList<ITerm> terms,
+            IList<Term> terms,
             IEnumerable<string> select,
             bool and,
             bool or,
@@ -83,7 +83,7 @@ namespace Sir
             }
         }
 
-        public IEnumerable<ITerm> AllTerms()
+        public IEnumerable<Term> AllTerms()
         {
             foreach (var q in All())
                 foreach (var term in q.Terms)

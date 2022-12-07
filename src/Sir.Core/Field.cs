@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Sir
 {
     [DebuggerDisplay("{Name}")]
-    public class Field : IField
+    public class Field
     {
         private IEnumerable<ISerializableVector> _tokens;
 

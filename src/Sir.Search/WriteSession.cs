@@ -17,7 +17,7 @@ namespace Sir
             _streamWriter = streamWriter;
         }
 
-        public void Put(IDocument document)
+        public void Put(Document document)
         {
             var docMap = new List<(long keyId, long valId)>();
 
@@ -31,10 +31,6 @@ namespace Sir
                 {
                     Write(field, docMap);
                 }
-                else
-                {
-                    continue;
-                }
             }
 
             var docMeta = _streamWriter.PutDocumentMap(docMap);
@@ -42,18 +38,11 @@ namespace Sir
             _streamWriter.PutDocumentAddress(document.Id, docMeta.offset, docMeta.length);
         }
 
-        private void Write(IField field, IList<(long, long)> docMap)
+        private void Write(Field field, IList<(long, long)> docMap)
         {
             field.KeyId = EnsureKeyExists(field.Name);
 
             Write(field.KeyId, field.Value, docMap);
-        }
-
-        private void Write(string key, object val, IList<(long, long)> docMap)
-        {
-            var keyId = EnsureKeyExists(key);
-
-            Write(keyId, val, docMap);
         }
 
         private void Write(long keyId, object val, IList<(long, long)> docMap)

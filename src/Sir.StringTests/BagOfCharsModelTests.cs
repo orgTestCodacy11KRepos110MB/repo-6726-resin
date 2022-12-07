@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Sir.Tests
+namespace Sir.StringTests
 {
     public class BagOfCharsModelTests
     {

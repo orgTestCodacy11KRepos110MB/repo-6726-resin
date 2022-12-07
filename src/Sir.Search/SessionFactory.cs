@@ -229,7 +229,7 @@ namespace Sir
             LogDebug($"optimized collection {collection}");
         }
 
-        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<IDocument> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000, bool label = true)
+        public void StoreDataAndBuildInMemoryIndex<T>(IEnumerable<Document> job, WriteSession writeSession, IndexSession<T> indexSession, int reportSize = 1000, bool label = true)
         {
             var debugger = new IndexDebugger(_logger, reportSize);
 
@@ -300,7 +300,7 @@ namespace Sir
             LogDebug($"built index (collection {collectionId}) in {time.Elapsed}");
         }
 
-        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<IDocument> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
+        public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(this, directory, collectionId)))
             using (var indexSession = new IndexSession<T>(model, indexStrategy, this, directory, collectionId))

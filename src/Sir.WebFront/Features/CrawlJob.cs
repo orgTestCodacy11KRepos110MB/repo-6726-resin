@@ -186,7 +186,7 @@ namespace Sir.HttpServer.Features
 
                         foreach (var document in ReadWetFile(localFileName, fileName))
                         {
-                            IDocument originalDoc;
+                            Document originalDoc;
                             var key = (string)document.Get("url").Value;
 
                             if (originalResult.TryGetValue(key, out originalDoc))

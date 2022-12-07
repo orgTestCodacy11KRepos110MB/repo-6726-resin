@@ -3,6 +3,7 @@ using Sir.Core;
 using Sir.Documents;
 using Sir.IO;
 using Sir.Strings;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
@@ -41,68 +42,19 @@ namespace Sir.Wikipedia
                 throw new FileNotFoundException($"This file could not be found: {fileName}. Download a wikipedia JSON dump here:  https://dumps.wikimedia.org/other/cirrussearch/current/");
             }
 
-            const bool label = false;
             var model = new BagOfCharsModel();
             var indexStrategy = new LogStructuredIndexingStrategy(model);
             var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest).Batch(pageSize);
 
-            //using (var streamDispatcher = new SessionFactory(logger))
-            //using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
-            //using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
-            //{
-            //    var debugger = new IndexDebugger(logger, sampleSize);
-
-            //    using (var commitQueue = new ProducerConsumerQueue<Document>(document =>
-            //    {
-            //        indexSession.Commit();
-            //    }))
-            //    using (var indexQueue = new ProducerConsumerQueue<Document>(document =>
-            //    {
-            //        foreach (var field in document.Fields)
-            //        {
-            //            if (field.Value != null)
-            //            {
-            //                indexSession.Put(field.DocumentId, field.KeyId, field.Tokens);
-            //            }
-            //        }
-
-            //    }))
-            //    {
-            //        foreach (var page in payload)
-            //        {
-            //            foreach (var document in page)
-            //            {
-            //                foreach (var field in document.Fields)
-            //                {
-            //                    if (field.Value != null)
-            //                    {
-            //                        field.Analyze(model, indexStrategy, label);
-            //                    }
-            //                }
-            //            }
-
-            //            indexQueue.Enqueue(document);
-            //        }
-            //    }
-            //}
-
-            
-
-
-
-
-
-
-
-            using (var sessionFactory = new SessionFactory(logger))
+            using (var streamDispatcher = new SessionFactory(logger))
             {
                 var debugger = new IndexDebugger(logger, sampleSize);
 
-                using (var writeSession = new WriteSession(new DocumentWriter(sessionFactory, dataDirectory, collectionId)))
+                using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
                 {
                     foreach (var page in payload)
                     {
-                        using (var indexSession = new IndexSession<string>(model, new LogStructuredIndexingStrategy(model), sessionFactory, dataDirectory, collectionId, logger))
+                        using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
                         {
                             foreach (var document in page)
                             {
@@ -110,7 +62,7 @@ namespace Sir.Wikipedia
 
                                 foreach (var field in document.Fields)
                                 {
-                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, label:false);
+                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, label: false);
                                 }
 
                                 debugger.Step(indexSession);

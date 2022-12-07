@@ -14,7 +14,7 @@
             }
         }
 
-        public void Resolve(ITerm term, PostingsReader postingsReader)
+        public void Resolve(Term term, PostingsReader postingsReader)
         {
             if (term.PostingsOffsets == null)
                 return;
