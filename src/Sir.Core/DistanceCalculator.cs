@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System;
+using System.Buffers;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -26,14 +27,18 @@ namespace Sir
 
         public double CosAngle(ISerializableVector vector, long vectorOffset, int componentCount, Stream vectorStream)
         {
-            Span<byte> buf = new byte[componentCount * 2 * sizeof(int)];
+            var bufSize = componentCount * 2 * sizeof(int);
+            var rent = ArrayPool<byte>.Shared.Rent(bufSize);
+            Span<byte> buf = rent;
 
             vectorStream.Seek(vectorOffset, SeekOrigin.Begin);
             vectorStream.Read(buf);
 
             var index = MemoryMarshal.Cast<byte, int>(buf.Slice(0, componentCount * sizeof(int)));
-            var values = MemoryMarshal.Cast<byte, float>(buf.Slice(componentCount * sizeof(float)));
+            var values = MemoryMarshal.Cast<byte, float>(buf.Slice(componentCount * sizeof(float), componentCount * sizeof(float)));
             var tuples = new Tuple<int, float>[componentCount];
+
+            ArrayPool<byte>.Shared.Return(rent);
 
             for (int i = 0; i < componentCount; i++)
             {
