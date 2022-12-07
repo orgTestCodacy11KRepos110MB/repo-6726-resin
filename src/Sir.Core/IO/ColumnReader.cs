@@ -2,7 +2,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace Sir.IO
@@ -10,9 +9,8 @@ namespace Sir.IO
     /// <summary>
     /// Index bitmap reader. Each word is a <see cref="Sir.Strings.VectorNode"/>.
     /// </summary>
-    public class ColumnReader : IColumnReader
+    public class ColumnReader : IDisposable
     {
-        private readonly ILogger _logger;
         private readonly Stream _vectorFile;
         private readonly Stream _ixFile;
         private readonly IList<(long offset, long length)> _pages;
@@ -20,10 +18,8 @@ namespace Sir.IO
         public ColumnReader(
             IList<(long offset, long length)> pages,
             Stream indexStream,
-            Stream vectorStream,
-            ILogger logger = null)
+            Stream vectorStream)
         {
-            _logger = logger;
             _vectorFile = vectorStream;
             _ixFile = indexStream;
             _pages = pages;
@@ -64,7 +60,7 @@ namespace Sir.IO
             return best;
         }
 
-        public Hit ClosestMatchOrNullStoppingAtBestPage(ISerializableVector vector, IModel model)
+        public Hit ClosestMatchOrNullStoppingAtFirstIdenticalPage(ISerializableVector vector, IModel model)
         {
             if (_ixFile == null || _vectorFile == null)
                 return null;
@@ -208,24 +204,6 @@ namespace Sir.IO
             {
                 _ixFile.Seek(distance, SeekOrigin.Current);
             }
-        }
-
-        private void LogInformation(string message)
-        {
-            if (_logger != null)
-                _logger.LogInformation(message);
-        }
-
-        private void LogDebug(string message)
-        {
-            if (_logger != null)
-                _logger.LogDebug(message);
-        }
-
-        private void LogError(Exception ex, string message)
-        {
-            if (_logger != null)
-                _logger.LogError(ex, message);
         }
 
         public void Dispose()

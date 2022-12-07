@@ -11,7 +11,7 @@ namespace Sir.Images
         public double FoldAngle => 0.75d;
         public override int NumOfDimensions => 784; 
 
-        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
+        public void Put<T>(VectorNode column, VectorNode node, ColumnReader reader)
         {
             column.AddOrAppendSupervised(node, this);
         }
@@ -23,7 +23,7 @@ namespace Sir.Images
             yield return new SerializableVector(pixels, data.Label);
         }
 
-        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, ColumnReader reader)
         {
             return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }

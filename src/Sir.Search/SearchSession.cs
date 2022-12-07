@@ -118,13 +118,13 @@ namespace Sir
             if (query == null)
                 return;
 
-            var readers = new Dictionary<(string, ulong, long), IColumnReader>();
+            var readers = new Dictionary<(string, ulong, long), ColumnReader>();
 
             try
             {
                 foreach (var term in query.AllTerms())
                 {
-                    IColumnReader reader;
+                    ColumnReader reader;
                     var key = (term.Directory, term.CollectionId, term.KeyId);
 
                     if (!readers.TryGetValue(key, out reader))

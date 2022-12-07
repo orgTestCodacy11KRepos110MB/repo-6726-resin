@@ -70,7 +70,7 @@ namespace Sir.StringTests
                 Assert.DoesNotThrow(() =>
                 {
                     using (var pageIndexReader = new PageIndexReader(pageStream))
-                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream, _loggerFactory.CreateLogger<ColumnReader>()))
+                    using (var reader = new ColumnReader(pageIndexReader.ReadAll(), indexStream, vectorStream))
                     {
                         foreach (var word in _data)
                         {

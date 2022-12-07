@@ -17,7 +17,7 @@ namespace Sir.Strings
             NumOfDimensions = wordTokenizer.NumOfDimensions * 2;
         }
 
-        public void Put<T>(VectorNode column, VectorNode node, IColumnReader reader)
+        public void Put<T>(VectorNode column, VectorNode node, ColumnReader reader)
         {
             column.AddOrAppend(node, this);
         }
@@ -51,7 +51,7 @@ namespace Sir.Strings
             }
         }
 
-        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        public Hit GetClosestMatchOrNull(ISerializableVector vector, IModel model, ColumnReader reader)
         {
             return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }

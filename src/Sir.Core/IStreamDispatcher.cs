@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Sir.IO;
+using System.IO;
 
 namespace Sir
 {
@@ -12,6 +13,6 @@ namespace Sir
         long GetKeyId(string directory, ulong collectionId, ulong keyHash);
         void LogDebug(string message);
         void LogInformation(string message);
-        IColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId);
+        ColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId);
     }
 }

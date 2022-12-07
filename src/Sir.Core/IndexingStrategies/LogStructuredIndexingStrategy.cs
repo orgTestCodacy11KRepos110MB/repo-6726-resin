@@ -13,7 +13,7 @@ namespace Sir
             _model = model;
         }
 
-        public Hit GetMatchOrNull(ISerializableVector vector, IModel model, IColumnReader reader)
+        public Hit GetMatchOrNull(ISerializableVector vector, IModel model, ColumnReader reader)
         {
             return reader.ClosestMatchOrNullScanningAllPages(vector, model);
         }

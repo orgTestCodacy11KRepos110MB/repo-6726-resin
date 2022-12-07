@@ -48,8 +48,7 @@ namespace Sir.Wikipedia
 
             using (var streamDispatcher = new SessionFactory(logger))
             {
-                var debugger = new IndexDebugger(logger, sampleSize);
-
+                using (var debugger = new IndexDebugger(logger, sampleSize))
                 using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
                 {
                     foreach (var page in payload)

@@ -27,7 +27,7 @@ namespace Sir
             LogInformation($"database initiated");
         }
 
-        public IColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId)
+        public ColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId)
         {
             var ixFileName = Path.Combine(directory, string.Format("{0}.{1}.ix", collectionId, keyId));
 
@@ -42,8 +42,7 @@ namespace Sir
                 return new ColumnReader(
                     pageIndexReader.ReadAll(),
                     CreateReadStream(ixFileName),
-                    CreateReadStream(vectorFileName),
-                    _logger);
+                    CreateReadStream(vectorFileName));
             }
         }
 

@@ -72,6 +72,7 @@ namespace Sir
 
     public class BatchDebugger : IDisposable
     {
+        private readonly Stopwatch _runTime;
         private readonly Stopwatch _time;
         private readonly ILogger _logger;
         private readonly int _sampleSize;
@@ -84,6 +85,7 @@ namespace Sir
         public BatchDebugger(ILogger logger, int sampleSize = 1000)
         {
             _sampleSize = sampleSize;
+            _runTime = Stopwatch.StartNew();
             _time = Stopwatch.StartNew();
             _logger = logger;
         }
