@@ -89,7 +89,7 @@ namespace Sir
 
             // Scan index
             Scan(query, identicalMatchesOnly);
-            LogDebug($"scanning took {timer.Elapsed}");
+            LogInformation($"scanning took {timer.Elapsed}");
             timer.Restart();
 
             // Read postings lists
