@@ -70,7 +70,7 @@ namespace Sir
         }
     }
 
-    public class BatchDebugger
+    public class BatchDebugger : IDisposable
     {
         private readonly Stopwatch _time;
         private readonly ILogger _logger;
@@ -122,6 +122,11 @@ namespace Sir
                 _logger.LogInformation(message);
                 _time.Restart();
             }
+        }
+
+        public void Dispose()
+        {
+            _logger.LogInformation($"session ran for {_runTime.Elapsed}");
         }
     }
 }
