@@ -17,11 +17,6 @@ namespace Sir.Strings
             NumOfDimensions = wordTokenizer.NumOfDimensions * 2;
         }
 
-        public void Put<T>(VectorNode column, VectorNode node, ColumnReader reader)
-        {
-            column.AddOrAppend(node, this);
-        }
-
         public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label, SortedList<int, float> embedding = null)
         {
             if (embedding == null)
