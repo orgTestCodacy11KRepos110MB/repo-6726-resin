@@ -229,6 +229,7 @@ loggerFactory = LoggerFactory.Create(builder =>
             var select = new HashSet<string>(args["select"].Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries));
             var collectionId = collection.ToHash();
             var model = new BagOfCharsModel();
+            var embedding = new SortedList<int, float>();
 
             using (var sessionFactory = new SessionFactory(logger))
             using (var documents = new DocumentStreamSession(dataDirectory, sessionFactory))
@@ -238,7 +239,7 @@ loggerFactory = LoggerFactory.Create(builder =>
 
                 foreach (var field in doc.Fields)
                 {
-                    var tokens = model.CreateEmbedding(field.Value.ToString(), true);
+                    var tokens = model.CreateEmbedding(field.Value.ToString(), true, embedding);
                     var tree = new VectorNode();
 
                     foreach (var token in tokens)

@@ -169,8 +169,12 @@ namespace Sir
             HashSet<string> select,
             DocumentReader streamReader,
             IModel<T> model,
-            bool label)
+            bool label,
+            SortedList<int, float> embedding = null)
         {
+            if (embedding == null)
+                embedding = new SortedList<int, float>();
+
             var docInfo = streamReader.GetDocumentAddress(doc.docId);
             var docMap = streamReader.GetDocumentMap(docInfo.offset, docInfo.length);
 
@@ -186,7 +190,7 @@ namespace Sir
                 {
                     var vInfo = streamReader.GetAddressOfValue(kvp.valId);
 
-                    foreach (var vector in streamReader.GetValueConvertedToVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value, label)))
+                    foreach (var vector in streamReader.GetValueConvertedToVectors<T>(vInfo.offset, vInfo.len, vInfo.dataType, value => model.CreateEmbedding(value, label, embedding)))
                     {
                         tree.AddIfUnique(new VectorNode(vector, docId:doc.docId, keyId:kvp.keyId), model);
                     }

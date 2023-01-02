@@ -27,7 +27,7 @@ namespace Sir.Mnist
             using (var sessionFactory = new SessionFactory(logger: logger))
             using (var querySession = new SearchSession(dataDirectory, sessionFactory, model, new LogStructuredIndexingStrategy(model), logger))
             {
-                var queryParser = new QueryParser<IImage>(dataDirectory, sessionFactory, model, logger);
+                var queryParser = new QueryParser<IImage>(dataDirectory, sessionFactory, model, logger: logger);
 
                 foreach (var image in images)
                 {

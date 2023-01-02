@@ -22,13 +22,14 @@ namespace Sir.Cmd
             var selectFields = new HashSet<string> { "title" };
             var time = Stopwatch.StartNew();
             var count = 0;
+            var embedding = new SortedList<int, float>();
 
             using (var sessionFactory = new SessionFactory(logger))
             {
                 using (var validateSession = new ValidateSession<string>(
                     collectionId, 
                     new SearchSession(dir, sessionFactory, model, new LogStructuredIndexingStrategy(model), logger), 
-                    new QueryParser<string>(dir, sessionFactory, model, logger)))
+                    new QueryParser<string>(dir, sessionFactory, model, embedding: embedding, logger: logger)))
                 {
                     using (var documents = new DocumentStreamSession(dir, sessionFactory))
                     {

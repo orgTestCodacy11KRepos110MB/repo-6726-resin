@@ -261,40 +261,6 @@ namespace Sir
             }
         }
 
-        public void BuildIndex<T>(ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, IndexSession<T> indexSession, bool label = true)
-        {
-            LogDebug($"building index for collection {collectionId}");
-
-            var time = Stopwatch.StartNew();
-
-            using (var queue = new ProducerConsumerQueue<Document>(document =>
-            {
-                foreach (var field in document.Fields)
-                {
-                    if (field.Value != null)
-                    {
-                        indexSession.Put(field.DocumentId, field.KeyId, field.Tokens);
-                    }
-                }
-            }))
-            {
-                foreach (var document in job)
-                {
-                    foreach (var field in document.Fields)
-                    {
-                        if (field.Value != null)
-                        {
-                            field.Analyze(model, indexStrategy, label);
-                        }
-                    }
-
-                    queue.Enqueue(document);
-                }
-            }
-
-            LogDebug($"built index (collection {collectionId}) in {time.Elapsed}");
-        }
-
         public void StoreDataAndPersistIndex<T>(string directory, ulong collectionId, IEnumerable<Document> job, IModel<T> model, IIndexReadWriteStrategy indexStrategy, int reportSize = 1000)
         {
             using (var writeSession = new WriteSession(new DocumentWriter(this, directory, collectionId)))
@@ -317,7 +283,7 @@ namespace Sir
 
         public bool DocumentExists<T>(string directory, string collection, string key, T value, IModel<T> model, bool label = true)
         {
-            var query = new QueryParser<T>(directory, this, model, _logger)
+            var query = new QueryParser<T>(directory, this, model, logger: _logger)
                 .Parse(collection, value, key, key, and: true, or: false, label);
 
             if (query != null)

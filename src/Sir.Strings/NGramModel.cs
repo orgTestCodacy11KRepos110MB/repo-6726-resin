@@ -22,13 +22,18 @@ namespace Sir.Strings
             column.AddOrAppend(node, this);
         }
 
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label, SortedList<int, float> embedding = null)
         {
+            if (embedding == null)
+                embedding = new SortedList<int, float>();
+            else
+                embedding.Clear();
+
             ISerializableVector vec0 = null;
 
             var i = 0;
 
-            foreach (var token in _wordTokenizer.CreateEmbedding(data, label))
+            foreach (var token in _wordTokenizer.CreateEmbedding(data, label, embedding))
             {
                 if (vec0 == null)
                 {

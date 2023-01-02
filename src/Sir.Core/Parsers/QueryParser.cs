@@ -10,13 +10,15 @@ namespace Sir
         private readonly IModel<T> _model;
         private readonly ILogger _logger;
         private readonly string _directory;
+        private readonly SortedList<int, float> _embedding;
 
-        public QueryParser(string directory, IStreamDispatcher sessionFactory, IModel<T> model, ILogger logger = null)
+        public QueryParser(string directory, IStreamDispatcher sessionFactory, IModel<T> model, SortedList<int, float> embedding = null, ILogger logger = null)
         {
             _sessionFactory = sessionFactory;
             _model = model;
             _logger = logger;
             _directory = directory;
+            _embedding = embedding ?? new SortedList<int, float>();
         }
 
         public IQuery Parse(
@@ -242,7 +244,7 @@ namespace Sir
 
             if (_sessionFactory.TryGetKeyId(_directory, collectionId, key.ToHash(), out keyId))
             {
-                var tokens = _model.CreateEmbedding(value, label);
+                var tokens = _model.CreateEmbedding(value, label, _embedding);
 
                 foreach (var term in tokens)
                 {

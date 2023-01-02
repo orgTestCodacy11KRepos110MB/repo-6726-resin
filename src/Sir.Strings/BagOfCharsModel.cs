@@ -9,13 +9,17 @@ namespace Sir.Strings
         public double FoldAngle => 0.55d;
         public override int NumOfDimensions => System.Text.Unicode.UnicodeRanges.All.Length;
 
-        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label)
+        public IEnumerable<ISerializableVector> CreateEmbedding(string data, bool label, SortedList<int, float> embedding = null)
         {
             var source = data.ToCharArray();
 
             if (source.Length > 0)
             {
-                var embedding = new SortedList<int, float>();
+                if (embedding == null)
+                    embedding = new SortedList<int, float>();
+                else
+                    embedding.Clear();
+
                 var offset = 0;
                 int index = 0;
 

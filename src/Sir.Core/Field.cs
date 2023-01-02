@@ -1,5 +1,4 @@
-﻿using Sir.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -26,27 +25,6 @@ namespace Sir
             Value = value;
             KeyId = keyId;
             DocumentId = documentId;
-        }
-
-        private IEnumerable<ISerializableVector> GetTokens()
-        {
-            foreach (var node in PathFinder.All(Tree))
-                yield return node.Vector;
-        }
-
-        public void Analyze<T>(IModel<T> model, IIndexReadWriteStrategy indexStrategy, bool label)
-        {
-            var tokens = model.CreateEmbedding((T)Value, label);
-
-            Tree = new VectorNode();
-
-            foreach (var token in tokens)
-            {
-                indexStrategy.Put<string>(Tree, new VectorNode(token, keyId: KeyId));
-            }
-
-            _tokens = GetTokens();
-
         }
     }
 }

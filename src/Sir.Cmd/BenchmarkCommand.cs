@@ -29,12 +29,13 @@ namespace Sir.Cmd
             var model = new NGramModel(new BagOfCharsModel());
             var documents = new List<Document>(WikipediaHelper.Read(fileName, skip, take, new HashSet<string> { "text" }));
             var timer = Stopwatch.StartNew();
+            var embedding = new SortedList<int, float>();
 
             for (int i = 0; i < numOfRuns; i++)
             {
                 foreach (var document in documents)
                 {
-                    var embeddings = new List<ISerializableVector>(model.CreateEmbedding((string)document.Fields[0].Value, false));
+                    var embeddings = new List<ISerializableVector>(model.CreateEmbedding((string)document.Fields[0].Value, false, embedding));
                 }
             }
 
