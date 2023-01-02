@@ -36,16 +36,19 @@ namespace Sir
 
             var index = MemoryMarshal.Cast<byte, int>(buf.Slice(0, componentCount * sizeof(int)));
             var values = MemoryMarshal.Cast<byte, float>(buf.Slice(componentCount * sizeof(int), componentCount * sizeof(float)));
-            var tuples = new Tuple<int, float>[componentCount];
 
             ArrayPool<byte>.Shared.Return(rent);
+
+            var tuples = ArrayPool<Tuple<int, float>>.Shared.Rent(componentCount);
 
             for (int i = 0; i < componentCount; i++)
             {
                 tuples[i] = new Tuple<int, float>(index[i], values[i]);
             }
 
-            var vectorOnFile = CreateVector.SparseOfIndexed(NumOfDimensions, tuples);
+            var vectorOnFile = CreateVector.SparseOfIndexed(NumOfDimensions, new ArraySegment<Tuple<int, float>>(tuples, 0, componentCount));
+
+            ArrayPool<Tuple<int, float>>.Shared.Return(tuples);
 
             var dotProduct = vector.Value.DotProduct(vectorOnFile);
 
