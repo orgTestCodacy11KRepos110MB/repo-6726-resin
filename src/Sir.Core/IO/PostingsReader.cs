@@ -54,22 +54,22 @@ namespace Sir.IO
 
             stream.Seek(postingsOffset, SeekOrigin.Begin);
 
-            //var headerBuf = ArrayPool<byte>.Shared.Rent(sizeof(long) * 2);
-            var headerBuf = new byte[sizeof(long) * 2];
+            var headerLen = sizeof(long) * 2;
+            var headerBuf = ArrayPool<byte>.Shared.Rent(headerLen);
 
-            stream.Read(headerBuf, 0, headerBuf.Length);
+            stream.Read(headerBuf, 0, headerLen);
 
             var numOfPostings = BitConverter.ToInt64(headerBuf);
             var addressOfNextPage = BitConverter.ToInt64(headerBuf, sizeof(long));
 
-            //ArrayPool<byte>.Shared.Return(headerBuf);
+            ArrayPool<byte>.Shared.Return(headerBuf);
 
-            var len = sizeof(long) * numOfPostings;
-            var listBuf = new byte[len];
+            var listLen = sizeof(long) * numOfPostings;
+            var listBuf = new byte[listLen];
             var read = stream.Read(listBuf);
 
-            if (read != len)
-                throw new DataMisalignedException();
+            if (read != listLen)
+                throw new Exception($"list lenght was {listLen} but read length was {read}");
 
             foreach (var docId in MemoryMarshal.Cast<byte, long>(listBuf))
             {
