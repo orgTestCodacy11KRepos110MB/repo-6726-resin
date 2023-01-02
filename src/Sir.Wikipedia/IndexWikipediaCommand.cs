@@ -49,10 +49,10 @@ namespace Sir.Wikipedia
             using (var streamDispatcher = new SessionFactory(logger))
             {
                 using (var debugger = new IndexDebugger(logger, sampleSize))
-                using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
                 {
                     foreach (var page in payload)
                     {
+                        using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
                         using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
                         {
                             foreach (var document in page)

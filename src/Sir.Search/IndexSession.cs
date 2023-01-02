@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sir.IO;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Sir
@@ -15,7 +14,6 @@ namespace Sir
         private readonly string _directory;
         private readonly ulong _collectionId;
         private readonly ILogger _logger;
-        private ConcurrentDictionary<long, object> _syncObjects = new ConcurrentDictionary<long, object>();
 
         public IndexSession(
             IModel<T> model,
@@ -55,22 +53,19 @@ namespace Sir
 
         public void Put(VectorNode documentTree)
         {
-            lock (_syncObjects.GetOrAdd(documentTree.KeyId.Value, new object()))
+            VectorNode column;
+
+            if (!_index.TryGetValue(documentTree.KeyId.Value, out column))
             {
-                VectorNode column;
+                column = new VectorNode();
+                _index.Add(documentTree.KeyId.Value, column);
+            }
 
-                if (!_index.TryGetValue(documentTree.KeyId.Value, out column))
-                {
-                    column = new VectorNode();
-                    _index.Add(documentTree.KeyId.Value, column);
-                }
-
-                foreach (var node in PathFinder.All(documentTree))
-                {
-                    _indexingStrategy.Put<T>(
-                        column,
-                        new VectorNode(node.Vector, docIds: node.DocIds));
-                }
+            foreach (var node in PathFinder.All(documentTree))
+            {
+                _indexingStrategy.Put<T>(
+                    column,
+                    new VectorNode(node.Vector, docIds: node.DocIds));
             }
         }
 
@@ -84,14 +79,11 @@ namespace Sir
 
         public void Commit(long keyId)
         {
-            lock (_syncObjects.GetOrAdd(keyId, new object()))
-            {
-                var column = _index[keyId];
+            var column = _index[keyId];
 
-                _indexingStrategy.Commit(_directory, _collectionId, keyId, column, _sessionFactory, _logger);
+            _indexingStrategy.Commit(_directory, _collectionId, keyId, column, _sessionFactory, _logger);
 
-                _index.Remove(keyId);
-            }
+            _index.Remove(keyId);
         }
 
         public IDictionary<long, VectorNode> GetInMemoryIndices()
