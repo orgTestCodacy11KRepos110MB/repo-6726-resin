@@ -37,29 +37,9 @@ namespace Sir
 
                 _batchNo++;
 
-                var record = $"\n{_time.Elapsed}\ntotal {_sampleSize * _batchNo}\n{debug}\n{docsPerSecond} docs/s\n{message}";
+                var record = $"\n{_runTime.Elapsed} session running time\n{_time.Elapsed} batch run time\n{_sampleSize * _batchNo} documents\n{debug}\n{docsPerSecond} docs/s\n{message}";
 
                 _logger.LogInformation(record);
-                _time.Restart();
-            }
-        }
-
-        public void Step(IIndexSession indexSession, int steps)
-        {
-            _steps += steps;
-
-            if (_steps % _sampleSize == 0)
-            {
-                var info = indexSession.GetIndexInfo();
-                var t = _time.Elapsed.TotalSeconds;
-                var docsPerSecond = (int)(_sampleSize / t);
-                var debug = string.Join('\n', info.Info.Select(x => x.ToString()));
-
-                _batchNo++;
-
-                var message = $"\n{_time.Elapsed}\ntotal {_sampleSize * _batchNo}\n{debug}\n{docsPerSecond} docs/s";
-
-                _logger.LogInformation(message);
                 _time.Restart();
             }
         }
@@ -101,25 +81,7 @@ namespace Sir
 
                 _batchNo++;
 
-                var message = $"\n{_time.Elapsed}\ntotal {_sampleSize * _batchNo}\n{itemsPerSecond} items/s";
-
-                _logger.LogInformation(message);
-                _time.Restart();
-            }
-        }
-
-        public void Step(int steps)
-        {
-            _steps += steps;
-
-            if (_steps % _sampleSize == 0)
-            {
-                var t = _time.Elapsed.TotalSeconds;
-                var itemsPerSecond = (int)(_sampleSize / t);
-
-                _batchNo++;
-
-                var message = $"\n{_time.Elapsed}\ntotal {_sampleSize * _batchNo}\n{itemsPerSecond} items/s";
+                var message = $"\n{_runTime.Elapsed} session run time\n{_time.Elapsed} batch run time\n{_sampleSize * _batchNo} items\n{itemsPerSecond} items/s";
 
                 _logger.LogInformation(message);
                 _time.Restart();

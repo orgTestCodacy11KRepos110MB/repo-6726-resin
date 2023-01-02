@@ -24,7 +24,7 @@ namespace Sir
             _logger = logger;
             _keys = new Dictionary<ulong, IDictionary<ulong, long>>();
 
-            LogInformation($"database initiated");
+            LogTrace($"database initiated");
         }
 
         public ColumnReader CreateColumnReader(string directory, ulong collectionId, long keyId)
@@ -57,6 +57,12 @@ namespace Sir
         {
             if (_logger != null)
                 _logger.LogInformation(message);
+        }
+
+        public void LogTrace(string message)
+        {
+            if (_logger != null)
+                _logger.LogTrace(message);
         }
 
         public void LogDebug(string message)
@@ -425,7 +431,7 @@ namespace Sir
 
         public Stream CreateReadStream(string fileName)
         {
-            LogDebug($"opened {fileName}");
+            LogTrace($"opening {fileName}");
 
             return new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
@@ -463,15 +469,19 @@ namespace Sir
 
             if (!File.Exists(fileName))
             {
+                LogTrace($"creating {fileName}");
+
                 using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {}
             }
+
+            LogTrace($"opening {fileName}");
 
             return new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
         }
 
         public void Dispose()
         {
-            LogDebug($"database disposed");
+            LogTrace($"database disposed");
         }
     }
 }
