@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Storage;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -30,7 +31,8 @@ namespace Sir
 
         public SerializableVector(SortedList<int, float> dictionary, int numOfDimensions, object label = null)
         {
-            var tuples = new Tuple<int, float>[Math.Min(dictionary.Count, numOfDimensions)];
+            var len = Math.Min(dictionary.Count, numOfDimensions);
+            var tuples = ArrayPool<Tuple<int, float>>.Shared.Rent(len);
             var i = 0;
 
             foreach (var p in dictionary)
@@ -41,7 +43,8 @@ namespace Sir
                 tuples[i++] = new Tuple<int, float>(p.Key, p.Value);
             }
 
-            Value = CreateVector.SparseOfIndexed(numOfDimensions, tuples);
+            Value = CreateVector.SparseOfIndexed(numOfDimensions, new ArraySegment<Tuple<int, float>>(tuples, 0, len));
+            ArrayPool<Tuple<int, float>>.Shared.Return(tuples);
             Label = label;
         }
 
