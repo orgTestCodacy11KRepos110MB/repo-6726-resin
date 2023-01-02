@@ -35,7 +35,7 @@ namespace Sir
             vectorStream.Read(buf);
 
             var index = MemoryMarshal.Cast<byte, int>(buf.Slice(0, componentCount * sizeof(int)));
-            var values = MemoryMarshal.Cast<byte, float>(buf.Slice(componentCount * sizeof(float), componentCount * sizeof(float)));
+            var values = MemoryMarshal.Cast<byte, float>(buf.Slice(componentCount * sizeof(int), componentCount * sizeof(float)));
             var tuples = new Tuple<int, float>[componentCount];
 
             ArrayPool<byte>.Shared.Return(rent);
