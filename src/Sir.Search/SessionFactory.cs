@@ -15,14 +15,13 @@ namespace Sir
     /// </summary>
     public class SessionFactory : IDisposable, IStreamDispatcher
     {
-        private IDictionary<ulong, IDictionary<ulong, long>> _keys;
+        private ConcurrentDictionary<ulong, ConcurrentDictionary<ulong, long>> _keys;
         private ILogger _logger;
-        private readonly object _syncKeys = new object();
 
         public SessionFactory(ILogger logger = null)
         {
             _logger = logger;
-            _keys = new Dictionary<ulong, IDictionary<ulong, long>>();
+            _keys = new ConcurrentDictionary<ulong, ConcurrentDictionary<ulong, long>>();
 
             LogTrace($"database initiated");
         }
@@ -99,12 +98,9 @@ namespace Sir
                     count++;
                 }
 
-                lock (_syncKeys)
-                {
-                    var keyStr = Path.Combine(directory, collectionId.ToString());
-                    var key = keyStr.ToHash();
-                    _keys.Remove(key, out _);
-                }
+                var keyStr = Path.Combine(directory, collectionId.ToString());
+                var key = keyStr.ToHash();
+                _keys.Remove(key, out _);
             }
 
             LogInformation($"truncated collection {collectionId} ({count} files affected)");
@@ -316,20 +312,16 @@ namespace Sir
                    4096, FileOptions.RandomAccess | FileOptions.DeleteOnClose);
         }
 
-        private void ReadKeys(string directory)
+        private void ReadKeysIntoCache(string directory)
         {
             foreach (var keyFile in Directory.GetFiles(directory, "*.kmap"))
             {
                 var collectionId = ulong.Parse(Path.GetFileNameWithoutExtension(keyFile));
                 var key = Path.Combine(directory, collectionId.ToString()).ToHash();
 
-                IDictionary<ulong, long> keys;
-
-                if (!_keys.TryGetValue(key, out keys))
+                var keys = _keys.GetOrAdd(key, (k) =>
                 {
-                    keys = new Dictionary<ulong, long>();
-
-                    var timer = Stopwatch.StartNew();
+                    var ks = new ConcurrentDictionary<ulong, long>();
 
                     using (var stream = new FileStream(keyFile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
                     {
@@ -339,58 +331,40 @@ namespace Sir
 
                         while (read > 0)
                         {
-                            keys.Add(BitConverter.ToUInt64(buf, 0), i++);
+                            ks.TryAdd(BitConverter.ToUInt64(buf, 0), i++);
 
                             read = stream.Read(buf, 0, buf.Length);
                         }
                     }
 
-                    lock (_syncKeys)
-                    {
-                        _keys.Add(key, keys);
-                    }
-
-                    LogDebug($"loaded key mappings into memory from directory {directory} in {timer.Elapsed}");
-                }
+                    return ks;
+                });
             }
         }
 
         public void RegisterKeyMapping(string directory, ulong collectionId, ulong keyHash, long keyId)
         {
             var key = Path.Combine(directory, collectionId.ToString()).ToHash();
-
-            IDictionary<ulong, long> keys;
-
-            if (!_keys.TryGetValue(key, out keys))
+            var keys = _keys.GetOrAdd(key, (key) => { return new ConcurrentDictionary<ulong, long>(); });
+            var keyMapping = keys.GetOrAdd(keyHash, (key) =>
             {
-                keys = new ConcurrentDictionary<ulong, long>();
-
-                lock (_syncKeys)
-                {
-                    _keys.Add(key, keys);
-                }
-            }
-
-            if (!keys.ContainsKey(keyHash))
-            {
-                keys.Add(keyHash, keyId);
-
                 using (var stream = CreateAppendStream(directory, collectionId, "kmap"))
                 {
                     stream.Write(BitConverter.GetBytes(keyHash), 0, sizeof(ulong));
                 }
-            }
+                return keyId;
+            });
         }
 
         public long GetKeyId(string directory, ulong collectionId, ulong keyHash)
         {
             var key = Path.Combine(directory, collectionId.ToString()).ToHash();
 
-            IDictionary<ulong, long> keys;
+            ConcurrentDictionary<ulong, long> keys;
 
             if (!_keys.TryGetValue(key, out keys))
             {
-                ReadKeys(directory);
+                ReadKeysIntoCache(directory);
             }
 
             if (keys != null || _keys.TryGetValue(key, out keys))
@@ -405,11 +379,11 @@ namespace Sir
         {
             var key = Path.Combine(directory, collectionId.ToString()).ToHash();
 
-            IDictionary<ulong, long> keys;
+            ConcurrentDictionary<ulong, long> keys;
 
             if (!_keys.TryGetValue(key, out keys))
             {
-                ReadKeys(directory);
+                ReadKeysIntoCache(directory);
             }
 
             if (keys != null || _keys.TryGetValue(key, out keys))
