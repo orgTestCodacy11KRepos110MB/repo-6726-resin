@@ -31,7 +31,7 @@ namespace Sir
                     throw new ArgumentNullException(nameof(field));
 
                 var query = _queryParser.Parse(CollectionId, (T)field.Value, field.Name, field.Name, true, false, true);
-                var result = _readSession.SearchIdentical(query, 100);
+                var result = _readSession.SearchIdentical(query, 1000);
                 bool isMatch = false;
 
                 foreach (var document in result.Documents)

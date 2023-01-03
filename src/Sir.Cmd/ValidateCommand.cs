@@ -37,7 +37,7 @@ namespace Sir.Cmd
                         {
                             validateSession.Validate(doc);
 
-                            Console.WriteLine(doc.Id);
+                            Console.WriteLine($"{doc.Id} {doc.Get("title").Value}");
 
                             count++;
                         }
