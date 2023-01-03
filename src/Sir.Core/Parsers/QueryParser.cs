@@ -133,10 +133,10 @@ namespace Sir
                 cursor = query;
             }
 
-            if (_logger != null && _logger.IsEnabled(LogLevel.Debug))
+            if (_logger != null && _logger.IsEnabled(LogLevel.Trace))
             {
                 var queryLog = JsonConvert.SerializeObject(root);
-                _logger.LogDebug($"incoming query: {queryLog}");
+                _logger.LogTrace($"incoming query: {queryLog}");
             }
 
             return Parse(root, select, label);

@@ -1,15 +1,17 @@
-﻿namespace Sir.IO
+﻿using Microsoft.Extensions.Logging;
+
+namespace Sir.IO
 {
     public class PostingsResolver
     {
         /// <summary>
         /// Read posting list document IDs into memory.
         /// </summary>
-        public void Resolve(IQuery query, IStreamDispatcher sessionFactory)
+        public void Resolve(IQuery query, IStreamDispatcher sessionFactory, ILogger logger = null)
         {
             foreach(var term in query.AllTerms())
             {
-                using (var reader = new PostingsReader(term.Directory, sessionFactory))
+                using (var reader = new PostingsReader(term.Directory, sessionFactory, logger))
                     Resolve(term, reader);
             }
         }

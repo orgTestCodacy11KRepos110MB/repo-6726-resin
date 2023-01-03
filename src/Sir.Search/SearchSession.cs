@@ -93,7 +93,7 @@ namespace Sir
             timer.Restart();
 
             // Read postings lists
-            _postingsResolver.Resolve(query, _sessionFactory);
+            _postingsResolver.Resolve(query, _sessionFactory, _logger);
             LogDebug($"reading postings took {timer.Elapsed}");
             timer.Restart();
             

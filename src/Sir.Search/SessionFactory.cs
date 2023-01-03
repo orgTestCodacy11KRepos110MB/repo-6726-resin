@@ -52,25 +52,25 @@ namespace Sir
             }
         }
 
-        public void LogInformation(string message)
+        private void LogInformation(string message)
         {
             if (_logger != null)
                 _logger.LogInformation(message);
         }
 
-        public void LogTrace(string message)
+        private void LogTrace(string message)
         {
             if (_logger != null)
                 _logger.LogTrace(message);
         }
 
-        public void LogDebug(string message)
+        private void LogDebug(string message)
         {
             if (_logger != null)
                 _logger.LogDebug(message);
         }
 
-        public void LogError(Exception ex, string message)
+        private void LogError(Exception ex, string message)
         {
             if (_logger != null)
                 _logger.LogError(ex, message);

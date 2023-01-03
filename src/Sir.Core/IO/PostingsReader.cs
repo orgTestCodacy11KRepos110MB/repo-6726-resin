@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,13 +15,15 @@ namespace Sir.IO
     {
         private readonly IStreamDispatcher _streamDispatcher;
         private readonly IDictionary<(ulong collectionId, long keyId), Stream> _streams;
+        private readonly ILogger _logger;
         private readonly string _directory;
 
-        public PostingsReader(string directory, IStreamDispatcher streamDispatcher)
+        public PostingsReader(string directory, IStreamDispatcher streamDispatcher, ILogger logger = null)
         {
             _directory = directory;
             _streamDispatcher = streamDispatcher;
             _streams = new Dictionary<(ulong collectionId, long keyId), Stream>();
+            _logger = logger;
         }
 
         public IList<(ulong, long)> Read(ulong collectionId, long keyId, long offset)
@@ -30,7 +33,8 @@ namespace Sir.IO
 
             GetPostingsFromStream(collectionId, keyId, offset, documents);
 
-            _streamDispatcher.LogDebug($"read {documents.Count} postings into memory in {time.Elapsed}");
+            if (_logger!=null)
+                _logger.LogTrace($"read {documents.Count} postings into memory in {time.Elapsed}");
 
             return documents;
         }
@@ -43,7 +47,8 @@ namespace Sir.IO
             foreach (var offset in offsets)
                 GetPostingsFromStream(collectionId, keyId, offset, documents);
 
-            _streamDispatcher.LogDebug($"read {documents.Count} postings into memory in {time.Elapsed}");
+            if (_logger != null)
+                _logger.LogTrace($"read {documents.Count} postings into memory in {time.Elapsed}");
 
             return documents;
         }
