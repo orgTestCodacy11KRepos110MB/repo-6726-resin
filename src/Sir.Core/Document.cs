@@ -33,14 +33,12 @@ namespace Sir
             }
             else
             {
-                Fields = new List<Field>();
+                Fields = new List<Field>(fields);
+            }
 
-                foreach (var field in fields)
-                {
-                    field.DocumentId = Id;
-
-                    Fields.Add(field);
-                }
+            foreach (var field in fields)
+            {
+                field.DocumentId = Id;
             }
         }
 

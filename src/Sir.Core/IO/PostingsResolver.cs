@@ -11,17 +11,14 @@ namespace Sir.IO
         {
             foreach(var term in query.AllTerms())
             {
-                using (var reader = new PostingsReader(term.Directory, sessionFactory, logger))
-                    Resolve(term, reader);
+                using (var postingsReader = new PostingsReader(term.Directory, sessionFactory, logger))
+                {
+                    if (term.PostingsOffsets == null)
+                        continue;
+
+                    term.DocumentIds = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffsets);
+                }
             }
-        }
-
-        public void Resolve(Term term, PostingsReader postingsReader)
-        {
-            if (term.PostingsOffsets == null)
-                return;
-
-            term.DocumentIds = postingsReader.Read(term.CollectionId, term.KeyId, term.PostingsOffsets);
         }
     }
 }
