@@ -9,19 +9,19 @@ namespace Sir
     /// </summary>
     public class WriteSession : IDisposable
     {
-        private readonly DocumentWriter _streamWriter;
+        private readonly DocumentWriter _documentWriter;
 
         public WriteSession(
-            DocumentWriter streamWriter)
+            DocumentWriter documentWriter)
         {
-            _streamWriter = streamWriter;
+            _documentWriter = documentWriter;
         }
 
         public void Put(Document document)
         {
             var docMap = new List<(long keyId, long valId)>();
 
-            document.Id = _streamWriter.IncrementDocId();
+            document.Id = _documentWriter.IncrementDocId();
 
             foreach (var field in document.Fields)
             {
@@ -33,9 +33,9 @@ namespace Sir
                 }
             }
 
-            var docMeta = _streamWriter.PutDocumentMap(docMap);
+            var docMeta = _documentWriter.PutDocumentMap(docMap);
 
-            _streamWriter.PutDocumentAddress(document.Id, docMeta.offset, docMeta.length);
+            _documentWriter.PutDocumentAddress(document.Id, docMeta.offset, docMeta.length);
         }
 
         private void Write(Field field, IList<(long, long)> docMap)
@@ -48,7 +48,7 @@ namespace Sir
         private void Write(long keyId, object val, IList<(long, long)> docMap)
         {
             // store value
-            var kvmap = _streamWriter.PutValue(keyId, val, out _);
+            var kvmap = _documentWriter.PutValue(keyId, val, out _);
 
             // store refs to k/v pair
             docMap.Add(kvmap);
@@ -56,17 +56,17 @@ namespace Sir
 
         public long EnsureKeyExists(string key)
         {
-            return _streamWriter.EnsureKeyExists(key);
+            return _documentWriter.EnsureKeyExists(key);
         }
 
         public long EnsureKeyExistsSafely(string key)
         {
-            return _streamWriter.EnsureKeyExistsSafely(key);
+            return _documentWriter.EnsureKeyExistsSafely(key);
         }
 
         public void Dispose()
         {
-            _streamWriter.Dispose();
+            _documentWriter.Dispose();
         }
     }
 }
