@@ -129,7 +129,7 @@ namespace Sir
 
                     if (!readers.TryGetValue(key, out reader))
                     {
-                        reader = _sessionFactory.CreateColumnReader(term.Directory, term.CollectionId, term.KeyId);
+                        reader = _sessionFactory.CreateColumnReader(term.Directory, term.CollectionId, term.KeyId, _model);
 
                         if (reader != null)
                         {
@@ -139,7 +139,7 @@ namespace Sir
 
                     if (reader != null)
                     {
-                        var hit =_indexStrategy.GetMatchOrNull(term.Vector, _model, reader);
+                        var hit =_indexStrategy.GetMatch(term.Vector, _model, reader);
 
                         if (hit != null)
                         {
