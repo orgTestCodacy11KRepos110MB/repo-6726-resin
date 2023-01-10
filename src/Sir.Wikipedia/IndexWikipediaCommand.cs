@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sir.Core;
 using Sir.Documents;
 using Sir.IO;
 using Sir.Strings;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
@@ -44,32 +42,36 @@ namespace Sir.Wikipedia
 
             var model = new BagOfCharsModel();
             var indexStrategy = new LogStructuredIndexingStrategy(model);
-            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest).Batch(pageSize);
+            var payload = WikipediaHelper.Read(fileName, skip, take, fieldsOfInterest);
 
             using (var streamDispatcher = new SessionFactory(logger))
             {
-                using (var debugger = new IndexDebugger(logger, sampleSize))
+                using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
+                using (var debugger = new BatchDebugger(logger, sampleSize))
                 {
-                    foreach (var page in payload)
+                    foreach (var document in payload)
                     {
-                        using (var writeSession = new WriteSession(new DocumentWriter(streamDispatcher, dataDirectory, collectionId)))
-                        using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
-                        {
-                            foreach (var document in page)
-                            {
-                                writeSession.Put(document);
+                        writeSession.Put(document);
 
-                                foreach (var field in document.Fields)
-                                {
-                                    indexSession.Put(document.Id, field.KeyId, (string)field.Value, label: false);
-                                }
-
-                                debugger.Step(indexSession);
-                            }
-
-                            indexSession.Commit();
-                        }
+                        debugger.Step();
                     }
+                }
+
+                using (var debugger = new IndexDebugger(logger, sampleSize))
+                using (var documents = new DocumentStreamSession(dataDirectory, streamDispatcher))
+                using (var indexSession = new IndexSession<string>(model, indexStrategy, streamDispatcher, dataDirectory, collectionId, logger))
+                {
+                    foreach (var document in documents.ReadDocuments(collectionId, fieldsOfInterest, skip, take))
+                    {
+                        foreach (var field in document.Fields)
+                        {
+                            indexSession.Put(document.Id, field.KeyId, (string)field.Value, label: false);
+                        }
+
+                        debugger.Step(indexSession);
+                    }
+
+                    indexSession.Commit();
                 }
             }
         }

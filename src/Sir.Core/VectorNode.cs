@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 
 namespace Sir
 {
@@ -17,14 +14,12 @@ namespace Sir
         private VectorNode _left;
         private long _weight;
 
-        public List<long> DocIds { get; set; }
+        public HashSet<long> DocIds { get; set; }
         public VectorNode Ancestor { get; private set; }
         public long ComponentCount { get; set; }
         public long VectorOffset { get; set; }
         public long PostingsOffset { get; set; }
         public ISerializableVector Vector { get; set; }
-
-        public object Sync { get; } = new object();
 
         public long Weight
         {
@@ -38,7 +33,7 @@ namespace Sir
             {
                 _right = value;
                 _right.Ancestor = this;
-                IncrementWeightConcurrently();
+                IncrementWeight();
             }
         }
 
@@ -49,7 +44,7 @@ namespace Sir
             {
                 _left = value;
                 _left.Ancestor = this;
-                IncrementWeightConcurrently();
+                IncrementWeight();
             }
         }
 
@@ -71,7 +66,7 @@ namespace Sir
             VectorOffset = -1;
         }
 
-        public VectorNode(ISerializableVector vector = null, long docId = -1, long postingsOffset = -1, long? keyId = null, List<long> docIds = null)
+        public VectorNode(ISerializableVector vector = null, long docId = -1, long postingsOffset = -1, long? keyId = null, HashSet<long> docIds = null)
         {
             Vector = vector;
             ComponentCount = vector == null ? 0 : vector.ComponentCount;
@@ -84,7 +79,7 @@ namespace Sir
             {
                 if (DocIds == null)
                 {
-                    DocIds = new List<long> { docId };
+                    DocIds = new HashSet<long> { docId };
                 }
                 else
                 {
@@ -101,90 +96,6 @@ namespace Sir
             _weight = weight;
             ComponentCount = vector.ComponentCount;
             Vector = vector;
-        }
-
-        public static void MergeDocIdsConcurrent(VectorNode target, VectorNode source)
-        {
-            lock (target.Sync)
-            {
-                if (source.DocIds != null)
-                {
-                    target.DocIds.AddRange(source.DocIds);
-                }
-            }
-        }
-
-        public void MergeOrAddConcurrent(
-            VectorNode node,
-            IModel model)
-        {
-            var cursor = this;
-
-            while (true)
-            {
-                var angle = cursor.Vector == null ? 0 : model.CosAngle(node.Vector, cursor.Vector);
-
-                if (angle >= model.IdenticalAngle)
-                {
-                    MergeDocIdsConcurrent(cursor, node);
-
-                    break;
-                }
-                else if (angle > model.FoldAngle)
-                {
-                    if (cursor.Left == null)
-                    {
-                        if (Interlocked.CompareExchange(ref cursor._left, node, null) == null)
-                        {
-                            node.Ancestor = cursor;
-                            cursor.IncrementWeightConcurrently();
-                            break;
-                        }
-                        else
-                        {
-                            cursor.MergeOrAddConcurrent(node, model);
-                        }
-                    }
-                    else
-                    {
-                        cursor = cursor.Left;
-                    }
-                }
-                else
-                {
-                    if (cursor.Right == null)
-                    {
-                        if (Interlocked.CompareExchange(ref cursor._right, node, null) == null)
-                        {
-                            node.Ancestor = cursor;
-                            cursor.IncrementWeightConcurrently();
-                            break;
-                        }
-                        else
-                        {
-                            cursor.MergeOrAddConcurrent(node, model);
-                        }
-                    }
-                    else
-                    {
-                        cursor = cursor.Right;
-                    }
-                }
-            }
-        }
-
-        public void IncrementWeightConcurrently()
-        {
-            Interlocked.Increment(ref _weight);
-
-            var cursor = Ancestor;
-
-            while (cursor != null)
-            {
-                Interlocked.Increment(ref cursor._weight);
-
-                cursor = cursor.Ancestor;
-            }
         }
 
         public void IncrementWeight()

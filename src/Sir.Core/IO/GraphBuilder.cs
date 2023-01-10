@@ -242,13 +242,9 @@ namespace Sir.IO
 
         public static void AppendDocIds(this VectorNode target, VectorNode source)
         {
-            if (target.DocIds == null || source.DocIds == null)
-                return;
-
-            target.DocIds.AddRange(source.DocIds);
+            foreach (var d in source.DocIds)
+                target.DocIds.Add(d);
         }
-
-
 
         public static void SerializeNode(this VectorNode node, Stream stream)
         {
